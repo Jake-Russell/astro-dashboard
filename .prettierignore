@@ -1,0 +1,12 @@
+# Configuration files
+.git/
+.vscode/
+
+# Temporary and auto-generated files
+**/node_modules
+**/package-lock.json
+**/dist
+**/.turbo
+**/temp/
+*/.storybook/dist
+*/storybook-static

@@ -1,10 +1,10 @@
 "use client";
-import Tile from "./Tile";
 import { useAstronomy } from "./AstronomyContext";
+import Tile from "./Tile";
 
 export type AstronomyData = {
     localTime: string;
-    localTimeEpoch?: number;
+    location: string;
     sunrise: string;
     sunset: string;
     moonrise: string;
@@ -15,6 +15,7 @@ export type AstronomyData = {
     is_sun_up: boolean;
     error: string;
 };
+
 const MoonPhaseTile = () => {
     const { astronomyData, astronomyLoading } = useAstronomy();
 

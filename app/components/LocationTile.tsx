@@ -4,9 +4,8 @@ import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
 
 const LocationTile = () => {
-    const { latitude, longitude, setLatitude, setLongitude } = useAstronomy();
+    const { latitude, longitude, setLatitude, setLongitude, astronomyData } = useAstronomy();
     const [error, setError] = useState<string | null>(null);
-    const [dateTime, setDateTime] = useState<string>("");
 
     const handleUseLocation = () => {
         if (!navigator.geolocation) {
@@ -17,7 +16,6 @@ const LocationTile = () => {
             (position) => {
                 setLatitude(position.coords.latitude.toFixed(5));
                 setLongitude(position.coords.longitude.toFixed(5));
-                setDateTime(new Date().toLocaleString());
                 setError(null);
             },
             () => {
@@ -50,8 +48,14 @@ const LocationTile = () => {
                     className="w-full rounded-lg bg-gray-50 border border-gray-300 p-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
                 <div className="text-gray-500 text-xs mt-1 select-none">
-                    Date/Time: {dateTime || <span className="italic">(not set)</span>}
+                    Showing results for:
+                    {astronomyData ? (
+                        ` ${astronomyData.location} (${astronomyData.localTime})`
+                    ) : (
+                        <span className="italic"> (not set)</span>
+                    )}
                 </div>
+                <div> </div>
                 {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
             </div>
         </Tile>

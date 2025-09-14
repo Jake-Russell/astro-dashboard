@@ -20,14 +20,6 @@ const SunTile = () => {
                         <div className="text-gray-500 text-sm mb-1">
                             {astronomyData.is_sun_up ? "Sun is up" : "Sun is down"}
                         </div>
-                        <div className="text-gray-400 text-xs mt-2">
-                            Local time: {astronomyData.localTime}
-                        </div>
-                        {astronomyData.localTimeEpoch && (
-                            <div className="text-gray-400 text-xs mt-2">
-                                Local time Epoch: {astronomyData.localTimeEpoch}
-                            </div>
-                        )}
                     </>
                 )}
                 {!astronomyLoading && astronomyData && astronomyData.error && (

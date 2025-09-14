@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { AstronomyData } from "@/app/components/MoonPhaseTile";
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
@@ -20,17 +21,20 @@ export async function GET(req: NextRequest) {
                 { status: res.status },
             );
 
-        const astro = data?.astronomy?.astro;
+        const locationData = data?.location;
+        const astroData = data?.astronomy?.astro;
 
-        // TODO: Remove localTime
-        const localTime = data?.location?.localtime;
-        const localTimeEpoch = data?.location?.localtime_epoch;
-
-        if (!astro) {
+        if (!locationData || !astroData) {
             return NextResponse.json({ error: "Malformed API response" }, { status: 502 });
         }
 
-        return NextResponse.json({ ...astro, localTime, localTimeEpoch });
+        const response: AstronomyData = {
+            localTime: locationData.localtime,
+            location: `${locationData.name}, ${locationData.country}`,
+            ...astroData,
+        };
+
+        return NextResponse.json(response);
     } catch (err) {
         return NextResponse.json({ error: `Network error: ${err}` }, { status: 500 });
     }

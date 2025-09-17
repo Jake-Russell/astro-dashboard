@@ -3,6 +3,7 @@ import type { AstronomyData } from "../components/MoonPhaseTile";
 export async function getAstronomyData(lat: string, lng: string): Promise<AstronomyData> {
     const errorResponse: AstronomyData = {
         localTime: "",
+        location: "",
         sunrise: "",
         sunset: "",
         moonrise: "",

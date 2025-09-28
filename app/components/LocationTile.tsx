@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
+import { getLocalTime } from "../utils/timeUtils";
 import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
+import { format } from "date-fns";
 
 const LocationTile = () => {
-    const { latitude, longitude, setLatitude, setLongitude, astronomyData } = useAstronomy();
+    const { latitude, longitude, setLatitude, setLongitude, weatherData } = useAstronomy();
     const [error, setError] = useState<string | null>(null);
 
     const handleUseLocation = () => {
@@ -49,8 +51,8 @@ const LocationTile = () => {
                 />
                 <div className="text-gray-500 text-xs mt-1 select-none">
                     Showing results for:
-                    {astronomyData ? (
-                        ` ${astronomyData.location} (${astronomyData.localTime})`
+                    {weatherData ? (
+                        ` ${weatherData.location.name}, ${weatherData.location.country} (${format(getLocalTime(latitude, longitude), "HH:mm")})`
                     ) : (
                         <span className="italic"> (not set)</span>
                     )}

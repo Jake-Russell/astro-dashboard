@@ -2,6 +2,7 @@ import { AstronomyProvider } from "./components/AstronomyContext";
 import LocationTile from "./components/LocationTile";
 import MoonPhaseTile from "./components/MoonPhaseTile";
 import SunTile from "./components/SunTile";
+import WeatherTile from "./components/WeatherTile";
 
 const Page = () => {
     return (
@@ -17,6 +18,7 @@ const Page = () => {
                         <MoonPhaseTile />
                         <SunTile />
                     </div>
+                    <WeatherTile />
                 </div>
             </main>
         </AstronomyProvider>

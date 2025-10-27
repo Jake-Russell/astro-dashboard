@@ -1,6 +1,7 @@
 import { AstronomyProvider } from "./components/AstronomyContext";
 import LocationTile from "./components/LocationTile";
 import MoonPhaseTile from "./components/MoonPhaseTile";
+import ScoreTile from "./components/ScoreTile";
 import SunTile from "./components/SunTile";
 import WeatherTile from "./components/WeatherTile";
 
@@ -19,6 +20,7 @@ const Page = () => {
                         <SunTile />
                     </div>
                     <WeatherTile />
+                    <ScoreTile />
                 </div>
             </main>
         </AstronomyProvider>

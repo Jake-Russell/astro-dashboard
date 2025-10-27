@@ -9,9 +9,12 @@ const SunTile = () => {
 
     const astroData = weatherData?.forecast.forecastday[0].astro;
 
+    const sunrise = weatherData?.forecast.forecastday[1].astro?.sunrise;
+    const sunset = weatherData?.forecast.forecastday[0].astro?.sunset;
+
     const isSunUp = useMemo(() => {
-        return isBodyUp(astroData?.sunrise ?? "", astroData?.sunset ?? "", latitude, longitude);
-    }, [astroData?.sunrise, astroData?.sunset, latitude, longitude]);
+        return isBodyUp(sunrise ?? "", sunset ?? "", latitude, longitude);
+    }, [sunrise, sunset, latitude, longitude]);
 
     return (
         <Tile title="Sun">
@@ -19,12 +22,8 @@ const SunTile = () => {
                 {weatherLoading && <div>Loading...</div>}
                 {!weatherLoading && !weatherData?.error && astroData && (
                     <>
-                        <div className="text-2xl mb-2 font-semibold">
-                            Sunrise: {astroData.sunrise}
-                        </div>
-                        <div className="text-2xl mb-2 font-semibold">
-                            Sunset: {astroData.sunset}
-                        </div>
+                        <div className="text-2xl mb-2 font-semibold">Sunrise: {sunrise}</div>
+                        <div className="text-2xl mb-2 font-semibold">Sunset: {sunset}</div>
                         <div className="text-gray-500 text-sm mb-1">
                             {isSunUp ? "Sun is up" : "Sun is down"}
                         </div>

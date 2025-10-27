@@ -2,7 +2,9 @@ import { addDays, differenceInMinutes, format, fromUnixTime, isAfter, isBefore }
 import { toZonedTime } from "date-fns-tz";
 import tzLookup from "tz-lookup";
 
-const getLocalTime = (epoch: number, lat: string, lng: string): Date => {
+export const getLocalTime = (epoch?: number, lat?: string, lng?: string): Date => {
+    if (!epoch || !lat || !lng) return new Date(0);
+
     const tz = tzLookup(parseFloat(lat), parseFloat(lng));
     const utcTime = fromUnixTime(epoch);
     return toZonedTime(utcTime, tz);

@@ -1,7 +1,7 @@
 "use client";
 import { isAfter, isBefore } from "date-fns";
 import { HourData } from "../api/weather/route";
-import { getFormattedTime } from "../utils/timeUtils";
+import { getFormattedTime, getLocalTime } from "../utils/timeUtils";
 import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
 
@@ -13,13 +13,13 @@ const WeatherTile = () => {
     const today = weatherData?.daily[0];
     const tomorrow = weatherData?.daily[1];
 
-    const sunsetTime = getFormattedTime(today?.sunset, latitude, longitude);
-    const sunriseTime = getFormattedTime(tomorrow?.sunrise, latitude, longitude);
+    const sunsetTime = getLocalTime(today?.sunset, latitude, longitude);
+    const sunriseTime = getLocalTime(tomorrow?.sunrise, latitude, longitude);
 
     if (!hourlyData) return null;
 
     const nightHours: HourData[] = hourlyData.filter((hour) => {
-        const hourTime = getFormattedTime(hour.dt, latitude, longitude);
+        const hourTime = getLocalTime(hour.dt, latitude, longitude);
         return isAfter(hourTime, sunsetTime) && isBefore(hourTime, sunriseTime);
     });
 
@@ -40,9 +40,7 @@ const WeatherTile = () => {
                                 key={hour.dt}
                                 className="grid grid-cols-3 gap-2 items-center text-lg mb-1"
                             >
-                                <span>
-                                    {(getFormattedTime(hour.dt, latitude, longitude), "HH:mm")}
-                                </span>
+                                <span>{getFormattedTime(hour.dt, latitude, longitude)}</span>
                                 <span>{hour.weather[0].main}</span>
                                 <span>{hour.clouds}</span>
                             </div>

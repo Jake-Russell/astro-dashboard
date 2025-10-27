@@ -2,34 +2,29 @@ import { WeatherResponse } from "../api/weather/route";
 
 export async function getWeatherData(lat: string, lng: string): Promise<WeatherResponse> {
     const errorResponse: WeatherResponse = {
-        location: {
-            name: "",
-            region: "",
-            country: "",
-            lat: 0,
-            lon: 0,
-            tz_id: "",
-            localtime_epoch: 0,
-            localtime: "",
-        },
+        lat: 0,
+        lon: 0,
+        timezone: "",
+        timezone_offset: 0,
         current: {
-            last_updated_epoch: 0,
-            last_updated: "",
-            temp_c: 0,
-            temp_f: 0,
-            is_day: 0,
-            condition: {
-                text: "",
-                icon: "",
-                code: 0,
-            },
-            wind_mph: 0,
-            wind_kph: 0,
-            wind_degree: 0,
+            dt: 0,
+            sunrise: 0,
+            sunset: 0,
+            temp: 0,
+            feels_like: 0,
+            pressure: 0,
+            humidity: 0,
+            dew_point: 0,
+            uvi: 0,
+            clouds: 0,
+            visibility: 0,
+            wind_speed: 0,
+            wind_deg: 0,
+            weather: [],
         },
-        forecast: {
-            forecastday: [],
-        },
+        minutely: [],
+        hourly: [],
+        daily: [],
     };
 
     try {

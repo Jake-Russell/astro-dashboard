@@ -1,23 +1,25 @@
 "use client";
-import { format, isAfter, isBefore, parse } from "date-fns";
-import { HourData } from "../api/weather/route";
+import { format, isAfter, isBefore } from "date-fns";
 import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
-import { timeToDate } from "../utils/timeUtils";
+import { formatEpochToLocal } from "../utils/timeUtils";
+import { HourData } from "../api/weather/route";
 
 const WeatherTile = () => {
-    const { weatherData, weatherLoading } = useAstronomy();
+    const { latitude, longitude, weatherData, weatherLoading } = useAstronomy();
 
-    const today = weatherData?.forecast?.forecastday[0];
-    const tomorrow = weatherData?.forecast?.forecastday[1];
+    const hourlyData = weatherData?.hourly;
 
-    const sunsetTime = timeToDate(today?.date ?? "", today?.astro.sunset ?? "");
-    const sunriseTime = timeToDate(tomorrow?.date ?? "", tomorrow?.astro.sunrise ?? "");
+    const today = weatherData?.daily[0];
+    const tomorrow = weatherData?.daily[1];
 
-    const allHours = [...(today?.hour ?? []), ...(tomorrow?.hour ?? [])];
+    const sunsetTime = formatEpochToLocal(today?.sunset ?? 0, latitude, longitude);
+    const sunriseTime = formatEpochToLocal(tomorrow?.sunrise ?? 0, latitude, longitude);
 
-    const nightHours: HourData[] = allHours.filter((hour) => {
-        const hourTime = parse(hour.time, "yyyy-MM-dd HH:mm", new Date());
+    if (!hourlyData) return null;
+
+    const nightHours: HourData[] = hourlyData.filter((hour) => {
+        const hourTime = formatEpochToLocal(hour.dt, latitude, longitude);
         return isAfter(hourTime, sunsetTime) && isBefore(hourTime, sunriseTime);
     });
 
@@ -32,15 +34,20 @@ const WeatherTile = () => {
                             <span>Condition</span>
                             <span>Cloud (%)</span>
                         </div>
-                        {/* Data Rows */}
+
                         {nightHours.map((hour) => (
                             <div
-                                key={hour.time_epoch}
+                                key={hour.dt}
                                 className="grid grid-cols-3 gap-2 items-center text-lg mb-1"
                             >
-                                <span>{format(hour.time, "HH:mm")}</span>
-                                <span>{hour.condition.text}</span>
-                                <span>{hour.cloud}</span>
+                                <span>
+                                    {format(
+                                        formatEpochToLocal(hour.dt, latitude, longitude),
+                                        "HH:mm",
+                                    )}
+                                </span>
+                                <span>{hour.weather[0].main}</span>
+                                <span>{hour.clouds}</span>
                             </div>
                         ))}
                     </div>

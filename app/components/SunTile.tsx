@@ -1,6 +1,5 @@
 "use client";
-import { format } from "date-fns";
-import { formatEpochToLocal, isBodyUp } from "../utils/timeUtils";
+import { getFormattedTime, isBodyUp } from "../utils/timeUtils";
 import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
 import { useMemo } from "react";
@@ -11,7 +10,7 @@ const SunTile = () => {
     const dayWeather = weatherData?.daily[0];
 
     const isSunUp = useMemo(() => {
-        return isBodyUp(dayWeather?.sunrise ?? 0, dayWeather?.sunset ?? 0, latitude, longitude);
+        return isBodyUp(dayWeather?.sunrise, dayWeather?.sunset, latitude, longitude);
     }, [dayWeather?.sunrise, dayWeather?.sunset, latitude, longitude]);
 
     return (
@@ -22,18 +21,10 @@ const SunTile = () => {
                 {!weatherLoading && !weatherData?.error && dayWeather && (
                     <>
                         <div className="text-2xl mb-2 font-semibold">
-                            Sunrise:{" "}
-                            {format(
-                                formatEpochToLocal(dayWeather.sunrise, latitude, longitude),
-                                "HH:mm",
-                            )}
+                            Sunrise: {getFormattedTime(dayWeather.sunrise, latitude, longitude)}
                         </div>
                         <div className="text-2xl mb-2 font-semibold">
-                            Sunset:{" "}
-                            {format(
-                                formatEpochToLocal(dayWeather.sunset, latitude, longitude),
-                                "HH:mm",
-                            )}
+                            Sunset: {getFormattedTime(dayWeather.sunset, latitude, longitude)}
                         </div>
                         <div className="text-gray-500 text-sm mb-1">
                             {isSunUp ? "Sun is up" : "Sun is down"}

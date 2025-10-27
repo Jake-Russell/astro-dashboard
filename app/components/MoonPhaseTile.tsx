@@ -1,14 +1,8 @@
 "use client";
 import { useMemo } from "react";
+import { getFormattedTime, getMoonIllumination, getMoonPhase, isBodyUp } from "../utils/timeUtils";
 import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
-import {
-    formatEpochToLocal,
-    getMoonIllumination,
-    getMoonPhase,
-    isBodyUp,
-} from "../utils/timeUtils";
-import { format } from "date-fns";
 
 const MoonPhaseTile = () => {
     const { latitude, longitude, weatherLoading, weatherData } = useAstronomy();
@@ -16,7 +10,7 @@ const MoonPhaseTile = () => {
     const dayWeather = weatherData?.daily[0];
 
     const isMoonUp = useMemo(() => {
-        return isBodyUp(dayWeather?.moonrise ?? 0, dayWeather?.moonset ?? 0, latitude, longitude);
+        return isBodyUp(dayWeather?.moonrise, dayWeather?.moonset, latitude, longitude);
     }, [dayWeather?.moonrise, dayWeather?.moonset, latitude, longitude]);
 
     return (
@@ -42,18 +36,10 @@ const MoonPhaseTile = () => {
                             </div>
                         </div>
                         <div className="text-gray-500 text-sm mb-1">
-                            Moonrise:{" "}
-                            {format(
-                                formatEpochToLocal(dayWeather.moonrise, latitude, longitude),
-                                "HH:mm",
-                            )}
+                            Moonrise: {getFormattedTime(dayWeather.moonrise, latitude, longitude)}
                         </div>
                         <div className="text-gray-500 text-sm mb-1">
-                            Moonset:{" "}
-                            {format(
-                                formatEpochToLocal(dayWeather.moonset, latitude, longitude),
-                                "HH:mm",
-                            )}
+                            Moonset: {getFormattedTime(dayWeather.moonset, latitude, longitude)}
                         </div>
                         <div className="text-gray-500 text-sm mb-1">
                             {isMoonUp ? "Moon is up" : "Moon is down"}

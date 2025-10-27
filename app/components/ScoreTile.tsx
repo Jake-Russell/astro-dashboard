@@ -1,13 +1,8 @@
 "use client";
 import React from "react";
+import { getFormattedTime, getMoonIllumination, getNightMoonVisibility } from "../utils/timeUtils";
 import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
-import {
-    formatEpochToLocal,
-    getMoonIllumination,
-    getNightMoonVisibility,
-} from "../utils/timeUtils";
-import { format } from "date-fns";
 
 const ScoreTile = () => {
     const { latitude, longitude, weatherData, weatherLoading } = useAstronomy();
@@ -19,10 +14,10 @@ const ScoreTile = () => {
     const tomorrow = weatherData?.daily[1];
 
     const { nightDuration, moonDownDuringNight } = getNightMoonVisibility(
-        today?.moonrise ?? 0,
-        today?.moonset ?? 0,
-        today?.sunset ?? 0,
-        tomorrow?.sunrise ?? 0,
+        today?.moonrise,
+        today?.moonset,
+        today?.sunset,
+        tomorrow?.sunrise,
         latitude,
         longitude,
     );
@@ -36,25 +31,10 @@ const ScoreTile = () => {
                         <div className="text-2xl mb-2 font-semibold">Moon Score</div>
                         <div className="text-gray-500 text-sm mb-1">
                             Moon is down from{" "}
-                            {format(
-                                formatEpochToLocal(
-                                    weatherData.daily[0].moonset,
-                                    latitude,
-                                    longitude,
-                                ),
-                                "HH:mm",
-                            )}{" "}
-                            to{" "}
-                            {format(
-                                formatEpochToLocal(
-                                    weatherData.daily[1].sunrise,
-                                    latitude,
-                                    longitude,
-                                ),
-                                "HH:mm",
-                            )}{" "}
-                            ({((moonDownDuringNight / nightDuration) * 100).toFixed(2)}% of the
-                            night )
+                            {getFormattedTime(weatherData.daily[0].moonset, latitude, longitude)} to{" "}
+                            {getFormattedTime(weatherData.daily[1].sunrise, latitude, longitude)} (
+                            {((moonDownDuringNight / nightDuration) * 100).toFixed(2)}% of the night
+                            )
                         </div>
                         <div className="text-gray-500 text-sm mb-1">
                             Moon is {getMoonIllumination(weatherData.daily[0].moon_phase)}%

@@ -1,111 +1,91 @@
 import { NextRequest, NextResponse } from "next/server";
 
-type ConditionData = {
-    text: string;
+type WeatherData = {
+    id: number;
+    main: string;
+    description: string;
     icon: string;
-    code: number;
 };
 
-export type HourData = {
-    chance_of_rain: number;
-    chance_of_snow: number;
-    cloud: 59;
-    condition: ConditionData;
-    dewpoint_c: number;
-    dewpoint_f: number;
-    feelslike_c: number;
-    feelslike_f: number;
-    gust_kph: number;
-    gust_mph: number;
-    heatindex_c: number;
-    heatindex_f: number;
+type MinuteData = {
+    dt: number;
+    precipitation: number;
+};
+
+export type HourData = Pick<MinuteData, "dt"> & {
+    temp: number;
+    feels_like: number;
+    pressure: number;
     humidity: number;
-    is_day: number;
-    precip_in: number;
-    precip_mm: number;
-    pressure_in: number;
-    pressure_mb: number;
-    snow_cm: number;
-    temp_c: number;
-    temp_f: number;
-    time: string;
-    time_epoch: number;
-    uv: number;
-    vis_km: number;
-    vis_miles: number;
-    will_it_rain: number;
-    will_it_snow: number;
-    wind_degree: number;
-    wind_dir: string;
-    wind_kph: number;
-    wind_mph: number;
-    windchill_c: number;
-    windchill_f: number;
+    dew_point: number;
+    uvi: number;
+    clouds: number;
+    visibility: number;
+    wind_speed: number;
+    wind_deg: number;
+    wind_gust: number;
+    weather: WeatherData[];
+    pop: number;
 };
 
-type ForecastData = {
-    date: string;
-    date_epoch: number;
-    astro: {
-        is_moon_up: number;
-        is_sun_up: number;
-        moon_illumination: number;
-        moon_phase: string;
-        moonrise: string;
-        moonset: string;
-        sunrise: string;
-        sunset: string;
+type DayData = HourData & {
+    sunrise: number;
+    sunset: number;
+    moonrise: number;
+    moonset: number;
+    moon_phase: number;
+    summary: string;
+    temp: {
+        day: number;
+        min: number;
+        max: number;
+        night: number;
+        eve: number;
+        morn: number;
     };
-    day: {
-        avghumidity: number;
-        avgtemp_c: number;
-        avgtemp_f: number;
-        avgvis_km: number;
-        avgvis_miles: number;
-        condition: ConditionData;
-        daily_chance_of_rain: number;
-        daily_chance_of_snow: number;
-        daily_will_it_rain: number;
-        daily_will_it_snow: number;
-        maxtemp_c: number;
-        maxtemp_f: number;
-        maxwind_kph: number;
-        maxwind_mph: number;
-        mintemp_c: number;
-        mintemp_f: number;
-        totalprecip_in: number;
-        totalprecip_mm: number;
-        totalsnow_cm: number;
-        uv: number;
+    feels_like: {
+        day: number;
+        night: number;
+        eve: number;
+        morn: number;
     };
-    hour: HourData[];
+    pressure: number;
+    humidity: number;
+    dew_point: number;
+    wind_speed: number;
+    wind_deg: number;
+    wind_gust: number;
+    weather: WeatherData[];
+    clouds: number;
+    pop: number;
+    rain: number;
+    uvi: number;
 };
 
 export type WeatherResponse = {
-    location: {
-        name: string;
-        region: string;
-        country: string;
-        lat: number;
-        lon: number;
-        tz_id: string;
-        localtime_epoch: number;
-        localtime: string;
-    };
+    lat: number;
+    lon: number;
+    timezone: string;
+    timezone_offset: number;
     current: {
-        last_updated_epoch: number;
-        last_updated: string;
-        temp_c: number;
-        temp_f: number;
-        is_day: number;
-        condition: ConditionData;
-        wind_mph: number;
-        wind_kph: number;
-        wind_degree: number;
+        dt: number;
+        sunrise: number;
+        sunset: number;
+        temp: number;
+        feels_like: number;
+        pressure: number;
+        humidity: number;
+        dew_point: number;
+        uvi: number;
+        clouds: number;
+        visibility: number;
+        wind_speed: number;
+        wind_deg: number;
+        weather: WeatherData[];
     };
-    forecast: {
-        forecastday: ForecastData[];
-    };
+    minutely: MinuteData[];
+    hourly: HourData[];
+    daily: DayData[];
     error?: string;
 };
 
@@ -113,13 +93,12 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
-
-    const apiKey = process.env.WEATHER_API_KEY;
+    const apiKey = process.env.OPEN_WEATHER_MAP_APP_ID;
 
     if (!apiKey) return NextResponse.json({ error: "API key missing" }, { status: 500 });
     if (!lat || !lng) return NextResponse.json({ error: "Missing lat/lng" }, { status: 400 });
 
-    const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${lat},${lng}&days=2`;
+    const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lng}&appid=${apiKey}`;
 
     try {
         const res = await fetch(url);

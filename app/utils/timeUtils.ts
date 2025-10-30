@@ -1,46 +1,80 @@
-import { addDays, differenceInMinutes, isAfter, isBefore, parse } from "date-fns";
+import { addDays, differenceInMinutes, format, fromUnixTime, isAfter, isBefore } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import tzLookup from "tz-lookup";
 
-export const timeToDate = (date: string, time: string): Date =>
-    parse(`${date} ${time}`, "yyyy-MM-dd hh:mm a", new Date());
+export const getLocalTime = (epoch?: number, lat?: string, lng?: string): Date => {
+    if (!epoch || !lat || !lng) return new Date(0);
 
-export const timeStringToDate = (time: string, dayModifier: number = 0): Date =>
-    parse(time, "hh:mm a", addDays(new Date(), dayModifier));
-
-export const getTimeZone = (lat: string, lng: string): string =>
-    tzLookup(parseFloat(lat), parseFloat(lng));
-
-export const getLocalTime = (lat?: string, lng?: string): Date => {
-    if (!lat || !lng) return new Date();
-
-    const tz = getTimeZone(lat, lng);
-    return toZonedTime(new Date(), tz);
+    const tz = tzLookup(parseFloat(lat), parseFloat(lng));
+    const utcTime = fromUnixTime(epoch);
+    return toZonedTime(utcTime, tz);
 };
 
-export const isBodyUp = (rise: string, set: string, lat: string, lng: string): boolean => {
-    const now = getLocalTime(lat, lng);
-    const riseTime = parse(rise, "hh:mm a", now);
-    const setTime = parse(set, "hh:mm a", now);
+export const getFormattedTime = (epoch?: number, lat?: string, lng?: string): string => {
+    if (!epoch || !lat || !lng) return "";
 
-    return isAfter(now, riseTime) && isBefore(now, setTime);
+    const localTime = getLocalTime(epoch, lat, lng);
+    return format(localTime, "HH:mm");
+};
+
+export const getMoonPhase = (value?: number): string => {
+    if (!value) return "Unknown";
+
+    if (value === 0 || value === 1) return "New Moon";
+    if (value > 0 && value < 0.25) return "Waxing Crescent";
+    if (value === 0.25) return "First Quarter";
+    if (value > 0.25 && value < 0.5) return "Waxing Gibbous";
+    if (value === 0.5) return "Full Moon";
+    if (value > 0.5 && value < 0.75) return "Waning Gibbous";
+    if (value === 0.75) return "Last Quarter";
+    if (value > 0.75 && value < 1) return "Waning Crescent";
+    return "Unknown";
+};
+
+export const getMoonIllumination = (value?: number): number => {
+    if (value === undefined) return 0;
+
+    const illumination = 0.5 * (1 - Math.cos(2 * Math.PI * value));
+    return Math.round(illumination * 100); // percentage
+};
+
+export const isBodyUp = (
+    riseEpoch?: number,
+    setEpoch?: number,
+    lat?: string,
+    lng?: string,
+): boolean => {
+    if (!riseEpoch || !setEpoch || !lat || !lng) return false;
+
+    const now = getLocalTime(Math.floor(Date.now() / 1000), lat, lng);
+
+    const rise = getLocalTime(riseEpoch, lat, lng);
+    const set = getLocalTime(setEpoch, lat, lng);
+
+    // TODO: Does this need to be done?
+    // const adjustedSet = isBefore(set, rise) ? addDays(set, 1) : set;
+
+    return isAfter(now, rise) && isBefore(now, set);
 };
 
 export const getNightMoonVisibility = (
-    moonriseStr: string,
-    moonsetStr: string,
-    sunsetStr: string,
-    sunriseStr: string,
+    moonriseEpoch?: number,
+    moonsetEpoch?: number,
+    sunsetEpoch?: number,
+    sunriseEpoch?: number,
+    lat?: string,
+    lng?: string,
 ) => {
-    const now = new Date();
+    if (!moonriseEpoch || !moonsetEpoch || !sunsetEpoch || !sunriseEpoch || !lat || !lng)
+        return { nightDuration: 0, moonUpDuringNight: 0, moonDownDuringNight: 0 };
 
-    const moonrise = parse(moonriseStr, "hh:mm a", now);
-    const moonset = parse(moonsetStr, "hh:mm a", now);
+    const moonrise = getLocalTime(moonriseEpoch, lat, lng);
+    const moonset = getLocalTime(moonsetEpoch, lat, lng);
     // Adjust if moonset is before moonrise (i.e., after midnight)
     const adjustedMoonset = isBefore(moonset, moonrise) ? addDays(moonset, 1) : moonset;
 
-    const sunset = parse(sunsetStr, "hh:mm a", now);
-    const sunrise = parse(sunriseStr, "hh:mm a", addDays(now, 1)); // next day
+    const sunset = getLocalTime(sunsetEpoch, lat, lng);
+    const sunrise = getLocalTime(sunriseEpoch, lat, lng);
 
     const nightStart = sunset;
     const nightEnd = sunrise;

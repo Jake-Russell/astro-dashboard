@@ -106,6 +106,6 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json(data);
     } catch (err) {
-        return NextResponse.json({ error: `Network error!!!: ${err}` }, { status: 500 });
+        return NextResponse.json({ error: `Network error: ${err}` }, { status: 500 });
     }
 }

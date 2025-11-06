@@ -40,6 +40,11 @@ export const getMoonIllumination = (value?: number): number => {
 
 export const isBodyUp = (
     riseEpoch?: number,
+    /**
+     * The epoch time of the body's set.
+     * Make sure this is the adjusted set time retrieved from getAdjustedBodyRiseAndSet
+     * I.e., if the body sets before it rises, use tomorrow's set time.
+     */
     setEpoch?: number,
     lat?: string,
     lng?: string,
@@ -51,8 +56,13 @@ export const isBodyUp = (
     const rise = getLocalTime(riseEpoch, lat, lng);
     const set = getLocalTime(setEpoch, lat, lng);
 
-    // TODO: Does this need to be done?
-    // const adjustedSet = isBefore(set, rise) ? addDays(set, 1) : set;
+    if (isBefore(set, rise)) {
+        /* eslint-disable-next-line no-console */
+        console.warn(
+            "Unexpected: body set time is before rise time. Make sure to use adjusted set time.",
+        );
+        return false;
+    }
 
     return isAfter(now, rise) && isBefore(now, set);
 };

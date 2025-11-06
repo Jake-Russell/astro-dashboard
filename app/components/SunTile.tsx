@@ -7,24 +7,24 @@ import { useMemo } from "react";
 const SunTile = () => {
     const { latitude, longitude, weatherData, weatherLoading } = useAstronomy();
 
-    const dayWeather = weatherData?.daily[0];
+    const { sunrise, sunset } = weatherData?.daily[0] || {};
 
     const isSunUp = useMemo(() => {
-        return isBodyUp(dayWeather?.sunrise, dayWeather?.sunset, latitude, longitude);
-    }, [dayWeather?.sunrise, dayWeather?.sunset, latitude, longitude]);
+        return isBodyUp(sunrise, sunset, latitude, longitude);
+    }, [sunrise, sunset, latitude, longitude]);
 
     return (
         <Tile title="Sun">
             <div className="flex flex-col items-center">
                 {weatherLoading && <div>Loading...</div>}
 
-                {!weatherLoading && !weatherData?.error && dayWeather && (
+                {!weatherLoading && !weatherData?.error && (
                     <>
                         <div className="text-2xl mb-2 font-semibold">
-                            Sunrise: {getFormattedTime(dayWeather.sunrise, latitude, longitude)}
+                            Sunrise: {getFormattedTime(sunrise, latitude, longitude)}
                         </div>
                         <div className="text-2xl mb-2 font-semibold">
-                            Sunset: {getFormattedTime(dayWeather.sunset, latitude, longitude)}
+                            Sunset: {getFormattedTime(sunset, latitude, longitude)}
                         </div>
                         <div className="text-gray-500 text-sm mb-1">
                             {isSunUp ? "Sun is up" : "Sun is down"}

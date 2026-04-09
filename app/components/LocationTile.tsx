@@ -9,9 +9,9 @@ export const LocationTile = () => {
     const [error, setError] = useState<string>();
     const [isLoading, setIsLoading] = useState(false);
 
-    const [location, setLocation] = useState<string>();
-    const [lastSearchedLocation, setLastSearchedLocation] = useState<string>();
-    const [locationDisplayName, setLocationDisplayName] = useState<string>();
+    const [location, setLocation] = useState<string>("");
+    const [lastSearchedLocation, setLastSearchedLocation] = useState<string>("");
+    const [locationDisplayName, setLocationDisplayName] = useState<string>("");
 
     useEffect(() => {
         if (isLoading !== weatherLoading) setIsLoading(weatherLoading);
@@ -20,16 +20,21 @@ export const LocationTile = () => {
     const resetSearch = () => {
         setIsLoading(true);
         setWeatherData(undefined);
-        setLocation(undefined);
-        setLocationDisplayName(undefined);
+        setLocationDisplayName("");
         setError(undefined);
+    };
+
+    const handleError = (message: string) => {
+        setIsLoading(false);
+        setError(message);
     };
 
     const handleUseLocation = () => {
         resetSearch();
         if (!navigator.geolocation) {
-            setIsLoading(false);
-            setError("Geolocation is not supported by your browser.");
+            handleError(
+                "Geolocation is not supported by your browser. Please use the search function instead.",
+            );
             return;
         }
         navigator.geolocation.getCurrentPosition(
@@ -49,6 +54,7 @@ export const LocationTile = () => {
 
                 setLocation(locationResponse.name);
                 setLocationDisplayName(locationResponse.displayName);
+                setLastSearchedLocation(locationResponse.name.trim());
             },
             () => {
                 // TODO: Add more specific error handling
@@ -86,6 +92,7 @@ export const LocationTile = () => {
                 >
                     Use My Location
                 </button>
+
                 <p>Or alternatively, search for a location:</p>
                 <form
                     onSubmit={(e) => {
@@ -109,14 +116,15 @@ export const LocationTile = () => {
                         Search
                     </button>
                 </form>
+
                 {locationDisplayName && (
                     <div className="text-gray-500 text-xs mt-1">
                         Showing results for: {locationDisplayName}
                     </div>
                 )}
-                <div> </div>
                 {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
             </Tile>
+
             {isLoading && (
                 <div className="flex flex-col items-center justify-center gap-3 text-gray-600 mt-8">
                     <div className="h-16 w-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />

@@ -7,13 +7,13 @@ import { useMemo } from "react";
 export const SunTile = () => {
     const { latitude, longitude, weatherData } = useAstronomy();
 
-    if (!weatherData) return null;
-
-    const { sunrise, sunset } = weatherData.daily[0] || {};
+    const { sunrise, sunset } = weatherData?.daily[0] || {};
 
     const isSunUp = useMemo(() => {
         return isBodyUp(sunrise, sunset, latitude, longitude);
     }, [sunrise, sunset, latitude, longitude]);
+
+    if (!weatherData) return null;
 
     return (
         <Tile title="Sun">

@@ -8,19 +8,22 @@ import Tile from "./Tile";
 export const MoonPhaseTile = () => {
     const { latitude, longitude, weatherData } = useAstronomy();
 
-    if (!weatherData) return null;
-
-    const moonPhase = weatherData.daily[0]?.moon_phase;
+    const todayData = weatherData?.daily[0];
+    const tomorrowData = weatherData?.daily[1];
 
     const { moonrise, moonset } = getAdjustedMoonRiseAndSet(
-        weatherData.daily[0]?.moonrise,
-        weatherData.daily[0]?.moonset,
-        weatherData.daily[1]?.moonset,
+        todayData?.moonrise,
+        todayData?.moonset,
+        tomorrowData?.moonset,
     );
+
+    const moonPhase = todayData?.moon_phase;
 
     const isMoonUp = useMemo(() => {
         return isBodyUp(moonrise, moonset, latitude, longitude);
     }, [moonrise, moonset, latitude, longitude]);
+
+    if (!weatherData) return null;
 
     return (
         <Tile title="Moon Phase">

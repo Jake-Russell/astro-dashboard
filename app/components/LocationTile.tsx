@@ -41,6 +41,11 @@ export const LocationTile = () => {
                 setLongitude(userLongitude);
 
                 const locationResponse = await getLocationName(userLatitude, userLongitude);
+                if (locationResponse.error) {
+                    setIsLoading(false);
+                    setError(locationResponse.error);
+                    return;
+                }
 
                 setLocation(locationResponse.name);
                 setLocationDisplayName(locationResponse.displayName);
@@ -60,6 +65,11 @@ export const LocationTile = () => {
         resetSearch();
 
         const locationData = await getLatLng(normalisedLocation);
+        if (locationData.error) {
+            setIsLoading(false);
+            setError(locationData.error);
+            return;
+        }
 
         setLatitude(locationData.lat);
         setLongitude(locationData.lon);

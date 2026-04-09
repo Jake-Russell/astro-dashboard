@@ -4,7 +4,7 @@ import { getLatLng, getLocationName } from "../utils/getLocationData";
 import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
 
-const LocationTile = () => {
+export const LocationTile = () => {
     const { setLatitude, setLongitude, weatherData } = useAstronomy();
     const [error, setError] = useState<string | null>(null);
 
@@ -83,5 +83,3 @@ const LocationTile = () => {
         </Tile>
     );
 };
-
-export default LocationTile;

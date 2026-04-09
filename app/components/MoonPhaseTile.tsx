@@ -5,15 +5,17 @@ import { getFormattedTime, getMoonIllumination, getMoonPhase, isBodyUp } from ".
 import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
 
-const MoonPhaseTile = () => {
-    const { latitude, longitude, weatherLoading, weatherData } = useAstronomy();
+export const MoonPhaseTile = () => {
+    const { latitude, longitude, weatherData } = useAstronomy();
 
-    const moonPhase = weatherData?.daily[0]?.moon_phase;
+    if (!weatherData) return null;
+
+    const moonPhase = weatherData.daily[0]?.moon_phase;
 
     const { moonrise, moonset } = getAdjustedMoonRiseAndSet(
-        weatherData?.daily[0]?.moonrise,
-        weatherData?.daily[0]?.moonset,
-        weatherData?.daily[1]?.moonset,
+        weatherData.daily[0]?.moonrise,
+        weatherData.daily[0]?.moonset,
+        weatherData.daily[1]?.moonset,
     );
 
     const isMoonUp = useMemo(() => {
@@ -23,8 +25,7 @@ const MoonPhaseTile = () => {
     return (
         <Tile title="Moon Phase">
             <div className="flex flex-col items-center">
-                {weatherLoading && <div>Loading...</div>}
-                {!weatherLoading && !weatherData?.error && (
+                {!weatherData.error ? (
                     <>
                         <div className="text-2xl mb-2 font-semibold">{getMoonPhase(moonPhase)}</div>
                         <div className="w-full flex flex-col items-center mb-2">
@@ -50,13 +51,10 @@ const MoonPhaseTile = () => {
                             {isMoonUp ? "Moon is up" : "Moon is down"}
                         </div>
                     </>
-                )}
-                {!weatherLoading && weatherData?.error && (
+                ) : (
                     <div className="text-red-500 text-sm">{weatherData.error}</div>
                 )}
             </div>
         </Tile>
     );
 };
-
-export default MoonPhaseTile;

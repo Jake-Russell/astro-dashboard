@@ -4,10 +4,12 @@ import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
 import { useMemo } from "react";
 
-const SunTile = () => {
-    const { latitude, longitude, weatherData, weatherLoading } = useAstronomy();
+export const SunTile = () => {
+    const { latitude, longitude, weatherData } = useAstronomy();
 
-    const { sunrise, sunset } = weatherData?.daily[0] || {};
+    if (!weatherData) return null;
+
+    const { sunrise, sunset } = weatherData.daily[0] || {};
 
     const isSunUp = useMemo(() => {
         return isBodyUp(sunrise, sunset, latitude, longitude);
@@ -16,9 +18,7 @@ const SunTile = () => {
     return (
         <Tile title="Sun">
             <div className="flex flex-col items-center">
-                {weatherLoading && <div>Loading...</div>}
-
-                {!weatherLoading && !weatherData?.error && (
+                {!weatherData.error ? (
                     <>
                         <div className="text-2xl mb-2 font-semibold">
                             Sunrise: {getFormattedTime(sunrise, latitude, longitude)}
@@ -30,13 +30,10 @@ const SunTile = () => {
                             {isSunUp ? "Sun is up" : "Sun is down"}
                         </div>
                     </>
-                )}
-                {!weatherLoading && weatherData?.error && (
+                ) : (
                     <div className="text-red-500 text-sm">{weatherData.error}</div>
                 )}
             </div>
         </Tile>
     );
 };
-
-export default SunTile;

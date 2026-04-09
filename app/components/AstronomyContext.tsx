@@ -10,6 +10,7 @@ export type AstronomyContextType = {
     setLongitude: (lng: string) => void;
     weatherData?: WeatherResponse;
     weatherLoading: boolean;
+    setWeatherData: (data: WeatherResponse | undefined) => void;
 };
 
 const AstronomyContext = createContext<AstronomyContextType | undefined>(undefined);
@@ -46,6 +47,7 @@ export const AstronomyProvider = ({ children }: { children: React.ReactNode }) =
                 setLongitude,
                 weatherData,
                 weatherLoading,
+                setWeatherData,
             }}
         >
             {children}

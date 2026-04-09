@@ -5,16 +5,18 @@ import { getFormattedTime, getLocalTime } from "../utils/timeUtils";
 import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
 
-const WeatherTile = () => {
-    const { latitude, longitude, weatherData, weatherLoading } = useAstronomy();
+export const WeatherTile = () => {
+    const { latitude, longitude, weatherData } = useAstronomy();
 
-    const hourlyData = weatherData?.hourly;
+    if (!weatherData) return null;
 
-    const today = weatherData?.daily[0];
-    const tomorrow = weatherData?.daily[1];
+    const hourlyData = weatherData.hourly;
 
-    const sunsetTime = getLocalTime(today?.sunset, latitude, longitude);
-    const sunriseTime = getLocalTime(tomorrow?.sunrise, latitude, longitude);
+    const today = weatherData.daily[0];
+    const tomorrow = weatherData.daily[1];
+
+    const sunsetTime = getLocalTime(today.sunset, latitude, longitude);
+    const sunriseTime = getLocalTime(tomorrow.sunrise, latitude, longitude);
 
     if (!hourlyData) return null;
 
@@ -26,8 +28,7 @@ const WeatherTile = () => {
     return (
         <Tile title="Weather">
             <div className="flex flex-col items-center w-full">
-                {weatherLoading && <div>Loading...</div>}
-                {!weatherLoading && weatherData && !weatherData.error && (
+                {!weatherData.error ? (
                     <div className="w-full">
                         <div className="grid grid-cols-3 gap-2 text-gray-500 text-sm font-semibold border-b pb-1 mb-2">
                             <span>Time</span>
@@ -46,13 +47,10 @@ const WeatherTile = () => {
                             </div>
                         ))}
                     </div>
-                )}
-                {!weatherLoading && weatherData && weatherData.error && (
+                ) : (
                     <div className="text-red-500 text-sm">{weatherData.error}</div>
                 )}
             </div>
         </Tile>
     );
 };
-
-export default WeatherTile;

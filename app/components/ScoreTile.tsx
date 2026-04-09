@@ -4,7 +4,7 @@ import { getFormattedTime, getMoonIllumination, getNightMoonVisibility } from ".
 import { useAstronomy } from "./AstronomyContext";
 import Tile from "./Tile";
 
-const ScoreTile = () => {
+export const ScoreTile = () => {
     const { latitude, longitude, weatherData, weatherLoading } = useAstronomy();
 
     // const moonIlluminationText = "...";
@@ -49,5 +49,3 @@ const ScoreTile = () => {
         </Tile>
     );
 };
-
-export default ScoreTile;

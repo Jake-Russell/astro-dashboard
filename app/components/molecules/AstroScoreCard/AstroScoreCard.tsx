@@ -1,8 +1,15 @@
 "use client";
 import { FunctionComponent } from "react";
 import { Tile } from "atoms/Tile";
-import { getFormattedTime, getMoonIllumination, getNightMoonVisibility } from "utils/timeUtils";
+import {
+    getFormattedTime,
+    getLocalTime,
+    getMoonIllumination,
+    getNightMoonVisibility,
+} from "utils/timeUtils";
 import { AstroScoreCardProps } from "./types";
+import { isAfter, isBefore } from "date-fns";
+import { getAstroScore } from "utils/weatherUtils";
 
 export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     latitude,
@@ -16,7 +23,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     const today = weatherData.daily[0];
     const tomorrow = weatherData.daily[1];
 
-    const { nightDuration, moonDownDuringNight } = getNightMoonVisibility(
+    const { nightDuration, moonUpDuringNight, moonDownDuringNight } = getNightMoonVisibility(
         today.moonrise,
         today.moonset,
         today.sunset,
@@ -24,6 +31,24 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         latitude,
         longitude,
     );
+
+    const sunsetTime = getLocalTime(today.sunset, latitude, longitude);
+    const sunriseTime = getLocalTime(tomorrow?.sunrise, latitude, longitude);
+
+    const nightHours = weatherData.hourly.filter((hour) => {
+        const hourTime = getLocalTime(hour.dt, latitude, longitude);
+        return isAfter(hourTime, sunsetTime) && isBefore(hourTime, sunriseTime);
+    });
+
+    const score = getAstroScore(
+        nightHours.map((nh) => nh.clouds),
+        moonUpDuringNight,
+        10,
+        nightDuration,
+    );
+
+    // eslint-disable-next-line no-console
+    console.log("Astro Score:", score);
 
     return (
         <Tile title="Score">

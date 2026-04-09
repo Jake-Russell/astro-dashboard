@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
         if (!res.ok) {
             return NextResponse.json(
-                { error: `Nominatim API error: ${res.status}` },
+                { error: `Nominatim API Error: ${res.status}` },
                 { status: res.status },
             );
         }
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const displayName = `${data[0].display_name.split(",")[0]}, ${data[0].display_name.split(",").at(-1)}`;
+        const displayName = `${data[0].display_name.split(",")[0]},${data[0].display_name.split(",").at(-1)}`;
 
         const response: LocationSearchResponse = {
             lat: data[0].lat,
@@ -39,8 +39,8 @@ export async function GET(request: NextRequest) {
         };
 
         return NextResponse.json(response);
-    } catch (err) {
-        console.error(`Error fetching location data for ${location}:`, err);
-        return NextResponse.json({ error: `Network error: ${err}` }, { status: 500 });
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return NextResponse.json({ error: `Network error: ${message}` }, { status: 500 });
     }
 }

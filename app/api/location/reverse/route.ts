@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const lon = searchParams.get("lon");
 
     if (!lat || !lon)
-        return NextResponse.json({ error: "lat and lon parameters are required" }, { status: 400 });
+        return NextResponse.json({ error: "Lat and Lon parameters are required" }, { status: 400 });
 
     const url = `${NOMINATIM_BASE_URL}/reverse?lat=${lat}&lon=${lon}&format=json`;
 
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
         if (!res.ok) {
             return NextResponse.json(
-                { error: `Nominatim API error: ${res.status}` },
+                { error: `Nominatim API Error: ${res.status}` },
                 { status: res.status },
             );
         }
@@ -42,8 +42,8 @@ export async function GET(request: NextRequest) {
         const response: LocationReverseResponse = { name, displayName };
 
         return NextResponse.json(response);
-    } catch (err) {
-        console.error(`Error fetching reverse location data for ${lat}, ${lon}:`, err);
-        return NextResponse.json({ error: `Network error: ${err}` }, { status: 500 });
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return NextResponse.json({ error: `Network error: ${message}` }, { status: 500 });
     }
 }

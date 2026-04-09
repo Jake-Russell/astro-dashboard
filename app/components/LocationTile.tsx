@@ -15,6 +15,7 @@ export const LocationTile = () => {
 
     useEffect(() => {
         if (isLoading !== weatherLoading) setIsLoading(weatherLoading);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [weatherLoading]);
 
     const resetSearch = () => {

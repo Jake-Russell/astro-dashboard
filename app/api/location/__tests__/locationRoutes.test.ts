@@ -156,7 +156,7 @@ describe("Location API routes", () => {
         it("should return 500 when fetch throws", async () => {
             fetchMock.mockRejectedValueOnce(new Error("Network failure"));
 
-            const response = await reverseGET(request as any);
+            const response = await reverseGET(request);
 
             expect(response.status).toBe(500);
             expect(await response.json()).toEqual({

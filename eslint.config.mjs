@@ -38,6 +38,7 @@ export default defineConfig([
     globalIgnores([
         "dist",
         "node_modules",
+        ".next",
         ".storybook/dist",
         "storybook-static",
         "package-lock.json",

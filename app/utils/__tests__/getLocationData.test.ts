@@ -6,6 +6,7 @@ describe("getLocationData", () => {
 
     beforeEach(() => {
         fetchMock.mockReset();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (globalThis as any).fetch = fetchMock;
     });
 

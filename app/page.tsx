@@ -20,7 +20,7 @@ const Page = () => {
                         <SunTile />
                     </div>
                     <WeatherTile />
-                    {/* <ScoreTile /> */}
+                    <ScoreTile />
                 </div>
             </main>
         </AstronomyProvider>

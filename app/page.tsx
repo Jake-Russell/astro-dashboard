@@ -1,5 +1,5 @@
+import { LocationSelector } from "organisms/LocationSelector";
 import { AstronomyProvider } from "./components/AstronomyContext";
-import { LocationTile } from "./components/LocationTile";
 import { MoonPhaseTile } from "./components/MoonPhaseTile";
 import { ScoreTile } from "./components/ScoreTile";
 import { SunTile } from "./components/SunTile";
@@ -14,7 +14,7 @@ const Page = () => {
                 </h1>
 
                 <div className="flex flex-col gap-4">
-                    <LocationTile />
+                    <LocationSelector />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <MoonPhaseTile />
                         <SunTile />

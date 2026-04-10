@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getLatLng, getLocationName } from "../utils/getLocationData";
-import { useAstronomy } from "./AstronomyContext";
 import { Tile } from "atoms/Tile";
+import { getCurrentPosition } from "services/geolocationService";
+import { getLatLng, getLocationName } from "utils/getLocationData";
+import { useAstronomy } from "../../AstronomyContext";
 
-export const LocationTile = () => {
-    const { setLatitude, setLongitude, weatherLoading, setWeatherData } = useAstronomy();
+export const LocationSelector = () => {
+    const { setLatitude, setLongitude, weatherLoading, weatherData, setWeatherData } =
+        useAstronomy();
     const [error, setError] = useState<string>();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -18,6 +20,10 @@ export const LocationTile = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [weatherLoading]);
 
+    useEffect(() => {
+        if (weatherData?.error) setError(weatherData.error);
+    }, [weatherData]);
+
     const resetSearch = () => {
         setIsLoading(true);
         setWeatherData(undefined);
@@ -25,44 +31,31 @@ export const LocationTile = () => {
         setError(undefined);
     };
 
-    const handleError = (message: string) => {
-        setIsLoading(false);
-        setError(message);
-    };
-
-    const handleUseLocation = () => {
+    const handleUseLocation = async () => {
         resetSearch();
-        if (!navigator.geolocation) {
-            handleError(
-                "Geolocation is not supported by your browser. Please use the search function instead.",
-            );
-            return;
-        }
-        navigator.geolocation.getCurrentPosition(
-            async (position) => {
-                const userLatitude = position.coords.latitude.toFixed(5);
-                const userLongitude = position.coords.longitude.toFixed(5);
 
-                setLatitude(userLatitude);
-                setLongitude(userLongitude);
+        try {
+            const { latitude, longitude } = await getCurrentPosition();
 
-                const locationResponse = await getLocationName(userLatitude, userLongitude);
-                if (locationResponse.error) {
-                    setIsLoading(false);
-                    setError(locationResponse.error);
-                    return;
-                }
+            setLatitude(latitude);
+            setLongitude(longitude);
 
-                setLocation(locationResponse.name);
-                setLocationDisplayName(locationResponse.displayName);
-                setLastSearchedLocation(locationResponse.name.trim());
-            },
-            () => {
-                // TODO: Add more specific error handling
+            const locationResponse = await getLocationName(latitude, longitude);
+
+            if (locationResponse.error) {
                 setIsLoading(false);
-                setError("Unable to retrieve your location.");
-            },
-        );
+                setError(locationResponse.error);
+                return;
+            }
+
+            setLocation(locationResponse.name);
+            setLocationDisplayName(locationResponse.displayName);
+            setLastSearchedLocation(locationResponse.name.trim());
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+            setIsLoading(false);
+            setError(err.message || "Unable to retrieve your location.");
+        }
     };
 
     const handleLocationSearch = async () => {
@@ -88,8 +81,10 @@ export const LocationTile = () => {
         <>
             <Tile title="Location">
                 <button
-                    className="w-full px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 mb-4 cursor-pointer"
+                    disabled={isLoading}
                     onClick={handleUseLocation}
+                    data-testid="use-location-button"
+                    className="w-full px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 mb-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-blue-600"
                 >
                     Use My Location
                 </button>
@@ -107,23 +102,25 @@ export const LocationTile = () => {
                         placeholder="Location"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
+                        data-testid="location-input"
                         className="flex-1 rounded-lg bg-gray-50 border border-gray-300 p-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                     <button
                         type="submit"
                         disabled={!location?.trim() || isLoading}
+                        data-testid="search-button"
                         className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-blue-600"
                     >
                         Search
                     </button>
                 </form>
 
-                {locationDisplayName && (
+                {locationDisplayName && !error && (
                     <div className="text-gray-500 text-xs mt-1">
                         Showing results for: {locationDisplayName}
                     </div>
                 )}
-                {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
+                {error && <div className="text-red-600 text-sm mt-1">{error}</div>}
             </Tile>
 
             {isLoading && (

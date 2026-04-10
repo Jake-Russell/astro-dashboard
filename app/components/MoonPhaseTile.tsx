@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { getAdjustedMoonRiseAndSet } from "../utils/moonUtils";
 import { getFormattedTime, getMoonIllumination, getMoonPhase, isBodyUp } from "../utils/timeUtils";
 import { useAstronomy } from "./AstronomyContext";
-import { Tile } from "./Tile/Tile";
+import { Tile } from "atoms/Tile";
 
 export const MoonPhaseTile = () => {
     const { latitude, longitude, weatherData } = useAstronomy();

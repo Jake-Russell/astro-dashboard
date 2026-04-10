@@ -2,7 +2,7 @@
 import React from "react";
 import { getFormattedTime, getMoonIllumination, getNightMoonVisibility } from "../utils/timeUtils";
 import { useAstronomy } from "./AstronomyContext";
-import { Tile } from "./Tile/Tile";
+import { Tile } from "atoms/Tile";
 
 export const ScoreTile = () => {
     const { latitude, longitude, weatherData, weatherLoading } = useAstronomy();

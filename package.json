@@ -11,6 +11,7 @@
         "format": "prettier --write .",
         "test": "vitest run",
         "test:coverage": "vitest run --coverage",
+        "test:coverage-changed": "vitest run --coverage --coverage.changed=origin/main",
         "test:watch": "vitest",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build"
@@ -42,7 +43,7 @@
         "@typescript-eslint/eslint-plugin": "^8.40.0",
         "@typescript-eslint/parser": "^8.40.0",
         "@vitest/browser-playwright": "^4.0.7",
-        "@vitest/coverage-v8": "^4.0.7",
+        "@vitest/coverage-v8": "^4.1.4",
         "eslint": "^9.39.1",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.4",

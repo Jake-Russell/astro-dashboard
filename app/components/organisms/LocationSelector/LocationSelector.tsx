@@ -120,7 +120,7 @@ export const LocationSelector = () => {
                         Showing results for: {locationDisplayName}
                     </div>
                 )}
-                {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
+                {error && <div className="text-red-600 text-sm mt-1">{error}</div>}
             </Tile>
 
             {isLoading && (

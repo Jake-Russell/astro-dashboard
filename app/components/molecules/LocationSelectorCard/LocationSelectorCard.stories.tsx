@@ -5,7 +5,7 @@ import { LocationReverseResponse } from "api/location/types";
 import { WeatherResponse } from "api/weather/route";
 import { getCurrentPosition } from "services/geolocationService";
 import { AstronomyProvider } from "../../AstronomyContext";
-import { LocationSelector } from "./LocationSelector";
+import { LocationSelectorCard } from "./LocationSelectorCard";
 
 const getMswLocationReverseLoader = (status: number = 200) => {
     return http.get("/api/location/reverse", async () => {
@@ -78,7 +78,7 @@ const baseHandlers = [
 ];
 
 const meta = {
-    component: LocationSelector,
+    component: LocationSelectorCard,
     decorators: [
         (Story) => (
             <AstronomyProvider>
@@ -86,7 +86,7 @@ const meta = {
             </AstronomyProvider>
         ),
     ],
-} satisfies Meta<typeof LocationSelector>;
+} satisfies Meta<typeof LocationSelectorCard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

@@ -2,10 +2,10 @@
 import { isAfter, isBefore } from "date-fns";
 import { HourData } from "api/weather/route";
 import { getFormattedTime, getLocalTime } from "utils/timeUtils";
-import { useAstronomy } from "./AstronomyContext";
+import { useAstronomy } from "../../AstronomyContext";
 import { Tile } from "atoms/Tile";
 
-export const WeatherTile = () => {
+export const NightWeatherForecastCard = () => {
     const { latitude, longitude, weatherData } = useAstronomy();
 
     if (!weatherData) return null;

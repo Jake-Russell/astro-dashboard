@@ -1,0 +1,1 @@
+export { AstroScoreCard } from "./AstroScoreCard";

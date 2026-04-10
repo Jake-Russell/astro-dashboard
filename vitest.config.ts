@@ -4,8 +4,6 @@ import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import { playwright } from "@vitest/browser-playwright";
 import { defineConfig, TestProjectConfiguration } from "vitest/config";
 
-import tsconfigPaths from "vite-tsconfig-paths";
-
 const dirname =
     typeof __dirname !== "undefined" ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
@@ -18,7 +16,6 @@ const storybookProject: TestProjectConfiguration = {
         storybookTest({
             configDir: path.join(dirname, ".storybook"),
         }),
-        tsconfigPaths(),
     ],
     test: {
         name: "storybook",

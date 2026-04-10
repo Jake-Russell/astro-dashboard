@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { mocked } from "storybook/test";
 import { delay, http, HttpResponse } from "msw";
-import { LocationSelector } from "./LocationSelector";
-import { AstronomyProvider } from "../../AstronomyContext";
+import { LocationReverseResponse } from "api/location/types";
+import { WeatherResponse } from "api/weather/route";
 import { getCurrentPosition } from "services/geolocationService";
-import { LocationReverseResponse } from "../../../api/location/types";
-import { WeatherResponse } from "../../../api/weather/route";
+import { AstronomyProvider } from "../../AstronomyContext";
+import { LocationSelector } from "./LocationSelector";
 
 const getMswLocationReverseLoader = (status: number = 200) => {
     return http.get("/api/location/reverse", async () => {

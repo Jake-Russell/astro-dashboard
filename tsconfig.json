@@ -24,7 +24,8 @@
             "molecules/*": ["./app/components/molecules/*"],
             "organisms/*": ["./app/components/organisms/*"],
             "services/*": ["./app/services/*"],
-            "utils/*": ["./app/utils/*"]
+            "utils/*": ["./app/utils/*"],
+            "api/*": ["./app/api/*"]
         }
     },
     "include": [

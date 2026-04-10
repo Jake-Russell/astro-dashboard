@@ -1,4 +1,4 @@
-import { WeatherResponse } from "../api/weather/route";
+import { WeatherResponse } from "api/weather/route";
 
 export async function getWeatherData(lat: string, lng: string): Promise<WeatherResponse> {
     const errorResponse: WeatherResponse = {

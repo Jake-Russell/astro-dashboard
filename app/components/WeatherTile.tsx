@@ -1,7 +1,7 @@
 "use client";
 import { isAfter, isBefore } from "date-fns";
-import { HourData } from "../api/weather/route";
-import { getFormattedTime, getLocalTime } from "../utils/timeUtils";
+import { HourData } from "api/weather/route";
+import { getFormattedTime, getLocalTime } from "utils/timeUtils";
 import { useAstronomy } from "./AstronomyContext";
 import { Tile } from "atoms/Tile";
 

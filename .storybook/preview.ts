@@ -1,5 +1,16 @@
 import type { Preview } from "@storybook/nextjs-vite";
+import { initialize as initializeMSW, mswLoader } from "msw-storybook-addon";
 import "../app/globals.css";
+
+initializeMSW({
+    onUnhandledRequest: "bypass",
+    serviceWorker: {
+        // Reduce service worker scope to minimise overhead
+        options: {
+            scope: "/",
+        },
+    },
+});
 
 const preview: Preview = {
     parameters: {
@@ -17,6 +28,7 @@ const preview: Preview = {
             test: "error",
         },
     },
+    loaders: [mswLoader],
 };
 
 export default preview;

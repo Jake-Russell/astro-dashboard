@@ -5,7 +5,7 @@ import { getCurrentPosition } from "services/geolocationService";
 import { getLatLng, getLocationName } from "utils/getLocationData";
 import { useAstronomy } from "../../AstronomyContext";
 
-export const LocationSelector = () => {
+export const LocationSelectorCard = () => {
     const { setLatitude, setLongitude, weatherLoading, weatherData, setWeatherData } =
         useAstronomy();
     const [error, setError] = useState<string>();

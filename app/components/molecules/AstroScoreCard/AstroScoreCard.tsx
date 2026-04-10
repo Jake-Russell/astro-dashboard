@@ -1,10 +1,14 @@
 "use client";
 import React from "react";
-import { getFormattedTime, getMoonIllumination, getNightMoonVisibility } from "../utils/timeUtils";
-import { useAstronomy } from "./AstronomyContext";
+import {
+    getFormattedTime,
+    getMoonIllumination,
+    getNightMoonVisibility,
+} from "../../../utils/timeUtils";
+import { useAstronomy } from "../../AstronomyContext";
 import { Tile } from "atoms/Tile";
 
-export const ScoreTile = () => {
+export const AstroScoreCard = () => {
     const { latitude, longitude, weatherData, weatherLoading } = useAstronomy();
 
     // const moonIlluminationText = "...";

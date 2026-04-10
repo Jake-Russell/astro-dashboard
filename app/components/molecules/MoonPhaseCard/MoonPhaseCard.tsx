@@ -1,11 +1,16 @@
 "use client";
 import { useMemo } from "react";
-import { getAdjustedMoonRiseAndSet } from "../utils/moonUtils";
-import { getFormattedTime, getMoonIllumination, getMoonPhase, isBodyUp } from "../utils/timeUtils";
-import { useAstronomy } from "./AstronomyContext";
+import { getAdjustedMoonRiseAndSet } from "../../../utils/moonUtils";
+import {
+    getFormattedTime,
+    getMoonIllumination,
+    getMoonPhase,
+    isBodyUp,
+} from "../../../utils/timeUtils";
+import { useAstronomy } from "../../AstronomyContext";
 import { Tile } from "atoms/Tile";
 
-export const MoonPhaseTile = () => {
+export const MoonPhaseCard = () => {
     const { latitude, longitude, weatherData } = useAstronomy();
 
     const todayData = weatherData?.daily[0];

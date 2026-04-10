@@ -1,9 +1,9 @@
-import { LocationSelector } from "organisms/LocationSelector";
+import { LocationSelector } from "molecules/LocationSelectorCard";
+import { MoonPhaseCard } from "molecules/MoonPhaseCard";
+import { SunCycleCard } from "molecules/SunCycleCard";
+import { NightWeatherForecastCard } from "molecules/NightWeatherForecastCard";
+import { AstroScoreCard } from "molecules/AstroScoreCard";
 import { AstronomyProvider } from "./components/AstronomyContext";
-import { MoonPhaseTile } from "./components/MoonPhaseTile";
-import { ScoreTile } from "./components/ScoreTile";
-import { SunTile } from "./components/SunTile";
-import { WeatherTile } from "./components/WeatherTile";
 
 const Page = () => {
     return (
@@ -16,11 +16,11 @@ const Page = () => {
                 <div className="flex flex-col gap-4">
                     <LocationSelector />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <MoonPhaseTile />
-                        <SunTile />
+                        <MoonPhaseCard />
+                        <SunCycleCard />
                     </div>
-                    <WeatherTile />
-                    <ScoreTile />
+                    <NightWeatherForecastCard />
+                    <AstroScoreCard />
                 </div>
             </main>
         </AstronomyProvider>

@@ -4,7 +4,7 @@ import { delay, http, HttpResponse } from "msw";
 import { LocationReverseResponse } from "api/location/types";
 import { WeatherResponse } from "api/weather/route";
 import { getCurrentPosition } from "services/geolocationService";
-import { AstronomyProvider } from "../../AstronomyContext";
+import { AstronomyProvider } from "../../contexts/AstronomyContext";
 import { LocationSelectorCard } from "./LocationSelectorCard";
 
 const getMswLocationReverseLoader = (status: number = 200) => {

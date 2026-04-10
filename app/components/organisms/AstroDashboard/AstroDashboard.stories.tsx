@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { AstronomyProvider } from "../../AstronomyContext";
-import { AstroScoreCard } from "./AstroScoreCard";
+import { AstronomyProvider } from "../../contexts/AstronomyContext";
+import { AstroDashboard } from "./AstroDashboard";
 
 const meta = {
-    component: AstroScoreCard,
+    component: AstroDashboard,
     decorators: [
         (Story) => (
             <AstronomyProvider>
@@ -11,7 +11,7 @@ const meta = {
             </AstronomyProvider>
         ),
     ],
-} satisfies Meta<typeof AstroScoreCard>;
+} satisfies Meta<typeof AstroDashboard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

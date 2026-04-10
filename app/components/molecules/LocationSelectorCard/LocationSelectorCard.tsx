@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Tile } from "atoms/Tile";
 import { getCurrentPosition } from "services/geolocationService";
 import { getLatLng, getLocationName } from "utils/getLocationData";
-import { useAstronomy } from "../../AstronomyContext";
+import { useAstronomy } from "../../contexts/AstronomyContext";
 
 export const LocationSelectorCard = () => {
     const { setLatitude, setLongitude, weatherLoading, weatherData, setWeatherData } =

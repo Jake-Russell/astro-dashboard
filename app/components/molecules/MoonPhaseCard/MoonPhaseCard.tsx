@@ -1,39 +1,33 @@
 "use client";
-import { useMemo } from "react";
-import { getAdjustedMoonRiseAndSet } from "../../../utils/moonUtils";
-import {
-    getFormattedTime,
-    getMoonIllumination,
-    getMoonPhase,
-    isBodyUp,
-} from "../../../utils/timeUtils";
-import { useAstronomy } from "../../AstronomyContext";
+import { FunctionComponent, useMemo } from "react";
 import { Tile } from "atoms/Tile";
+import { getAdjustedMoonRiseAndSet } from "utils/moonUtils";
+import { getFormattedTime, getMoonIllumination, getMoonPhase, isBodyUp } from "utils/timeUtils";
+import { MoonPhaseCardProps } from "./types";
 
-export const MoonPhaseCard = () => {
-    const { latitude, longitude, weatherData } = useAstronomy();
-
-    const todayData = weatherData?.daily[0];
-    const tomorrowData = weatherData?.daily[1];
-
+export const MoonPhaseCard: FunctionComponent<MoonPhaseCardProps> = ({
+    latitude,
+    longitude,
+    moonriseToday,
+    moonsetToday,
+    moonsetTomorrow,
+    moonPhase,
+    error,
+}) => {
     const { moonrise, moonset } = getAdjustedMoonRiseAndSet(
-        todayData?.moonrise,
-        todayData?.moonset,
-        tomorrowData?.moonset,
+        moonriseToday,
+        moonsetToday,
+        moonsetTomorrow,
     );
-
-    const moonPhase = todayData?.moon_phase;
 
     const isMoonUp = useMemo(() => {
         return isBodyUp(moonrise, moonset, latitude, longitude);
     }, [moonrise, moonset, latitude, longitude]);
 
-    if (!weatherData) return null;
-
     return (
         <Tile title="Moon Phase">
             <div className="flex flex-col items-center">
-                {!weatherData.error ? (
+                {!error ? (
                     <>
                         <div className="text-2xl mb-2 font-semibold">{getMoonPhase(moonPhase)}</div>
                         <div className="w-full flex flex-col items-center mb-2">
@@ -60,7 +54,7 @@ export const MoonPhaseCard = () => {
                         </div>
                     </>
                 ) : (
-                    <div className="text-red-500 text-sm">{weatherData.error}</div>
+                    <div className="text-red-500 text-sm">{error}</div>
                 )}
             </div>
         </Tile>

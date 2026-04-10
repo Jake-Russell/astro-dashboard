@@ -1,26 +1,25 @@
 "use client";
-import React from "react";
-import {
-    getFormattedTime,
-    getMoonIllumination,
-    getNightMoonVisibility,
-} from "../../../utils/timeUtils";
-import { useAstronomy } from "../../AstronomyContext";
+import { FunctionComponent } from "react";
 import { Tile } from "atoms/Tile";
+import { getFormattedTime, getMoonIllumination, getNightMoonVisibility } from "utils/timeUtils";
+import { AstroScoreCardProps } from "./types";
 
-export const AstroScoreCard = () => {
-    const { latitude, longitude, weatherData, weatherLoading } = useAstronomy();
-
+export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
+    latitude,
+    longitude,
+    weatherData,
+    error,
+}) => {
     // const moonIlluminationText = "...";
     // TODO... Add scoring logic here
 
-    const today = weatherData?.daily[0];
-    const tomorrow = weatherData?.daily[1];
+    const today = weatherData.daily[0];
+    const tomorrow = weatherData.daily[1];
 
     const { nightDuration, moonDownDuringNight } = getNightMoonVisibility(
-        today?.moonrise,
-        today?.moonset,
-        today?.sunset,
+        today.moonrise,
+        today.moonset,
+        today.sunset,
         tomorrow?.sunrise,
         latitude,
         longitude,
@@ -29,8 +28,7 @@ export const AstroScoreCard = () => {
     return (
         <Tile title="Score">
             <div className="flex flex-col items-center">
-                {weatherLoading && <div>Loading...</div>}
-                {!weatherLoading && !weatherData?.error && weatherData && (
+                {!error ? (
                     <>
                         <div className="text-2xl mb-2 font-semibold">Moon Score</div>
                         <div className="text-gray-500 text-sm mb-1">
@@ -45,8 +43,7 @@ export const AstroScoreCard = () => {
                             illuminated whilst it is visible.
                         </div>
                     </>
-                )}
-                {!weatherLoading && weatherData?.error && (
+                ) : (
                     <div className="text-red-500 text-sm">{weatherData.error}</div>
                 )}
             </div>

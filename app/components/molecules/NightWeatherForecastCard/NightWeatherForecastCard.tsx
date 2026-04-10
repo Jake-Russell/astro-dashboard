@@ -1,26 +1,23 @@
 "use client";
+import { FunctionComponent } from "react";
 import { isAfter, isBefore } from "date-fns";
 import { HourData } from "api/weather/route";
-import { getFormattedTime, getLocalTime } from "utils/timeUtils";
-import { useAstronomy } from "../../AstronomyContext";
 import { Tile } from "atoms/Tile";
+import { getFormattedTime, getLocalTime } from "utils/timeUtils";
+import { NightWeatherForecastCardProps } from "./types";
 
-export const NightWeatherForecastCard = () => {
-    const { latitude, longitude, weatherData } = useAstronomy();
+export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCardProps> = ({
+    latitude,
+    longitude,
+    hourlyForecast,
+    sunsetToday,
+    sunriseTomorrow,
+    error,
+}) => {
+    const sunsetTime = getLocalTime(sunsetToday, latitude, longitude);
+    const sunriseTime = getLocalTime(sunriseTomorrow, latitude, longitude);
 
-    if (!weatherData) return null;
-
-    const hourlyData = weatherData.hourly;
-
-    const today = weatherData.daily[0];
-    const tomorrow = weatherData.daily[1];
-
-    const sunsetTime = getLocalTime(today.sunset, latitude, longitude);
-    const sunriseTime = getLocalTime(tomorrow.sunrise, latitude, longitude);
-
-    if (!hourlyData) return null;
-
-    const nightHours: HourData[] = hourlyData.filter((hour) => {
+    const nightHours: HourData[] = hourlyForecast.filter((hour) => {
         const hourTime = getLocalTime(hour.dt, latitude, longitude);
         return isAfter(hourTime, sunsetTime) && isBefore(hourTime, sunriseTime);
     });
@@ -28,7 +25,7 @@ export const NightWeatherForecastCard = () => {
     return (
         <Tile title="Weather">
             <div className="flex flex-col items-center w-full">
-                {!weatherData.error ? (
+                {!error ? (
                     <div className="w-full">
                         <div className="grid grid-cols-3 gap-2 text-gray-500 text-sm font-semibold border-b pb-1 mb-2">
                             <span>Time</span>
@@ -48,7 +45,7 @@ export const NightWeatherForecastCard = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-red-500 text-sm">{weatherData.error}</div>
+                    <div className="text-red-500 text-sm">{error}</div>
                 )}
             </div>
         </Tile>

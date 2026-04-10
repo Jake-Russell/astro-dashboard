@@ -34,4 +34,4 @@ jobs:
                   exitOnceUploaded: true
                   onlyChanged: true
                   workingDir: app
-                  storybookBaseDir: app
+                  extraArgs: "--storybook-base-dir=app"

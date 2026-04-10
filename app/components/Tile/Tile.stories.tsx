@@ -11,7 +11,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        title: "Tile Title TEST",
+        title: "Tile Title",
         children: "This is the content of the tile.",
     },
 };

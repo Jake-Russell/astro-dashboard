@@ -35,12 +35,5 @@ describe("moonUtils", () => {
             expect(moonrise).toBe(moonriseEpoch);
             expect(moonset).toBe(nextDayMoonsetEpoch);
         });
-
-        it("should return default values, given any parameter is missing", () => {
-            const { moonrise, moonset } = getAdjustedMoonRiseAndSet();
-
-            expect(moonrise).toBe(0);
-            expect(moonset).toBe(0);
-        });
     });
 });

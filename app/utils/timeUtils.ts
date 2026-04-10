@@ -2,17 +2,13 @@ import { addDays, differenceInMinutes, format, fromUnixTime, isAfter, isBefore }
 import { toZonedTime } from "date-fns-tz";
 import tzLookup from "tz-lookup";
 
-export const getLocalTime = (epoch?: number, lat?: string, lng?: string): Date => {
-    if (!epoch || !lat || !lng) return new Date(0);
-
-    const tz = tzLookup(parseFloat(lat), parseFloat(lng));
+export const getLocalTime = (epoch: number, lat: number, lng: number): Date => {
+    const tz = tzLookup(lat, lng);
     const utcTime = fromUnixTime(epoch);
     return toZonedTime(utcTime, tz);
 };
 
-export const getFormattedTime = (epoch?: number, lat?: string, lng?: string): string => {
-    if (!epoch || !lat || !lng) return "";
-
+export const getFormattedTime = (epoch: number, lat: number, lng: number): string => {
     const localTime = getLocalTime(epoch, lat, lng);
     return format(localTime, "HH:mm");
 };
@@ -39,15 +35,15 @@ export const getMoonIllumination = (value?: number): number => {
 };
 
 export const isBodyUp = (
-    riseEpoch?: number,
+    riseEpoch: number,
     /**
      * The epoch time of the body's set.
      * Make sure this is the adjusted set time retrieved from getAdjustedBodyRiseAndSet
      * I.e., if the body sets before it rises, use tomorrow's set time.
      */
-    setEpoch?: number,
-    lat?: string,
-    lng?: string,
+    setEpoch: number,
+    lat: number,
+    lng: number,
 ): boolean => {
     if (!riseEpoch || !setEpoch || !lat || !lng) return false;
 
@@ -57,10 +53,6 @@ export const isBodyUp = (
     const set = getLocalTime(setEpoch, lat, lng);
 
     if (isBefore(set, rise)) {
-        /* eslint-disable-next-line no-console */
-        console.warn(
-            "Unexpected: body set time is before rise time. Make sure to use adjusted set time.",
-        );
         return false;
     }
 
@@ -68,16 +60,13 @@ export const isBodyUp = (
 };
 
 export const getNightMoonVisibility = (
-    moonriseEpoch?: number,
-    moonsetEpoch?: number,
-    sunsetEpoch?: number,
-    sunriseEpoch?: number,
-    lat?: string,
-    lng?: string,
+    moonriseEpoch: number,
+    moonsetEpoch: number,
+    sunsetEpoch: number,
+    sunriseEpoch: number,
+    lat: number,
+    lng: number,
 ) => {
-    if (!moonriseEpoch || !moonsetEpoch || !sunsetEpoch || !sunriseEpoch || !lat || !lng)
-        return { nightDuration: 0, moonUpDuringNight: 0, moonDownDuringNight: 0 };
-
     const moonrise = getLocalTime(moonriseEpoch, lat, lng);
     const moonset = getLocalTime(moonsetEpoch, lat, lng);
     // Adjust if moonset is before moonrise (i.e., after midnight)

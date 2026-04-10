@@ -1,8 +1,8 @@
 "use client";
+import { useMemo } from "react";
 import { getFormattedTime, isBodyUp } from "../utils/timeUtils";
 import { useAstronomy } from "./AstronomyContext";
-import Tile from "./Tile";
-import { useMemo } from "react";
+import { Tile } from "./Tile/Tile";
 
 export const SunTile = () => {
     const { latitude, longitude, weatherData } = useAstronomy();

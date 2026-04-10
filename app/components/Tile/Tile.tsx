@@ -1,4 +1,5 @@
 import { FunctionComponent } from "react";
+import cn from "classnames";
 
 type TileProps = {
     title?: string;
@@ -6,12 +7,13 @@ type TileProps = {
     className?: string;
 };
 
-const Tile: FunctionComponent<TileProps> = ({ title, children, className = "" }) => {
+export const Tile: FunctionComponent<TileProps> = ({ title, children, className }) => {
     return (
         <div
-            className={`bg-white border border-gray-200 rounded-xl
-        shadow-sm hover:shadow-md transition-shadow duration-300
-        p-6 ${className}`}
+            className={cn(
+                "bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-6",
+                className,
+            )}
         >
             {title && (
                 <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-3">
@@ -22,5 +24,3 @@ const Tile: FunctionComponent<TileProps> = ({ title, children, className = "" })
         </div>
     );
 };
-
-export default Tile;

@@ -1,0 +1,33 @@
+name: "Install dependencies"
+description: "Install npm packages"
+
+inputs:
+    NODE_VERSION:
+        description: "Node version to use"
+        required: true
+
+    NPM_REGISTRY_URL:
+        description: "NPM registry URL"
+        default: "https://npm.pkg.github.com/"
+
+    NODE_AUTH_TOKEN:
+        description: "Authorisation token for the NPM registry"
+        required: true
+
+runs:
+    using: "composite"
+
+    steps:
+        - name: Setup Node
+          uses: actions/setup-node@v6
+          with:
+              node-version: ${{ inputs.NODE_VERSION }}
+              registry-url: ${{ inputs.NPM_REGISTRY_URL }}
+              cache: npm
+              cache-dependency-path: "**/package-lock.json"
+
+        - name: Install Packages
+          shell: bash
+          run: npm ci --audit false
+          env:
+              NODE_AUTH_TOKEN: ${{ inputs.NODE_AUTH_TOKEN }}

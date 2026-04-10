@@ -20,7 +20,7 @@
         ],
         "types": ["vitest/globals", "node"],
         "paths": {
-            "@/*": ["./*"]
+            "atoms/*": ["./app/components/atoms/*"]
         }
     },
     "include": [

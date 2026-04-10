@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { getLatLng, getLocationName } from "../utils/getLocationData";
 import { useAstronomy } from "./AstronomyContext";
-import { Tile } from "./Tile/Tile";
+import { Tile } from "atoms/Tile";
 
 export const LocationTile = () => {
     const { setLatitude, setLongitude, weatherLoading, setWeatherData } = useAstronomy();

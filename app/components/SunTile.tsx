@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import { getFormattedTime, isBodyUp } from "../utils/timeUtils";
 import { useAstronomy } from "./AstronomyContext";
-import { Tile } from "./Tile/Tile";
+import { Tile } from "atoms/Tile";
 
 export const SunTile = () => {
     const { latitude, longitude, weatherData } = useAstronomy();

@@ -19,7 +19,7 @@ jobs:
             - uses: actions/checkout@v6
             - uses: "./.github/actions/npm-install"
               with:
-                  NODE_VERSION: "24"
+                  NODE_VERSION: "24.14.1"
                   NODE_AUTH_TOKEN: ${{ secrets.GH_NPM_AUTH_TOKEN }}
             - run: npm run lint
 
@@ -30,7 +30,7 @@ jobs:
             - uses: actions/checkout@v6
             - uses: "./.github/actions/npm-install"
               with:
-                  NODE_VERSION: "24"
+                  NODE_VERSION: "24.14.1"
                   NODE_AUTH_TOKEN: ${{ secrets.GH_NPM_AUTH_TOKEN }}
             - name: Install Playwright browsers
               run: npx playwright install --with-deps chromium
@@ -44,7 +44,7 @@ jobs:
             - uses: actions/checkout@v6
             - uses: "./.github/actions/npm-install"
               with:
-                  NODE_VERSION: "24"
+                  NODE_VERSION: "24.14.1"
                   NODE_AUTH_TOKEN: ${{ secrets.GH_NPM_AUTH_TOKEN }}
             - run: npm audit
 
@@ -55,7 +55,7 @@ jobs:
             - uses: actions/checkout@v6
             - uses: "./.github/actions/npm-install"
               with:
-                  NODE_VERSION: "24"
+                  NODE_VERSION: "24.14.1"
                   NODE_AUTH_TOKEN: ${{ secrets.GH_NPM_AUTH_TOKEN }}
             - run: npm run build-storybook
 
@@ -66,6 +66,6 @@ jobs:
             - uses: actions/checkout@v6
             - uses: "./.github/actions/npm-install"
               with:
-                  NODE_VERSION: "24"
+                  NODE_VERSION: "24.14.1"
                   NODE_AUTH_TOKEN: ${{ secrets.GH_NPM_AUTH_TOKEN }}
             - run: npm run build

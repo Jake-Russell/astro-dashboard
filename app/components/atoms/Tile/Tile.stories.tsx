@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { Tile } from "atoms/Tile";
+import { Tile } from "./Tile";
 
 const meta = {
     component: Tile,

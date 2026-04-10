@@ -1,6 +1,10 @@
 import type { Preview } from "@storybook/nextjs-vite";
+import { sb } from "storybook/test";
 import { initialize as initializeMSW, mswLoader } from "msw-storybook-addon";
+
 import "../app/globals.css";
+
+sb.mock(import("../app/services/geolocationService.ts"), { spy: true });
 
 initializeMSW({
     onUnhandledRequest: "bypass",

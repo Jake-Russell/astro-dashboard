@@ -1,24 +1,24 @@
 "use client";
-import { useMemo } from "react";
-import { getFormattedTime, isBodyUp } from "../../../utils/timeUtils";
-import { useAstronomy } from "../../AstronomyContext";
+import { FunctionComponent, useMemo } from "react";
 import { Tile } from "atoms/Tile";
+import { getFormattedTime, isBodyUp } from "utils/timeUtils";
+import { SunCycleCardProps } from "./types";
 
-export const SunCycleCard = () => {
-    const { latitude, longitude, weatherData } = useAstronomy();
-
-    const { sunrise, sunset } = weatherData?.daily[0] || {};
-
+export const SunCycleCard: FunctionComponent<SunCycleCardProps> = ({
+    latitude,
+    longitude,
+    sunrise,
+    sunset,
+    error,
+}) => {
     const isSunUp = useMemo(() => {
         return isBodyUp(sunrise, sunset, latitude, longitude);
     }, [sunrise, sunset, latitude, longitude]);
 
-    if (!weatherData) return null;
-
     return (
         <Tile title="Sun">
             <div className="flex flex-col items-center">
-                {!weatherData.error ? (
+                {!error ? (
                     <>
                         <div className="text-2xl mb-2 font-semibold">
                             Sunrise: {getFormattedTime(sunrise, latitude, longitude)}
@@ -31,7 +31,7 @@ export const SunCycleCard = () => {
                         </div>
                     </>
                 ) : (
-                    <div className="text-red-500 text-sm">{weatherData.error}</div>
+                    <div className="text-red-500 text-sm">{error}</div>
                 )}
             </div>
         </Tile>

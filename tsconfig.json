@@ -25,7 +25,8 @@
             "organisms/*": ["./app/components/organisms/*"],
             "services/*": ["./app/services/*"],
             "utils/*": ["./app/utils/*"],
-            "api/*": ["./app/api/*"]
+            "api/*": ["./app/api/*"],
+            "contexts/*": ["./app/components/contexts/*"]
         }
     },
     "include": [

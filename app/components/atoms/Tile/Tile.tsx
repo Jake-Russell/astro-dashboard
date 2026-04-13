@@ -1,24 +1,19 @@
-import { FunctionComponent } from "react";
-import cn from "classnames";
+import { FunctionComponent, PropsWithChildren } from "react";
+import { TileProps } from "./types";
 
-type TileProps = {
-    title?: string;
-    children: React.ReactNode;
-    className?: string;
-};
+export const Tile: FunctionComponent<PropsWithChildren<TileProps>> = ({
+    title,
+    heading = "h3",
+    children,
+}) => {
+    const HeadingTag = heading;
 
-export const Tile: FunctionComponent<TileProps> = ({ title, children, className }) => {
     return (
-        <div
-            className={cn(
-                "bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-6",
-                className,
-            )}
-        >
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 p-6">
             {title && (
-                <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-3">
+                <HeadingTag className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-3">
                     {title}
-                </h3>
+                </HeadingTag>
             )}
             <div className="text-gray-800">{children}</div>
         </div>

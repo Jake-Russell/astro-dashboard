@@ -36,7 +36,8 @@ const unitTestsProject: TestProjectConfiguration = {
     extends: true,
     test: {
         name: "unit",
-        include: ["src/**/*.unit.{test,spec}.{ts,tsx,js,jsx}"],
+        include: ["**/*.unit.{test,spec}.{ts,tsx,js,jsx}"],
+        globals: true,
         expect: {
             requireAssertions: true,
         },

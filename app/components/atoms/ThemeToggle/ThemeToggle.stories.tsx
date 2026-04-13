@@ -17,13 +17,13 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Light: Story = {
+export const LightMode: Story = {
     beforeEach: () => {
         localStorage.setItem("theme", "light");
     },
 };
 
-export const Dark: Story = {
+export const DarkMode: Story = {
     beforeEach: () => {
         localStorage.setItem("theme", "dark");
     },

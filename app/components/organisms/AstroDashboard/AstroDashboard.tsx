@@ -90,7 +90,7 @@ export const AstroDashboard = () => {
 
     return (
         <main className="max-w-6xl mx-auto p-6">
-            <h1 className="text-3xl font-bold text-yellow-600 mb-4 text-center">Astro Dashboard</h1>
+            <h1 className="text-3xl font-bold text-yellow-700 mb-4 text-center">Astro Dashboard</h1>
 
             <div className="flex flex-col gap-4">
                 <LocationSelector

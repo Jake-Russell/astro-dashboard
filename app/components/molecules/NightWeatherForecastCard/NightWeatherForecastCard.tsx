@@ -33,7 +33,12 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
                             <span className="text-right">Cloud %</span>
                         </div>
 
-                        <div className="space-y-2 max-h-96 overflow-y-auto">
+                        <div
+                            className="space-y-2 max-h-96 overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-(--accent-primary) rounded-lg"
+                            tabIndex={0}
+                            role="region"
+                            aria-label="Nightly weather forecast"
+                        >
                             {nightHours.map((hour) => (
                                 <div
                                     key={hour.dt}

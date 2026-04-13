@@ -76,7 +76,6 @@ export const Loading: Story = {
         ...Default.args,
         isWeatherDataLoading: true,
     },
-    play: Success.play,
 };
 
 export const WithGeoLocationError: Story = {

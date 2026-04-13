@@ -18,13 +18,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const LightMode: Story = {
-    beforeEach: () => {
-        localStorage.setItem("theme", "light");
-    },
+    beforeEach: () => localStorage.setItem("theme", "light"),
 };
 
 export const DarkMode: Story = {
-    beforeEach: () => {
-        localStorage.setItem("theme", "dark");
-    },
+    beforeEach: () => localStorage.setItem("theme", "dark"),
 };

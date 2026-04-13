@@ -78,6 +78,11 @@ export const Loading: Story = {
     },
 };
 
+export const DarkMode: Story = {
+    ...Default,
+    beforeEach: () => localStorage.setItem("theme", "dark"),
+};
+
 export const WithGeoLocationError: Story = {
     ...Default,
     beforeEach() {

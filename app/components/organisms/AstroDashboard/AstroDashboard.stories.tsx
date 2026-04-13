@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { AstronomyProvider } from "../../contexts/AstronomyContext";
+import { AstronomyProvider } from "contexts/AstronomyContext";
 import { AstroDashboard } from "./AstroDashboard";
 
 const meta = {

@@ -1,6 +1,7 @@
 import type { Preview } from "@storybook/nextjs-vite";
 import { sb } from "storybook/test";
 import { initialize as initializeMSW, mswLoader } from "msw-storybook-addon";
+import { ThemeProvider } from "../app/components/contexts/ThemeContext.tsx";
 
 import "../app/globals.css";
 
@@ -32,6 +33,14 @@ const preview: Preview = {
             test: "error",
         },
     },
+    decorators: [
+        (Story) => (
+            <ThemeProvider>
+                <Story />
+            </ThemeProvider>
+        ),
+    ],
+    beforeEach: () => localStorage.setItem("theme", "light"),
     loaders: [mswLoader],
 };
 

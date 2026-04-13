@@ -115,6 +115,7 @@ export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> 
                         <button
                             type="submit"
                             disabled={!location?.trim() || isLoading}
+                            data-testid="search-button"
                             className="px-5 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             🔍

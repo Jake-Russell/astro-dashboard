@@ -1,4 +1,8 @@
 "use client";
+import { useMemo } from "react";
+import { WeatherResponse } from "api/weather/route";
+import { ThemeToggle } from "atoms/ThemeToggle";
+import { useAstronomy } from "contexts/AstronomyContext";
 import { AstroScoreCard } from "molecules/AstroScoreCard";
 import { LocationSelector } from "molecules/LocationSelectorCard";
 import { MoonPhaseCard, MoonPhaseCardProps } from "molecules/MoonPhaseCard";
@@ -7,9 +11,6 @@ import {
     NightWeatherForecastCardProps,
 } from "molecules/NightWeatherForecastCard";
 import { SunCycleCard, SunCycleCardProps } from "molecules/SunCycleCard";
-import { useAstronomy } from "contexts/AstronomyContext";
-import { WeatherResponse } from "api/weather/route";
-import { useMemo } from "react";
 import { BaseCardProps } from "molecules/types";
 
 const getBaseProps = (latitude: string, longitude: string): BaseCardProps => {
@@ -100,22 +101,21 @@ export const AstroDashboard = () => {
 
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header with title and toggle */}
-                    <div className="flex items-start justify-between mb-8">
-                        <div className="text-center flex-1 space-y-4">
-                            {/* Title with gradient */}
+                    <div className="relative mb-8">
+                        <div className="text-center space-y-4">
                             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">
                                 <span className="bg-linear-to-r from-(--accent-primary) via-(--accent-secondary) to-(--accent-tertiary) bg-clip-text text-transparent">
                                     Astro Dashboard
                                 </span>
                             </h1>
-                            {/* Subtitle */}
+
                             <p className="text-base sm:text-lg text-(--text-secondary) max-w-2xl mx-auto">
                                 Explore celestial wonders and weather patterns from your location
                             </p>
                         </div>
-                        <div className="ml-4 shrink-0">
-                            <p>Theme toggle</p>
-                            {/* <ThemeToggle /> */}
+
+                        <div className="absolute top-0 right-0">
+                            <ThemeToggle />
                         </div>
                     </div>
                 </div>

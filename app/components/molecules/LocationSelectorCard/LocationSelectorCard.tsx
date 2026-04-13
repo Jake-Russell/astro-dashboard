@@ -84,7 +84,7 @@ export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> 
 
     return (
         <>
-            <Tile title="Location">
+            <Tile title="Location" heading="h2">
                 <button
                     disabled={isLoading}
                     onClick={handleUseLocation}

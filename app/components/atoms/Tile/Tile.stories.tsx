@@ -15,3 +15,8 @@ export const Default: Story = {
         children: "This is the content of the tile.",
     },
 };
+
+export const DarkMode: Story = {
+    ...Default,
+    beforeEach: () => localStorage.setItem("theme", "dark"),
+};

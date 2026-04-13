@@ -1,8 +1,35 @@
 @import "tailwindcss";
 
 :root {
-    --background: #ffffff;
-    --foreground: #171717;
+    /* Light mode - clean bright */
+    --background: #f8f9fb;
+    --foreground: #0f1419;
+    --card-bg: #ffffff;
+    --card-border: rgba(0, 0, 0, 0.06);
+    --accent-primary: #4f46e5;
+    --accent-secondary: #7c3aed;
+    --accent-tertiary: #be185d;
+    --text-secondary: #64748b;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+html.dark {
+    /* Dark mode - deep space theme */
+    --background: #0f0f23;
+    --foreground: #f0f4f8;
+    --card-bg: #1a1a3e;
+    --card-border: rgba(99, 102, 241, 0.15);
+    --accent-primary: #818cf8;
+    --accent-secondary: #a78bfa;
+    --accent-tertiary: #f472b6;
+    --text-secondary: #cbd5e1;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
 }
 
 @theme inline {
@@ -12,15 +39,33 @@
     --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #0a0a0a;
-        --foreground: #ededed;
-    }
+html {
+    scroll-behavior: smooth;
 }
 
 body {
     background: var(--background);
     color: var(--foreground);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:
+        var(--font-geist-sans),
+        system-ui,
+        -apple-system,
+        sans-serif;
+    line-height: 1.6;
+}
+
+/* Typography enhancements */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    letter-spacing: -0.02em;
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
 }

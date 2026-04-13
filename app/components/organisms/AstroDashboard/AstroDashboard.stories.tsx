@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { AstronomyProvider } from "../../contexts/AstronomyContext";
+import { AstronomyProvider } from "contexts/AstronomyContext";
 import { AstroDashboard } from "./AstroDashboard";
 
 const meta = {
@@ -18,4 +18,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     // TODO
+};
+
+export const DarkMode: Story = {
+    ...Default,
+    beforeEach: () => localStorage.setItem("theme", "dark"),
 };

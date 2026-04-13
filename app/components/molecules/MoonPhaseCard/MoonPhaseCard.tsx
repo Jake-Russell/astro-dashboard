@@ -26,35 +26,61 @@ export const MoonPhaseCard: FunctionComponent<MoonPhaseCardProps> = ({
 
     return (
         <Tile title="Moon Phase">
-            <div className="flex flex-col items-center">
+            <div className="w-full">
                 {!error ? (
-                    <>
-                        <div className="text-2xl mb-2 font-semibold">{getMoonPhase(moonPhase)}</div>
-                        <div className="w-full flex flex-col items-center mb-2">
-                            <div className="w-32 h-3 bg-gray-200 rounded-full overflow-hidden">
-                                <div
-                                    className="h-full bg-blue-500"
-                                    style={{
-                                        width: `${getMoonIllumination(moonPhase)}%`,
-                                    }}
-                                ></div>
+                    <div className="space-y-6">
+                        <div className="text-center space-y-3">
+                            <div className="text-4xl font-bold bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) bg-clip-text text-transparent">
+                                {getMoonPhase(moonPhase)}
                             </div>
-                            <div className="text-gray-500 text-xs mt-1">
-                                Illumination: {getMoonIllumination(moonPhase)}%
+
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between text-xs font-semibold text-(--text-secondary) uppercase tracking-widest">
+                                    <span>Illumination</span>
+                                    <span>{getMoonIllumination(moonPhase)}%</span>
+                                </div>
+                                <div className="w-full h-2 bg-(--card-border) rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-linear-to-r from-(--accent-primary) to-(--accent-secondary)"
+                                        style={{
+                                            width: `${getMoonIllumination(moonPhase)}%`,
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </div>
-                        <div className="text-gray-500 text-sm mb-1">
-                            Moonrise: {getFormattedTime(moonrise, latitude, longitude)}
+
+                        <div className="space-y-2 pt-4 border-t border-(--card-border)">
+                            <div className="flex items-center justify-between p-3 rounded-lg">
+                                <span className="text-sm text-(--text-secondary) font-medium">
+                                    🌙 Moonrise
+                                </span>
+                                <span className="text-sm font-semibold text-foreground">
+                                    {getFormattedTime(moonrise, latitude, longitude)}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between p-3 rounded-lg">
+                                <span className="text-sm text-(--text-secondary) font-medium">
+                                    🌕 Moonset
+                                </span>
+                                <span className="text-sm font-semibold text-foreground">
+                                    {getFormattedTime(moonset, latitude, longitude)}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between p-3 rounded-lg">
+                                <span className="text-sm text-(--text-secondary) font-medium">
+                                    Status
+                                </span>
+                                <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-(--accent-secondary)/10 text-(--accent-secondary)">
+                                    {`Moon is ${isMoonUp ? "up" : "down"}`}
+                                </span>
+                            </div>
                         </div>
-                        <div className="text-gray-500 text-sm mb-1">
-                            Moonset: {getFormattedTime(moonset, latitude, longitude)}
-                        </div>
-                        <div className="text-gray-500 text-sm mb-1">
-                            {isMoonUp ? "Moon is up" : "Moon is down"}
-                        </div>
-                    </>
+                    </div>
                 ) : (
-                    <div className="text-red-500 text-sm">{error}</div>
+                    <div className="p-3 rounded-lg bg-(--accent-tertiary)/10 border border-(--accent-tertiary)/20">
+                        <p className="text-sm text-(--accent-tertiary) font-medium">⚠️ {error}</p>
+                    </div>
                 )}
             </div>
         </Tile>

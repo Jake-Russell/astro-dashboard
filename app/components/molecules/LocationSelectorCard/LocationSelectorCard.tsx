@@ -85,53 +85,69 @@ export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> 
     return (
         <>
             <Tile title="Location" heading="h2">
-                <button
-                    disabled={isLoading}
-                    onClick={handleUseLocation}
-                    data-testid="use-location-button"
-                    className="w-full px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 mb-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-blue-600"
-                >
-                    Use My Location
-                </button>
-
-                <p>Or alternatively, search for a location:</p>
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleLocationSearch();
-                    }}
-                    className="flex gap-2 mt-2 mb-4"
-                >
-                    <input
-                        type="text"
-                        placeholder="Location"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        data-testid="location-input"
-                        className="flex-1 rounded-lg bg-gray-50 border border-gray-300 p-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
+                <div className="space-y-4">
                     <button
-                        type="submit"
-                        disabled={!location?.trim() || isLoading}
-                        data-testid="search-button"
-                        className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-blue-600"
+                        onClick={handleUseLocation}
+                        data-testid="use-location-button"
+                        className="w-full px-4 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Search
+                        📍 Use My Location
                     </button>
-                </form>
 
-                {locationDisplayName && !error && (
-                    <div className="text-gray-500 text-xs mt-1">
-                        Showing results for: {locationDisplayName}
+                    <div className="text-xs font-semibold text-(--text-secondary) uppercase tracking-widest mb-3">
+                        Or search by location
                     </div>
-                )}
-                {error && <div className="text-red-600 text-sm mt-1">{error}</div>}
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleLocationSearch();
+                        }}
+                        className="flex gap-3"
+                    >
+                        <input
+                            type="text"
+                            placeholder="Search location..."
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            data-testid="location-input"
+                            className="flex-1 px-4 py-3 rounded-xl bg-background border border-(--card-border) text-foreground placeholder:(--text-secondary) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent transition-all duration-300"
+                        />
+                        <button
+                            type="submit"
+                            disabled={!location?.trim() || isLoading}
+                            className="px-5 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            🔍
+                        </button>
+                    </form>
+
+                    {locationDisplayName && !error && (
+                        <div className="mt-4 p-3 rounded-lg bg-(--accent-primary)/10 border border-(--accent-primary)/20">
+                            <p className="text-xs font-semibold text-(--accent-primary) uppercase tracking-widest mb-1">
+                                Showing results for:
+                            </p>
+                            <p className="text-sm font-medium text-foreground">
+                                {locationDisplayName}
+                            </p>
+                        </div>
+                    )}
+                    {error && (
+                        <div className="mt-4 p-3 rounded-lg bg-(--accent-tertiary)/10 border border-(--accent-tertiary)/20">
+                            <p className="text-sm text-(--accent-tertiary) font-medium">
+                                ⚠️ {error}
+                            </p>
+                        </div>
+                    )}
+                </div>
             </Tile>
 
             {isLoading && (
-                <div className="flex flex-col items-center justify-center gap-3 text-gray-600 mt-8">
-                    <div className="h-16 w-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-sm font-medium">Loading...</span>
+                <div className="flex flex-col items-center justify-center gap-3 mt-8 py-8">
+                    <div className="relative w-12 h-12">
+                        <div className="absolute inset-0 rounded-full border-2 border-(--accent-primary)/20" />
+                        <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-(--accent-primary) border-r-(--accent-secondary) animate-spin" />
+                    </div>
+                    <span className="text-sm font-medium text-(--text-secondary)">Loading...</span>
                 </div>
             )}
         </>

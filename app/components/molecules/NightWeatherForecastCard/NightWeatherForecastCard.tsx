@@ -24,28 +24,40 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
 
     return (
         <Tile title="Weather">
-            <div className="flex flex-col items-center w-full">
+            <div className="w-full">
                 {!error ? (
-                    <div className="w-full">
-                        <div className="grid grid-cols-3 gap-2 text-gray-500 text-sm font-semibold border-b pb-1 mb-2">
+                    <div className="w-full space-y-2">
+                        <div className="grid grid-cols-3 gap-3 text-xs font-bold text-(--text-secondary) uppercase tracking-widest border-b border-(--card-border) pb-3 mb-3">
                             <span>Time</span>
                             <span>Condition</span>
-                            <span>Cloud (%)</span>
+                            <span className="text-right">Cloud %</span>
                         </div>
 
-                        {nightHours.map((hour) => (
-                            <div
-                                key={hour.dt}
-                                className="grid grid-cols-3 gap-2 items-center text-lg mb-1"
-                            >
-                                <span>{getFormattedTime(hour.dt, latitude, longitude)}</span>
-                                <span>{hour.weather[0].main}</span>
-                                <span>{hour.clouds}</span>
-                            </div>
-                        ))}
+                        <div className="space-y-2 max-h-96 overflow-y-auto">
+                            {nightHours.map((hour) => (
+                                <div
+                                    key={hour.dt}
+                                    className="grid grid-cols-3 gap-3 items-center p-3 rounded-lg hover:bg-(--accent-primary)/5 transition-colors duration-200"
+                                >
+                                    <span className="text-sm font-medium text-foreground">
+                                        {getFormattedTime(hour.dt, latitude, longitude)}
+                                    </span>
+                                    <span className="text-sm text-(--text-secondary)">
+                                        {hour.weather[0].main}
+                                    </span>
+                                    <span className="text-right">
+                                        <span className="inline-block px-2 py-1 rounded-lg bg-(--accent-primary)/10 text-xs font-semibold text-(--accent-primary)">
+                                            {hour.clouds}%
+                                        </span>
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 ) : (
-                    <div className="text-red-500 text-sm">{error}</div>
+                    <div className="p-3 rounded-lg bg-(--accent-tertiary)/10 border border-(--accent-tertiary)/20">
+                        <p className="text-sm text-(--accent-tertiary) font-medium">⚠️ {error}</p>
+                    </div>
                 )}
             </div>
         </Tile>

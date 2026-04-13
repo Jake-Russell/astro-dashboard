@@ -89,33 +89,63 @@ export const AstroDashboard = () => {
     }, [weatherData, baseProps]);
 
     return (
-        <main className="max-w-6xl mx-auto p-6">
-            <h1 className="text-3xl font-bold text-yellow-700 mb-4 text-center">Astro Dashboard</h1>
-
-            <div className="flex flex-col gap-4">
-                <LocationSelector
-                    isWeatherDataLoading={weatherLoading}
-                    weatherDataError={weatherData?.error}
-                    setLatitude={setLatitude}
-                    setLongitude={setLongitude}
-                    resetWeatherData={resetWeatherData}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {moonPhaseData && <MoonPhaseCard {...moonPhaseData} />}
-                    {sunCycleData && <SunCycleCard {...sunCycleData} />}
+        <main className="min-h-screen bg-background">
+            {/* Hero Section */}
+            <div className="relative overflow-hidden pt-12 pb-8 md:pt-20 md:pb-12">
+                {/* Animated gradient background */}
+                <div className="absolute inset-0 -z-10">
+                    <div className="absolute top-0 -left-1/2 w-full h-96 bg-linear-to-br from-(--accent-primary)/10 via-(--accent-secondary)/5 to-transparent rounded-full blur-3xl" />
+                    <div className="absolute -bottom-1/2 -right-1/2 w-full h-96 bg-linear-to-tl from-(--accent-tertiary)/10 via-(--accent-secondary)/5 to-transparent rounded-full blur-3xl" />
                 </div>
 
-                {weatherForecastData && <NightWeatherForecastCard {...weatherForecastData} />}
-                {weatherData && (
-                    // TODO: Improve this when props are confirmed
-                    <AstroScoreCard
-                        latitude={baseProps.latitude}
-                        longitude={baseProps.longitude}
-                        weatherData={weatherData}
-                        error={baseProps.error}
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Header with title and toggle */}
+                    <div className="flex items-start justify-between mb-8">
+                        <div className="text-center flex-1 space-y-4">
+                            {/* Title with gradient */}
+                            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">
+                                <span className="bg-linear-to-r from-(--accent-primary) via-(--accent-secondary) to-(--accent-tertiary) bg-clip-text text-transparent">
+                                    Astro Dashboard
+                                </span>
+                            </h1>
+                            {/* Subtitle */}
+                            <p className="text-base sm:text-lg text-(--text-secondary) max-w-2xl mx-auto">
+                                Explore celestial wonders and weather patterns from your location
+                            </p>
+                        </div>
+                        <div className="ml-4 shrink-0">
+                            <p>Theme toggle</p>
+                            {/* <ThemeToggle /> */}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Content Section */}
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-20">
+                <div className="flex flex-col gap-6">
+                    <LocationSelector
+                        isWeatherDataLoading={weatherLoading}
+                        weatherDataError={weatherData?.error}
+                        setLatitude={setLatitude}
+                        setLongitude={setLongitude}
+                        resetWeatherData={resetWeatherData}
                     />
-                )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {moonPhaseData && <MoonPhaseCard {...moonPhaseData} />}
+                        {sunCycleData && <SunCycleCard {...sunCycleData} />}
+                    </div>
+                    {weatherForecastData && <NightWeatherForecastCard {...weatherForecastData} />}
+                    {weatherData && (
+                        // TODO: Improve this when props are confirmed
+                        <AstroScoreCard
+                            latitude={baseProps.latitude}
+                            longitude={baseProps.longitude}
+                            weatherData={weatherData}
+                            error={baseProps.error}
+                        />
+                    )}
+                </div>
             </div>
         </main>
     );

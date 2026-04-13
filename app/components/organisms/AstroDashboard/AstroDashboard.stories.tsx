@@ -19,3 +19,8 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     // TODO
 };
+
+export const DarkMode: Story = {
+    ...Default,
+    beforeEach: () => localStorage.setItem("theme", "dark"),
+};

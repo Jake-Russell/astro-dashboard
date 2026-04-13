@@ -1,13 +1,17 @@
 "use client";
-import { useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import { Tile } from "atoms/Tile";
 import { getCurrentPosition } from "services/geolocationService";
 import { getLatLng, getLocationName } from "utils/getLocationData";
-import { useAstronomy } from "../../contexts/AstronomyContext";
+import { LocationSelectorCardProps } from "./types";
 
-export const LocationSelectorCard = () => {
-    const { setLatitude, setLongitude, weatherLoading, weatherData, setWeatherData } =
-        useAstronomy();
+export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> = ({
+    isWeatherDataLoading,
+    weatherDataError,
+    setLatitude,
+    setLongitude,
+    resetWeatherData,
+}) => {
     const [error, setError] = useState<string>();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -16,17 +20,17 @@ export const LocationSelectorCard = () => {
     const [locationDisplayName, setLocationDisplayName] = useState<string>("");
 
     useEffect(() => {
-        if (isLoading !== weatherLoading) setIsLoading(weatherLoading);
+        if (isLoading !== isWeatherDataLoading) setIsLoading(isWeatherDataLoading);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [weatherLoading]);
+    }, [isWeatherDataLoading]);
 
     useEffect(() => {
-        if (weatherData?.error) setError(weatherData.error);
-    }, [weatherData]);
+        if (weatherDataError) setError(weatherDataError);
+    }, [weatherDataError]);
 
     const resetSearch = () => {
         setIsLoading(true);
-        setWeatherData(undefined);
+        resetWeatherData();
         setLocationDisplayName("");
         setError(undefined);
     };
@@ -51,6 +55,7 @@ export const LocationSelectorCard = () => {
             setLocation(locationResponse.name);
             setLocationDisplayName(locationResponse.displayName);
             setLastSearchedLocation(locationResponse.name.trim());
+            setIsLoading(false);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setIsLoading(false);

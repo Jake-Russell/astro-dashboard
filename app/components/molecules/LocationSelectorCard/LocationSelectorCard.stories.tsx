@@ -1,10 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { mocked } from "storybook/test";
+import { fn, mocked } from "storybook/test";
 import { delay, http, HttpResponse } from "msw";
 import { LocationReverseResponse } from "api/location/types";
-import { WeatherResponse } from "api/weather/route";
 import { getCurrentPosition } from "services/geolocationService";
-import { AstronomyProvider } from "../../contexts/AstronomyContext";
 import { LocationSelectorCard } from "./LocationSelectorCard";
 
 const getMswLocationReverseLoader = (status: number = 200) => {
@@ -36,62 +34,22 @@ const getMswLocationSearchLoader = (status: number = 200) => {
     });
 };
 
-const getMswWeatherLoader = (status: number = 200) => {
-    return http.get("/api/weather", async () => {
-        delay(200);
-
-        const response: WeatherResponse = {
-            lat: 0,
-            lon: 0,
-            timezone: "",
-            timezone_offset: 0,
-            current: {
-                dt: 0,
-                sunrise: 0,
-                sunset: 0,
-                temp: 0,
-                feels_like: 0,
-                pressure: 0,
-                humidity: 0,
-                dew_point: 0,
-                uvi: 0,
-                clouds: 0,
-                visibility: 0,
-                wind_speed: 0,
-                wind_deg: 0,
-                weather: [],
-            },
-            minutely: [],
-            hourly: [],
-            daily: [],
-            ...(status !== 200 && { error: "Failed to fetch weather data" }),
-        };
-
-        return HttpResponse.json(response, { status });
-    });
-};
-
-const baseHandlers = [
-    getMswLocationReverseLoader(),
-    getMswLocationSearchLoader(),
-    getMswWeatherLoader(),
-];
+const baseHandlers = [getMswLocationReverseLoader(), getMswLocationSearchLoader()];
 
 const meta = {
     component: LocationSelectorCard,
-    decorators: [
-        (Story) => (
-            <AstronomyProvider>
-                <Story />
-            </AstronomyProvider>
-        ),
-    ],
 } satisfies Meta<typeof LocationSelectorCard>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+    args: {
+        isWeatherDataLoading: false,
+        setLatitude: fn(),
+        setLongitude: fn(),
+        resetWeatherData: fn(),
+    },
     beforeEach() {
         mocked(getCurrentPosition).mockResolvedValue({
             latitude: "12.5074",
@@ -114,11 +72,9 @@ export const Success: Story = {
 
 export const Loading: Story = {
     ...Default,
-    parameters: {
-        msw: {
-            // Simulate constant loading state
-            handlers: [http.get("/api/weather", () => new Promise(() => {})), ...baseHandlers],
-        },
+    args: {
+        ...Default.args,
+        isWeatherDataLoading: true,
     },
     play: Success.play,
 };
@@ -159,10 +115,8 @@ export const WithSearchLocationApiError: Story = {
 
 export const WithWeatherApiError: Story = {
     ...Default,
-    play: Success.play,
-    parameters: {
-        msw: {
-            handlers: [getMswWeatherLoader(500), ...baseHandlers],
-        },
+    args: {
+        ...Default.args,
+        weatherDataError: "Failed to fetch weather data",
     },
 };

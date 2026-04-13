@@ -61,7 +61,15 @@ const getWeatherForecastData = (
 };
 
 export const AstroDashboard = () => {
-    const { latitude, longitude, weatherData } = useAstronomy();
+    const {
+        latitude,
+        longitude,
+        weatherData,
+        weatherLoading,
+        setLatitude,
+        setLongitude,
+        resetWeatherData,
+    } = useAstronomy();
 
     const baseProps = useMemo(() => getBaseProps(latitude, longitude), [latitude, longitude]);
 
@@ -85,7 +93,13 @@ export const AstroDashboard = () => {
             <h1 className="text-3xl font-bold text-yellow-400 mb-4 text-center">Astro Dashboard</h1>
 
             <div className="flex flex-col gap-4">
-                <LocationSelector />
+                <LocationSelector
+                    isWeatherDataLoading={weatherLoading}
+                    weatherDataError={weatherData?.error}
+                    setLatitude={setLatitude}
+                    setLongitude={setLongitude}
+                    resetWeatherData={resetWeatherData}
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {moonPhaseData && <MoonPhaseCard {...moonPhaseData} />}
@@ -96,12 +110,10 @@ export const AstroDashboard = () => {
                 {weatherData && (
                     // TODO: Improve this when props are confirmed
                     <AstroScoreCard
-                        {...{
-                            latitude: baseProps.latitude,
-                            longitude: baseProps.longitude,
-                            error: baseProps.error,
-                            weatherData: weatherData,
-                        }}
+                        latitude={baseProps.latitude}
+                        longitude={baseProps.longitude}
+                        weatherData={weatherData}
+                        error={baseProps.error}
                     />
                 )}
             </div>

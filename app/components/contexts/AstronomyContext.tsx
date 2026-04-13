@@ -10,7 +10,7 @@ export type AstronomyContextType = {
     setLongitude: (lng: string) => void;
     weatherData?: WeatherResponse;
     weatherLoading: boolean;
-    setWeatherData: (data: WeatherResponse | undefined) => void;
+    resetWeatherData: () => void;
 };
 
 const AstronomyContext = createContext<AstronomyContextType | undefined>(undefined);
@@ -26,6 +26,11 @@ export const AstronomyProvider = ({ children }: { children: React.ReactNode }) =
     const [longitude, setLongitude] = useState("");
     const [weatherData, setWeatherData] = useState<WeatherResponse>();
     const [weatherLoading, setWeatherLoading] = useState(false);
+
+    const resetWeatherData = () => {
+        setWeatherLoading(false);
+        setWeatherData(undefined);
+    };
 
     useEffect(() => {
         if (!latitude || !longitude) return;
@@ -47,7 +52,7 @@ export const AstronomyProvider = ({ children }: { children: React.ReactNode }) =
                 setLongitude,
                 weatherData,
                 weatherLoading,
-                setWeatherData,
+                resetWeatherData,
             }}
         >
             {children}

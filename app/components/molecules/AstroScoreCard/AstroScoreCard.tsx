@@ -215,21 +215,6 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                     </span>
                                 </div>
                             </div>
-
-                            {/* Moon Down Duration */}
-                            <div className="p-4 rounded-lg bg-(--accent-tertiary)/5 border border-(--accent-tertiary)/20 hover:border-(--accent-tertiary)/40 transition-colors">
-                                <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
-                                    Moon Down Duration
-                                </p>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-2xl font-bold text-(--accent-tertiary)">
-                                        {((moonDownDuringNight / nightDuration) * 100).toFixed(1)}%
-                                    </span>
-                                    <span className="text-sm text-(--text-secondary)">
-                                        of the night
-                                    </span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 ) : (

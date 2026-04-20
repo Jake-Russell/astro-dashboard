@@ -21,6 +21,8 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     const today = weatherData.daily[0];
     const tomorrow = weatherData.daily[1];
 
+    // TODO: Review unused vars and clean up
+
     const { nightDuration, moonUpDuringNight, moonDownDuringNight } = getNightMoonVisibility(
         today.moonrise,
         today.moonset,

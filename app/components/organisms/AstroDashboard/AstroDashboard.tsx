@@ -102,8 +102,8 @@ export const AstroDashboard = () => {
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header with title and toggle */}
                     <div className="relative mb-8">
-                        <div className="text-center space-y-4">
-                            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">
+                        <div className="text-center space-y-4 flex flex-col items-center">
+                            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold max-w-[calc(100vw-100px)]">
                                 <span className="bg-linear-to-r from-(--accent-primary) via-(--accent-secondary) to-(--accent-tertiary) bg-clip-text text-transparent">
                                     Astro Dashboard
                                 </span>

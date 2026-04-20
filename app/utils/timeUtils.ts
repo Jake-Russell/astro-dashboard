@@ -44,10 +44,13 @@ export const isBodyUp = (
     setEpoch: number,
     lat: number,
     lng: number,
+    timeEpoch?: number,
 ): boolean => {
     if (!riseEpoch || !setEpoch || !lat || !lng) return false;
 
-    const now = getLocalTime(Math.floor(Date.now() / 1000), lat, lng);
+    const time = timeEpoch
+        ? getLocalTime(timeEpoch, lat, lng)
+        : getLocalTime(Math.floor(Date.now() / 1000), lat, lng);
 
     const rise = getLocalTime(riseEpoch, lat, lng);
     const set = getLocalTime(setEpoch, lat, lng);
@@ -56,7 +59,7 @@ export const isBodyUp = (
         return false;
     }
 
-    return isAfter(now, rise) && isBefore(now, set);
+    return isAfter(time, rise) && isBefore(time, set);
 };
 
 export const getNightMoonVisibility = (

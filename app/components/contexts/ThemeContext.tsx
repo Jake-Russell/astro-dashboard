@@ -37,8 +37,13 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     const applyTheme = (newTheme: Theme) => {
         const htmlElement = document.documentElement;
-        if (newTheme === "dark") htmlElement.classList.add("dark");
-        else htmlElement.classList.remove("dark");
+        if (newTheme === "dark") {
+            htmlElement.classList.remove("light");
+            htmlElement.classList.add("dark");
+        } else {
+            htmlElement.classList.remove("dark");
+            htmlElement.classList.add("light");
+        }
     };
 
     const toggleTheme = () => {

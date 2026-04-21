@@ -1,6 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import { WeatherResponse } from "api/weather/route";
+import { StarsBackground } from "atoms/StarsBackground";
 import { ThemeToggle } from "atoms/ThemeToggle";
 import { useAstronomy } from "contexts/AstronomyContext";
 import { AstroScoreCard } from "molecules/AstroScoreCard";
@@ -90,8 +91,14 @@ export const AstroDashboard = () => {
     }, [weatherData, baseProps]);
 
     return (
-        <main className="min-h-screen bg-background">
-            {/* Hero Section */}
+        <main className="min-h-screen bg-background relative overflow-x-hidden">
+            {/* Stars */}
+            <div className="hidden dark:block absolute inset-0 z-0 pointer-events-none">
+                <div className="relative w-full h-full min-h-screen">
+                    <StarsBackground />
+                </div>
+            </div>
+
             <div className="relative overflow-hidden pt-12 pb-8 md:pt-20 md:pb-12">
                 {/* Animated gradient background */}
                 <div className="absolute inset-0 -z-10">

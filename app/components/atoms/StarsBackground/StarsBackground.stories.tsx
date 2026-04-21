@@ -10,6 +10,10 @@ const meta = {
             </div>
         ),
     ],
+    parameters: {
+        // Stars are random, so snapshots will always show differences
+        chromatic: { disableSnapshot: true },
+    },
 } satisfies Meta<typeof StarsBackground>;
 
 export default meta;

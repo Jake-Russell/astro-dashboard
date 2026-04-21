@@ -23,4 +23,8 @@ export const Default: Story = {
 export const DarkMode: Story = {
     ...Default,
     beforeEach: () => localStorage.setItem("theme", "dark"),
+    parameters: {
+        // Dark mode stars are random, so snapshots will always show differences
+        chromatic: { disableSnapshot: true },
+    },
 };

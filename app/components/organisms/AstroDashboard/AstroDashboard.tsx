@@ -93,7 +93,7 @@ export const AstroDashboard = () => {
     return (
         <main className="min-h-screen bg-background relative overflow-x-hidden">
             {/* Stars */}
-            <div className="hidden dark:block absolute inset-0 z-0 pointer-events-none">
+            <div className="light:none dark:block absolute inset-0 z-0 pointer-events-none">
                 <div className="relative w-full h-full min-h-screen">
                     <StarsBackground />
                 </div>

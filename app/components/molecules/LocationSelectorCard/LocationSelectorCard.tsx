@@ -10,7 +10,7 @@ export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> 
     weatherDataError,
     setLatitude,
     setLongitude,
-    resetWeatherData,
+    setWeatherLoading,
 }) => {
     const [error, setError] = useState<string>();
     const [isLoading, setIsLoading] = useState(false);
@@ -29,8 +29,9 @@ export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> 
     }, [weatherDataError]);
 
     const resetSearch = () => {
+        // TODO: Improve loading logic
+        setWeatherLoading(true);
         setIsLoading(true);
-        resetWeatherData();
         setLocationDisplayName("");
         setError(undefined);
     };
@@ -56,6 +57,7 @@ export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> 
             setLocationDisplayName(locationResponse.displayName);
             setLastSearchedLocation(locationResponse.name.trim());
             setIsLoading(false);
+            setWeatherLoading(false);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setIsLoading(false);

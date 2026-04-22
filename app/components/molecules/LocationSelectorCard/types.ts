@@ -3,5 +3,5 @@ export type LocationSelectorCardProps = {
     weatherDataError?: string;
     setLatitude: (lat: string) => void;
     setLongitude: (long: string) => void;
-    resetWeatherData: () => void;
+    setWeatherLoading: (loading: boolean) => void;
 };

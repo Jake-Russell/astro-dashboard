@@ -21,7 +21,7 @@ export type AstroScoreResult = {
     };
     summary: string;
     hourlyScores: HourlyAstroScore[];
-    primeTimeStart: number;
-    primeTimeEnd: number;
-    primeScore: number;
+    primeTimeStart?: number;
+    primeTimeEnd?: number;
+    primeScore?: number;
 };

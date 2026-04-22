@@ -48,7 +48,7 @@ export const Default: Story = {
         isWeatherDataLoading: false,
         setLatitude: fn(),
         setLongitude: fn(),
-        resetWeatherData: fn(),
+        setWeatherLoading: fn(),
     },
     beforeEach() {
         mocked(getCurrentPosition).mockResolvedValue({

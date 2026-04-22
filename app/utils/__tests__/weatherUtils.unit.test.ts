@@ -72,8 +72,8 @@ describe("weatherUtils", () => {
 
             const result = getAstronomicalDarknessWindow(sunset, sunrise);
 
-            expect(result.darkStart).toBe(sunset + 45 * 60);
-            expect(result.darkEnd).toBe(sunrise - 45 * 60);
+            expect(result.darkStart).toBe(sunset + 90 * 60);
+            expect(result.darkEnd).toBe(sunrise - 90 * 60);
         });
     });
 

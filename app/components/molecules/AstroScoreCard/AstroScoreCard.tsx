@@ -69,8 +69,12 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         longitude,
     );
 
-    const primeStartTime = getFormattedTime(primeTimeStart, latitude, longitude);
-    const primeEndTime = getFormattedTime(primeTimeEnd, latitude, longitude);
+    const primeStartTime = primeTimeStart
+        ? getFormattedTime(primeTimeStart, latitude, longitude)
+        : undefined;
+    const primeEndTime = primeTimeEnd
+        ? getFormattedTime(primeTimeEnd, latitude, longitude)
+        : undefined;
 
     return (
         <Tile title="Score">
@@ -167,17 +171,19 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                         </div>
 
                         {/* Prime Time */}
-                        <div className="p-4 rounded-lg bg-(--accent-secondary)/10 border border-(--accent-secondary)/30">
-                            <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
-                                🌟 Prime Conditions
-                            </p>
-                            <p className="text-sm text-(--text-primary) font-medium">
-                                Between {primeStartTime} and {primeEndTime}
-                            </p>
-                            <p className="text-xs text-(--text-secondary) mt-1">
-                                Expected score: {primeScore} / 10
-                            </p>
-                        </div>
+                        {primeStartTime && primeEndTime && primeScore && (
+                            <div className="p-4 rounded-lg bg-(--accent-secondary)/10 border border-(--accent-secondary)/30">
+                                <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
+                                    🌟 Prime Conditions
+                                </p>
+                                <p className="text-sm text-(--text-primary) font-medium">
+                                    Between {primeStartTime} and {primeEndTime}
+                                </p>
+                                <p className="text-xs text-(--text-secondary) mt-1">
+                                    Expected score: {primeScore} / 10
+                                </p>
+                            </div>
+                        )}
 
                         {/* Supporting Metrics */}
                         <div className="space-y-3 border-t border-(--card-border) pt-4">

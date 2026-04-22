@@ -3,11 +3,6 @@ export type GeoPosition = {
     longitude: string;
 };
 
-export type GeoError = {
-    code?: number;
-    message: string;
-};
-
 export const getCurrentPosition = (): Promise<GeoPosition> => {
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
@@ -19,18 +14,38 @@ export const getCurrentPosition = (): Promise<GeoPosition> => {
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                const response: GeoPosition = {
+                resolve({
                     latitude: position.coords.latitude.toFixed(5),
                     longitude: position.coords.longitude.toFixed(5),
-                };
-                resolve(response);
+                });
             },
             (error: GeolocationPositionError) => {
-                const errorResponse: GeoError = {
+                let message = "Unable to retrieve your location.";
+
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        message = "Location permission was denied.";
+                        break;
+
+                    case error.POSITION_UNAVAILABLE:
+                        message = "Your location could not be determined.";
+                        break;
+
+                    case error.TIMEOUT:
+                        message =
+                            "We couldn't get your location in time. Please try again or search for a location instead.";
+                        break;
+                }
+
+                reject({
                     code: error.code,
-                    message: error.message,
-                };
-                reject(errorResponse);
+                    message,
+                });
+            },
+            {
+                enableHighAccuracy: false,
+                timeout: 10000,
+                maximumAge: 300000,
             },
         );
     });

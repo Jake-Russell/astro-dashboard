@@ -70,7 +70,7 @@ export const AstroDashboard = () => {
         weatherLoading,
         setLatitude,
         setLongitude,
-        resetWeatherData,
+        setWeatherLoading,
     } = useAstronomy();
 
     const baseProps = useMemo(() => getBaseProps(latitude, longitude), [latitude, longitude]);
@@ -136,14 +136,16 @@ export const AstroDashboard = () => {
                         weatherDataError={weatherData?.error}
                         setLatitude={setLatitude}
                         setLongitude={setLongitude}
-                        resetWeatherData={resetWeatherData}
+                        setWeatherLoading={setWeatherLoading}
                     />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {moonPhaseData && <MoonPhaseCard {...moonPhaseData} />}
-                        {sunCycleData && <SunCycleCard {...sunCycleData} />}
+                        {moonPhaseData && !weatherLoading && <MoonPhaseCard {...moonPhaseData} />}
+                        {sunCycleData && !weatherLoading && <SunCycleCard {...sunCycleData} />}
                     </div>
-                    {weatherForecastData && <NightWeatherForecastCard {...weatherForecastData} />}
-                    {weatherData && (
+                    {weatherForecastData && !weatherLoading && (
+                        <NightWeatherForecastCard {...weatherForecastData} />
+                    )}
+                    {weatherData && !weatherLoading && (
                         // TODO: Improve this when props are confirmed
                         <AstroScoreCard
                             latitude={baseProps.latitude}

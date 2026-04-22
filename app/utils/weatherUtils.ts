@@ -1,10 +1,11 @@
 import { AstroScoreResult } from "molecules/AstroScoreCard/types";
 import { isBodyUp } from "./timeUtils";
 
-const ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS = 45 * 60; // 45 minutes in seconds
+const ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS = 90 * 60; // 90 minutes in seconds
 const CLOUD_COVERAGE_WEIGHT = 0.5;
 const MOON_ILLUMINATION_WEIGHT = 0.3;
 const MOON_VISIBILITY_WEIGHT = 0.2;
+const WINDOW_SIZE = 2;
 
 export const getCloudScore = (cloudCoverage: number): number => {
     const score = 10 * (1 - cloudCoverage / 100);
@@ -92,7 +93,10 @@ export const getAstroScore = (
 ): AstroScoreResult => {
     const { darkStart, darkEnd } = getAstronomicalDarknessWindow(sunset, sunrise);
 
-    const darkHours = hourlyData.filter((hour) => hour.dt >= darkStart && hour.dt < darkEnd);
+    const darkHours = hourlyData.filter((hour) => {
+        const hourMid = hour.dt + 1800; // +30 minutes
+        return hourMid >= darkStart && hourMid < darkEnd;
+    });
 
     const hourlyScores = darkHours.map((hour) => {
         const isMoonUp = isBodyUp(moonrise, moonset, latitude, longitude, hour.dt);
@@ -107,36 +111,60 @@ export const getAstroScore = (
         };
     });
 
-    let bestWindow = { start: 0, end: 1, avgScore: 0 };
+    if (hourlyScores.length === 0) {
+        return {
+            currentScore: 0,
+            currentBreakdown: {
+                cloud: 0,
+                moonIllumination: 0,
+                moonVisibility: 0,
+            },
+            summary: "No astronomical darkness during this period",
+            hourlyScores: [],
+            primeTimeStart: undefined,
+            primeTimeEnd: undefined,
+            primeScore: undefined,
+        };
+    }
 
-    if (hourlyScores.length >= 2) {
-        bestWindow = { start: 0, end: 1, avgScore: -1 };
+    let bestWindow = { start: 0, end: 0, avgScore: -1 };
 
-        for (let i = 0; i < hourlyScores.length - 1; i++) {
-            const window = hourlyScores.slice(i, i + 2);
-            const avgScore = window.reduce((sum, h) => sum + h.score, 0) / window.length;
+    if (hourlyScores.length >= WINDOW_SIZE) {
+        for (let i = 0; i <= hourlyScores.length - WINDOW_SIZE; i++) {
+            const window = hourlyScores.slice(i, i + WINDOW_SIZE);
 
-            if (avgScore > bestWindow.avgScore) {
-                bestWindow = { start: i, end: i + 2, avgScore };
-            }
+            const avgScore = window.reduce((sum, h) => sum + h.score, 0) / WINDOW_SIZE;
+
+            if (avgScore > bestWindow.avgScore)
+                bestWindow = { start: i, end: i + WINDOW_SIZE - 1, avgScore };
         }
-    } else if (hourlyScores.length === 1) {
-        bestWindow = {
-            start: 0,
-            end: 1,
-            avgScore: hourlyScores[0].score,
+    } else {
+        const single = hourlyScores[0];
+
+        return {
+            currentScore: single.score,
+            currentBreakdown: single.breakdown,
+            summary: getScoreSummary(single.cloudCoverage, moonIllumination, single.moonUp),
+            hourlyScores,
+            primeTimeStart: single.time,
+            primeTimeEnd: Math.min(single.time + 3600, darkEnd),
+            primeScore: single.score,
         };
     }
 
     const current = hourlyScores[0];
+
+    // Clamp end time so it never exceeds darkness
+    const rawEnd = hourlyScores[bestWindow.end].time + 3600;
+    const primeEnd = Math.min(rawEnd, darkEnd);
 
     return {
         currentScore: current.score,
         currentBreakdown: current.breakdown,
         summary: getScoreSummary(current.cloudCoverage, moonIllumination, current.moonUp),
         hourlyScores,
-        primeTimeStart: hourlyScores[bestWindow.start]?.time,
-        primeTimeEnd: hourlyScores[bestWindow.end]?.time,
+        primeTimeStart: hourlyScores[bestWindow.start].time,
+        primeTimeEnd: primeEnd,
         primeScore: Math.round(bestWindow.avgScore * 10) / 10,
     };
 };

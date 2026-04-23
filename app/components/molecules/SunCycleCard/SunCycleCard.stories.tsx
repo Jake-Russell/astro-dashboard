@@ -14,6 +14,7 @@ export const Default: Story = {
         longitude: -74.006,
         sunrise: 1775798510,
         sunset: 1775847223,
+        tomorrowSunrise: 1775883610,
     },
     // TODO
 };

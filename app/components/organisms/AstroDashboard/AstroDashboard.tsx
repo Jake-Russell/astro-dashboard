@@ -40,10 +40,12 @@ const getSunData = (
     weatherData: WeatherResponse,
 ): Omit<SunCycleCardProps, "latitude" | "longitude"> => {
     const todayData = weatherData.daily[0];
+    const tomorrowData = weatherData.daily[1];
 
     return {
         sunrise: todayData.sunrise,
         sunset: todayData.sunset,
+        tomorrowSunrise: tomorrowData.sunrise,
         error: weatherData.error,
     };
 };

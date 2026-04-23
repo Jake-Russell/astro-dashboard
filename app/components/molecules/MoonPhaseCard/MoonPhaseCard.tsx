@@ -1,5 +1,6 @@
 "use client";
 import { FunctionComponent, useMemo } from "react";
+import { MoonPhaseCircle } from "atoms/MoonPhaseCircle";
 import { Tile } from "atoms/Tile";
 import { getAdjustedMoonRiseAndSet } from "utils/moonUtils";
 import { getFormattedTime, getMoonIllumination, getMoonPhase, isBodyUp } from "utils/timeUtils";
@@ -34,18 +35,17 @@ export const MoonPhaseCard: FunctionComponent<MoonPhaseCardProps> = ({
                                 {getMoonPhase(moonPhase)}
                             </div>
 
-                            <div className="space-y-2">
-                                <div className="flex items-center justify-between text-xs font-semibold text-(--text-secondary) uppercase tracking-widest">
-                                    <span>Illumination</span>
-                                    <span>{getMoonIllumination(moonPhase)}%</span>
-                                </div>
-                                <div className="w-full h-2 bg-(--card-border) rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-linear-to-r from-(--accent-primary) to-(--accent-secondary)"
-                                        style={{
-                                            width: `${getMoonIllumination(moonPhase)}%`,
-                                        }}
-                                    />
+                            <div className="my-2">
+                                <div className="flex items-center justify-center gap-8">
+                                    <MoonPhaseCircle phase={moonPhase} />
+                                    <div className="text-center">
+                                        <div className="text-4xl font-bold text-(--accent-primary)">
+                                            {getMoonIllumination(moonPhase)}%
+                                        </div>
+                                        <div className="text-xs font-semibold text-(--text-secondary) uppercase tracking-widest mt-2">
+                                            Illuminated
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

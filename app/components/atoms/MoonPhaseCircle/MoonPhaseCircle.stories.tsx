@@ -100,4 +100,5 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
 
         return <MoonPhaseCircle phase={phase} key={theme} />;
     },
+    parameters: { chromatic: { disableSnapshot: true } },
 };

@@ -9,6 +9,7 @@ export const SunCycleCard: FunctionComponent<SunCycleCardProps> = ({
     longitude,
     sunrise,
     sunset,
+    tomorrowSunrise,
     error,
 }) => {
     const isSunUp = useMemo(() => {
@@ -35,6 +36,14 @@ export const SunCycleCard: FunctionComponent<SunCycleCardProps> = ({
                                 </span>
                                 <span className="text-lg font-bold text-foreground">
                                     {getFormattedTime(sunset, latitude, longitude)}
+                                </span>
+                            </div>
+                            <div className="flex items-center justify-between p-4 rounded-lg bg-linear-to-br from-(--accent-primary)/10 to-(--accent-secondary)/5 border border-(--accent-primary)/20 hover:border-(--accent-primary)/40 transition-colors">
+                                <span className="text-sm text-(--text-secondary) font-semibold uppercase tracking-widest">
+                                    🌅 Tomorrow&apos;s Sunrise
+                                </span>
+                                <span className="text-lg font-bold text-foreground">
+                                    {getFormattedTime(tomorrowSunrise, latitude, longitude)}
                                 </span>
                             </div>
                         </div>

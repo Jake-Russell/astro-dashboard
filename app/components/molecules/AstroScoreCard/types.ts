@@ -26,6 +26,7 @@ export type AstroScoreResult = {
         moonVisibility: number;
     };
     summary: string;
+    breakdownTime: number;
     hourlyScores: HourlyAstroScore[];
     primeTimeStart?: number;
     primeTimeEnd?: number;

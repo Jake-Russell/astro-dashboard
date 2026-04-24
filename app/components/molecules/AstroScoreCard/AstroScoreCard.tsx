@@ -56,6 +56,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         currentScore,
         currentBreakdown,
         summary,
+        breakdownTime,
         hourlyScores,
         primeTimeStart,
         primeTimeEnd,
@@ -82,6 +83,9 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
 
     const currentTime = getFormattedTime(new Date().getTime() / 1000, latitude, longitude);
     const currentDate = format(new Date(), "MMM d, yyyy");
+
+    const breakdownTimeFormatted =
+        breakdownTime !== 0 ? getFormattedTime(breakdownTime, latitude, longitude) : undefined;
 
     return (
         <Tile title="Score">
@@ -114,75 +118,80 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
 
                         <p className="text-sm text-(--text-secondary) text-center">{summary}</p>
 
-                        <div className="p-4 rounded-lg bg-(--card-background) border border-(--card-border)">
-                            <div className="flex justify-between items-center mb-3">
-                                <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest">
-                                    Score Breakdown
-                                </p>
-                                <p className="text-xs text-(--text-secondary)">{currentTime}</p>
+                        {breakdownTimeFormatted && (
+                            <div className="p-4 rounded-lg bg-(--card-background) border border-(--card-border)">
+                                <div className="flex justify-between items-center mb-3">
+                                    <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest">
+                                        Score Breakdown
+                                    </p>
+                                    <p className="text-xs text-(--text-secondary)">
+                                        {breakdownTimeFormatted}
+                                    </p>
+                                </div>
+
+                                <div className="space-y-4 text-sm">
+                                    {/* CLOUDS */}
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between items-center">
+                                            <span>☁️ Clouds</span>
+                                            <span>{currentBreakdown.cloud.toFixed(1)} / 5</span>
+                                        </div>
+
+                                        <div className="h-2 w-full bg-(--card-border) rounded">
+                                            <div
+                                                className="h-2 bg-(--accent-primary) rounded transition-all"
+                                                style={{
+                                                    width: `${(currentBreakdown.cloud / 5) * 100}%`,
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* MOON BRIGHTNESS */}
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between items-center">
+                                            <span>🌕 Moon Brightness</span>
+                                            <span>
+                                                {currentBreakdown.moonIllumination.toFixed(1)} / 3
+                                            </span>
+                                        </div>
+
+                                        <div className="h-2 w-full bg-(--card-border) rounded">
+                                            <div
+                                                className="h-2 bg-(--accent-secondary) rounded transition-all"
+                                                style={{
+                                                    width: `${
+                                                        (currentBreakdown.moonIllumination / 3) *
+                                                        100
+                                                    }%`,
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* MOON VISIBILITY */}
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between items-center">
+                                            <span>🌙 Moon Visibility</span>
+                                            <span>
+                                                {currentBreakdown.moonVisibility.toFixed(1)} / 2
+                                            </span>
+                                        </div>
+
+                                        <div className="h-2 w-full bg-(--card-border) rounded">
+                                            <div
+                                                className="h-2 bg-(--accent-tertiary) rounded transition-all"
+                                                style={{
+                                                    width: `${
+                                                        (currentBreakdown.moonVisibility / 2) * 100
+                                                    }%`,
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div className="space-y-4 text-sm">
-                                {/* CLOUDS */}
-                                <div className="space-y-1">
-                                    <div className="flex justify-between items-center">
-                                        <span>☁️ Clouds</span>
-                                        <span>{currentBreakdown.cloud.toFixed(1)} / 5</span>
-                                    </div>
-
-                                    <div className="h-2 w-full bg-(--card-border) rounded">
-                                        <div
-                                            className="h-2 bg-(--accent-primary) rounded transition-all"
-                                            style={{
-                                                width: `${(currentBreakdown.cloud / 5) * 100}%`,
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* MOON BRIGHTNESS */}
-                                <div className="space-y-1">
-                                    <div className="flex justify-between items-center">
-                                        <span>🌕 Moon Brightness</span>
-                                        <span>
-                                            {currentBreakdown.moonIllumination.toFixed(1)} / 3
-                                        </span>
-                                    </div>
-
-                                    <div className="h-2 w-full bg-(--card-border) rounded">
-                                        <div
-                                            className="h-2 bg-(--accent-secondary) rounded transition-all"
-                                            style={{
-                                                width: `${
-                                                    (currentBreakdown.moonIllumination / 3) * 100
-                                                }%`,
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* MOON VISIBILITY */}
-                                <div className="space-y-1">
-                                    <div className="flex justify-between items-center">
-                                        <span>🌙 Moon Visibility</span>
-                                        <span>
-                                            {currentBreakdown.moonVisibility.toFixed(1)} / 2
-                                        </span>
-                                    </div>
-
-                                    <div className="h-2 w-full bg-(--card-border) rounded">
-                                        <div
-                                            className="h-2 bg-(--accent-tertiary) rounded transition-all"
-                                            style={{
-                                                width: `${
-                                                    (currentBreakdown.moonVisibility / 2) * 100
-                                                }%`,
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        )}
 
                         {!!primeStartTime && !!primeEndTime && !!primeScore && primeScore && (
                             <div

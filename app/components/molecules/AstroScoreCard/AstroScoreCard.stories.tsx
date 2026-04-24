@@ -9,6 +9,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const now = new Date("2026-01-01T19:00:00Z");
+
 export const Default: Story = {
     args: {
         latitude: 51.60084,
@@ -19,7 +21,10 @@ export const Default: Story = {
         moonPhase: 0.25,
         sunsetToday: 1767294000, // 2026-01-01T19:00:00Z
         sunriseTomorrow: 1767330000, // 2026-01-02T05:00:00Z
-        hourlyForecast: mockHourlyData,
+        hourlyForecast: mockHourlyData.filter((hour) => hour.dt >= now.getTime() / 1000),
+    },
+    parameters: {
+        mockingDate: now,
     },
 };
 
@@ -43,10 +48,12 @@ export const WithHighCloudCover: Story = {
     ...Default,
     args: {
         ...Default.args,
-        hourlyForecast: mockHourlyData.map((hour) => ({
-            ...hour,
-            clouds: 95,
-        })),
+        hourlyForecast: mockHourlyData
+            .filter((hour) => hour.dt >= Date.now() / 1000)
+            .map((hour) => ({
+                ...hour,
+                clouds: 95,
+            })),
     },
 };
 
@@ -54,10 +61,12 @@ export const WithLowCloudCover: Story = {
     ...Default,
     args: {
         ...Default.args,
-        hourlyForecast: mockHourlyData.map((hour) => ({
-            ...hour,
-            clouds: 5,
-        })),
+        hourlyForecast: mockHourlyData
+            .filter((hour) => hour.dt >= Date.now() / 1000)
+            .map((hour) => ({
+                ...hour,
+                clouds: 5,
+            })),
     },
 };
 
@@ -66,10 +75,12 @@ export const WithPerfectConditions: Story = {
     args: {
         ...Default.args,
         moonPhase: 0,
-        hourlyForecast: mockHourlyData.map((hour) => ({
-            ...hour,
-            clouds: 0,
-        })),
+        hourlyForecast: mockHourlyData
+            .filter((hour) => hour.dt >= Date.now() / 1000)
+            .map((hour) => ({
+                ...hour,
+                clouds: 0,
+            })),
         moonsetToday: 1767294000, // 2026-01-01T19:00:00Z
     },
 };
@@ -79,15 +90,23 @@ export const WithWorstConditions: Story = {
     args: {
         ...Default.args,
         moonPhase: 0.5,
-        hourlyForecast: mockHourlyData.map((hour) => ({
-            ...hour,
-            clouds: 100,
-        })),
+        hourlyForecast: mockHourlyData
+            .filter((hour) => hour.dt >= Date.now() / 1000)
+            .map((hour) => ({
+                ...hour,
+                clouds: 100,
+            })),
     },
 };
 
 export const InPrimeWindow: Story = {
     ...Default,
+    args: {
+        ...Default.args,
+        hourlyForecast: mockHourlyData.filter(
+            (hour) => hour.dt >= new Date("2026-01-01T21:00:00Z").getTime() / 1000,
+        ),
+    },
     parameters: {
         mockingDate: new Date("2026-01-01T21:00:00Z"),
     },
@@ -180,11 +199,17 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
                 moonPhase={moonPhase}
                 sunsetToday={formattedSunsetToday}
                 sunriseTomorrow={formattedSunriseTomorrow}
-                hourlyForecast={mockHourlyData.map((hour) => ({
-                    ...hour,
-                    clouds: averageCloudCover,
-                }))}
+                hourlyForecast={mockHourlyData
+                    .filter((hour) => hour.dt >= Date.now() / 1000)
+                    .map((hour) => ({
+                        ...hour,
+                        clouds: averageCloudCover,
+                    }))}
             />
         );
+    },
+    parameters: {
+        mockingDate: now,
+        chromatic: { disableSnapshot: true },
     },
 };

@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { AstronomyProvider } from "contexts/AstronomyContext";
+import {
+    getMswLocationReverseLoader,
+    getMswLocationSearchLoader,
+    getMswWeatherLoader,
+} from "storybook/mswHelpers";
 import { AstroDashboard } from "./AstroDashboard";
 
 const meta = {
@@ -17,6 +22,15 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+    parameters: {
+        msw: {
+            handlers: [
+                getMswLocationReverseLoader(),
+                getMswLocationSearchLoader(),
+                getMswWeatherLoader(),
+            ],
+        },
+    },
     // TODO
 };
 

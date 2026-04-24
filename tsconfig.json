@@ -27,7 +27,8 @@
             "utils/*": ["./app/utils/*"],
             "api/*": ["./app/api/*"],
             "contexts/*": ["./app/components/contexts/*"],
-            "mocks/*": ["./app/mocks/*"]
+            "mocks/*": ["./app/mocks/*"],
+            "storybook/*": ["./.storybook/static/*"]
         }
     },
     "include": [

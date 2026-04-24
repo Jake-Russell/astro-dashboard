@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { mockHourlyData, mockLat, mockLng } from "mocks/mockWeatherData";
 import { AstroScoreCard } from "./AstroScoreCard";
-import { mockHourlyData } from "mocks/mockWeatherData";
 
 const meta = {
     component: AstroScoreCard,
@@ -13,8 +13,8 @@ const now = new Date("2026-01-01T19:00:00Z");
 
 export const Default: Story = {
     args: {
-        latitude: 51.60084,
-        longitude: -1.66199,
+        latitude: mockLat,
+        longitude: mockLng,
         moonriseToday: 1767261600, // 2026-01-01T10:00:00Z
         moonsetToday: 1767240000, // 2026-01-01T04:00:00Z
         moonsetTomorrow: 1767326400, // 2026-01-02T04:00:00Z

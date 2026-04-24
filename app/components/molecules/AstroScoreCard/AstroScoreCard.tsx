@@ -6,6 +6,7 @@ import {
     getLocalTime,
     getMoonIllumination,
     getNightMoonVisibility,
+    isCurrentlyPrime,
 } from "utils/timeUtils";
 import { AstroScoreCardProps } from "./types";
 import { isAfter, isBefore } from "date-fns";
@@ -75,6 +76,8 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     const primeEndTime = primeTimeEnd
         ? getFormattedTime(primeTimeEnd, latitude, longitude)
         : undefined;
+
+    const isInPrimeWindow = isCurrentlyPrime(primeTimeStart, primeTimeEnd, latitude, longitude);
 
     return (
         <Tile title="Score">
@@ -172,10 +175,21 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
 
                         {/* Prime Time */}
                         {primeStartTime && primeEndTime && primeScore && (
-                            <div className="p-4 rounded-lg bg-(--accent-secondary)/10 border border-(--accent-secondary)/30">
+                            <div
+                                className={`p-4 rounded-lg border ${
+                                    isInPrimeWindow
+                                        ? "bg-green-500/10 border-green-500/30"
+                                        : "bg-(--accent-secondary)/10 border border-(--accent-secondary)/30"
+                                }`}
+                            >
                                 <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
                                     🌟 Prime Conditions
                                 </p>
+                                {isInPrimeWindow && (
+                                    <p className="text-sm font-bold text-green-600 mb-2">
+                                        ✨ Currently prime conditions!
+                                    </p>
+                                )}
                                 <p className="text-sm text-(--text-primary) font-medium">
                                     Between {primeStartTime} and {primeEndTime}
                                 </p>

@@ -205,7 +205,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                     🌟 Prime Conditions
                                 </p>
                                 {isInPrimeWindow && (
-                                    <p className="text-sm font-bold text-green-600 mb-2">
+                                    <p className="text-sm font-bold text-green-700 mb-2">
                                         ✨ Currently prime conditions!
                                     </p>
                                 )}

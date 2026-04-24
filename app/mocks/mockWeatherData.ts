@@ -2,6 +2,9 @@ import { HourData } from "api/weather/route";
 
 const BASE = 1767279600; // 2026-01-01T15:00:00Z
 
+export const mockLat = 51.75;
+export const mockLng = -1.25;
+
 export const mockHourlyData: HourData[] = [
     {
         dt: BASE + 0 * 3600,

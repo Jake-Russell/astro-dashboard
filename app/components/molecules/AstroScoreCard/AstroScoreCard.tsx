@@ -9,46 +9,47 @@ import {
     isCurrentlyPrime,
 } from "utils/timeUtils";
 import { AstroScoreCardProps } from "./types";
-import { isAfter, isBefore } from "date-fns";
+import { isAfter, isBefore, format } from "date-fns";
 import { getAstroScore } from "utils/weatherUtils";
 import { getAdjustedMoonRiseAndSet } from "utils/moonUtils";
 
 export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     latitude,
     longitude,
-    weatherData,
+    moonriseToday,
+    moonsetToday,
+    moonsetTomorrow,
+    moonPhase,
+    sunsetToday,
+    sunriseTomorrow,
+    hourlyForecast,
     error,
 }) => {
-    const today = weatherData.daily[0];
-    const tomorrow = weatherData.daily[1];
-
     // TODO: Review unused vars and clean up
     /* eslint-disable @typescript-eslint/no-unused-vars */
 
     const { nightDuration, moonUpDuringNight, moonDownDuringNight } = getNightMoonVisibility(
-        today.moonrise,
-        today.moonset,
-        today.sunset,
-        tomorrow.sunrise,
+        moonriseToday,
+        moonsetToday,
+        sunsetToday,
+        sunriseTomorrow,
         latitude,
         longitude,
     );
 
-    const sunsetTime = getLocalTime(today.sunset, latitude, longitude);
-    const sunriseTime = getLocalTime(tomorrow.sunrise, latitude, longitude);
+    const sunsetTime = getLocalTime(sunsetToday, latitude, longitude);
+    const sunriseTime = getLocalTime(sunriseTomorrow, latitude, longitude);
 
     // Get all hourly data for tonight
-    const nightHours = weatherData.hourly.filter((hour) => {
+    const nightHours = hourlyForecast.filter((hour) => {
         const hourTime = getLocalTime(hour.dt, latitude, longitude);
         return isAfter(hourTime, sunsetTime) && isBefore(hourTime, sunriseTime);
     });
 
-    if (nightHours.length === 0) return;
-
     const { moonrise, moonset } = getAdjustedMoonRiseAndSet(
-        today.moonrise,
-        today.moonset,
-        tomorrow.moonset,
+        moonriseToday,
+        moonsetToday,
+        moonsetTomorrow,
     );
 
     const {
@@ -61,11 +62,11 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         primeScore,
     } = getAstroScore(
         nightHours,
-        getMoonIllumination(today.moon_phase),
+        getMoonIllumination(moonPhase),
         moonrise,
         moonset,
-        today.sunset,
-        tomorrow.sunrise,
+        sunsetToday,
+        sunriseTomorrow,
         latitude,
         longitude,
     );
@@ -79,11 +80,18 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
 
     const isInPrimeWindow = isCurrentlyPrime(primeTimeStart, primeTimeEnd, latitude, longitude);
 
+    const currentTime = getFormattedTime(new Date().getTime() / 1000, latitude, longitude);
+    const currentDate = format(new Date(), "MMM d, yyyy");
+
     return (
         <Tile title="Score">
             <div className="w-full">
                 {!error ? (
                     <div className="space-y-6">
+                        <div className="text-xs text-(--text-secondary) mb-2">
+                            {currentDate} • {currentTime}
+                        </div>
+
                         <div className="text-center space-y-2">
                             <h3 className="text-3xl font-bold bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) bg-clip-text text-transparent">
                                 🌙 Astro Score
@@ -107,9 +115,12 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                         <p className="text-sm text-(--text-secondary) text-center">{summary}</p>
 
                         <div className="p-4 rounded-lg bg-(--card-background) border border-(--card-border)">
-                            <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-3">
-                                Score Breakdown
-                            </p>
+                            <div className="flex justify-between items-center mb-3">
+                                <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest">
+                                    Score Breakdown
+                                </p>
+                                <p className="text-xs text-(--text-secondary)">{currentTime}</p>
+                            </div>
 
                             <div className="space-y-4 text-sm">
                                 {/* CLOUDS */}
@@ -173,8 +184,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                             </div>
                         </div>
 
-                        {/* Prime Time */}
-                        {primeStartTime && primeEndTime && primeScore && (
+                        {!!primeStartTime && !!primeEndTime && !!primeScore && primeScore && (
                             <div
                                 className={`p-4 rounded-lg border ${
                                     isInPrimeWindow
@@ -199,9 +209,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                             </div>
                         )}
 
-                        {/* Supporting Metrics */}
                         <div className="space-y-3 border-t border-(--card-border) pt-4">
-                            {/* Clouds */}
                             <div className="p-4 rounded-lg bg-(--accent-primary)/5 border border-(--accent-primary)/20 hover:border-(--accent-primary)/40 transition-colors">
                                 <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
                                     Cloud Coverage
@@ -222,17 +230,16 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                 </div>
                             </div>
 
-                            {/* Moon Illumination */}
                             <div className="p-4 rounded-lg bg-(--accent-secondary)/5 border border-(--accent-secondary)/20 hover:border-(--accent-secondary)/40 transition-colors">
                                 <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
                                     Moon Illumination
                                 </p>
                                 <div className="flex items-center gap-3">
                                     <span className="text-2xl font-bold text-(--accent-secondary)">
-                                        {getMoonIllumination(today.moon_phase)}%
+                                        {getMoonIllumination(moonPhase)}%
                                     </span>
                                     <span className="text-sm text-(--text-secondary)">
-                                        {getMoonIllumination(today.moon_phase) < 50
+                                        {getMoonIllumination(moonPhase) < 50
                                             ? "🌑 Dark"
                                             : "🌕 Bright"}
                                     </span>
@@ -242,9 +249,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                     </div>
                 ) : (
                     <div className="p-3 rounded-lg bg-(--accent-tertiary)/10 border border-(--accent-tertiary)/20">
-                        <p className="text-sm text-(--accent-tertiary) font-medium">
-                            ⚠️ {weatherData.error}
-                        </p>
+                        <p className="text-sm text-(--accent-tertiary) font-medium">⚠️ {error}</p>
                     </div>
                 )}
             </div>

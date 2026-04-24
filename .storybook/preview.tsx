@@ -32,6 +32,8 @@ const preview: Preview = {
             // 'off' - skip a11y checks entirely
             test: "error",
         },
+
+        mockingDate: new Date("2026-01-01T20:00:00Z"),
     },
     decorators: [
         (Story) => (

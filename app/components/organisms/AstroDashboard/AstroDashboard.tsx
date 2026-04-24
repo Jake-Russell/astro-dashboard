@@ -4,7 +4,7 @@ import { WeatherResponse } from "api/weather/route";
 import { StarsBackground } from "atoms/StarsBackground";
 import { ThemeToggle } from "atoms/ThemeToggle";
 import { useAstronomy } from "contexts/AstronomyContext";
-import { AstroScoreCard } from "molecules/AstroScoreCard";
+import { AstroScoreCard, AstroScoreCardProps } from "molecules/AstroScoreCard";
 import { LocationSelector } from "molecules/LocationSelectorCard";
 import { MoonPhaseCard, MoonPhaseCardProps } from "molecules/MoonPhaseCard";
 import {
@@ -64,6 +64,24 @@ const getWeatherForecastData = (
     };
 };
 
+const getScoreCardData = (
+    weatherData: WeatherResponse,
+): Omit<AstroScoreCardProps, "latitude" | "longitude"> => {
+    const todayData = weatherData.daily[0];
+    const tomorrowData = weatherData.daily[1];
+
+    return {
+        moonriseToday: todayData.moonrise,
+        moonsetToday: todayData.moonset,
+        moonsetTomorrow: tomorrowData.moonset,
+        moonPhase: todayData.moon_phase,
+        sunsetToday: todayData.sunset,
+        sunriseTomorrow: tomorrowData.sunrise,
+        hourlyForecast: weatherData.hourly,
+        error: weatherData.error,
+    };
+};
+
 export const AstroDashboard = () => {
     const {
         latitude,
@@ -90,6 +108,11 @@ export const AstroDashboard = () => {
     const weatherForecastData = useMemo(() => {
         if (!weatherData) return null;
         return { ...baseProps, ...getWeatherForecastData(weatherData) };
+    }, [weatherData, baseProps]);
+
+    const astroScoreCardData = useMemo(() => {
+        if (!weatherData) return null;
+        return { ...baseProps, ...getScoreCardData(weatherData) };
     }, [weatherData, baseProps]);
 
     return (
@@ -147,14 +170,8 @@ export const AstroDashboard = () => {
                     {weatherForecastData && !weatherLoading && (
                         <NightWeatherForecastCard {...weatherForecastData} />
                     )}
-                    {weatherData && !weatherLoading && (
-                        // TODO: Improve this when props are confirmed
-                        <AstroScoreCard
-                            latitude={baseProps.latitude}
-                            longitude={baseProps.longitude}
-                            weatherData={weatherData}
-                            error={baseProps.error}
-                        />
+                    {astroScoreCardData && !weatherLoading && (
+                        <AstroScoreCard {...astroScoreCardData} />
                     )}
                 </div>
             </div>

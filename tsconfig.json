@@ -26,7 +26,8 @@
             "services/*": ["./app/services/*"],
             "utils/*": ["./app/utils/*"],
             "api/*": ["./app/api/*"],
-            "contexts/*": ["./app/components/contexts/*"]
+            "contexts/*": ["./app/components/contexts/*"],
+            "mocks/*": ["./app/mocks/*"]
         }
     },
     "include": [

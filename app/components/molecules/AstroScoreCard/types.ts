@@ -1,8 +1,14 @@
-import { WeatherResponse } from "api/weather/route";
+import { HourData } from "api/weather/route";
 import { BaseCardProps } from "molecules/types";
 
 export type AstroScoreCardProps = BaseCardProps & {
-    weatherData: WeatherResponse;
+    moonriseToday: number;
+    moonsetToday: number;
+    moonsetTomorrow: number;
+    moonPhase: number;
+    sunsetToday: number;
+    sunriseTomorrow: number;
+    hourlyForecast: HourData[];
 };
 
 type HourlyAstroScore = {
@@ -20,6 +26,7 @@ export type AstroScoreResult = {
         moonVisibility: number;
     };
     summary: string;
+    breakdownTime: number;
     hourlyScores: HourlyAstroScore[];
     primeTimeStart?: number;
     primeTimeEnd?: number;

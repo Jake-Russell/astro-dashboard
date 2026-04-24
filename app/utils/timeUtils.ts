@@ -106,3 +106,18 @@ export const getNightMoonVisibility = (
         moonDownDuringNight,
     };
 };
+
+export const isCurrentlyPrime = (
+    primeTimeStartEpoch: number = 0,
+    primeTimeEndEpoch: number = 0,
+    lat: number,
+    lng: number,
+): boolean => {
+    if (primeTimeStartEpoch === 0 || primeTimeEndEpoch === 0) return false;
+
+    const primeTimeStart = getLocalTime(primeTimeStartEpoch, lat, lng);
+    const primeTimeEnd = getLocalTime(primeTimeEndEpoch, lat, lng);
+    const now = getLocalTime(Math.floor(Date.now() / 1000), lat, lng);
+
+    return !isBefore(now, primeTimeStart) && !isAfter(now, primeTimeEnd);
+};

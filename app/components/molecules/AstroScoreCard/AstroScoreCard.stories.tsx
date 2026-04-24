@@ -49,7 +49,7 @@ export const WithHighCloudCover: Story = {
     args: {
         ...Default.args,
         hourlyForecast: mockHourlyData
-            .filter((hour) => hour.dt >= Date.now() / 1000)
+            .filter((hour) => hour.dt >= now.getTime() / 1000)
             .map((hour) => ({
                 ...hour,
                 clouds: 95,
@@ -62,7 +62,7 @@ export const WithLowCloudCover: Story = {
     args: {
         ...Default.args,
         hourlyForecast: mockHourlyData
-            .filter((hour) => hour.dt >= Date.now() / 1000)
+            .filter((hour) => hour.dt >= now.getTime() / 1000)
             .map((hour) => ({
                 ...hour,
                 clouds: 5,
@@ -76,7 +76,7 @@ export const WithPerfectConditions: Story = {
         ...Default.args,
         moonPhase: 0,
         hourlyForecast: mockHourlyData
-            .filter((hour) => hour.dt >= Date.now() / 1000)
+            .filter((hour) => hour.dt >= now.getTime() / 1000)
             .map((hour) => ({
                 ...hour,
                 clouds: 0,
@@ -91,7 +91,7 @@ export const WithWorstConditions: Story = {
         ...Default.args,
         moonPhase: 0.5,
         hourlyForecast: mockHourlyData
-            .filter((hour) => hour.dt >= Date.now() / 1000)
+            .filter((hour) => hour.dt >= now.getTime() / 1000)
             .map((hour) => ({
                 ...hour,
                 clouds: 100,
@@ -200,7 +200,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
                 sunsetToday={formattedSunsetToday}
                 sunriseTomorrow={formattedSunriseTomorrow}
                 hourlyForecast={mockHourlyData
-                    .filter((hour) => hour.dt >= Date.now() / 1000)
+                    .filter((hour) => hour.dt >= now.getTime() / 1000)
                     .map((hour) => ({
                         ...hour,
                         clouds: averageCloudCover,

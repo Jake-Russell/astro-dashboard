@@ -122,6 +122,24 @@ describe("moonUtils", () => {
             expect(result.moonDownDuringNight).toBe(result.nightDuration);
         });
 
+        it("should return zero moon visibility, given moon rises after night ends", () => {
+            // Moon rises AFTER night ends (07:00 UTC equivalent in this setup)
+            const moonrise = epoch + 31 * 3600;
+            const moonset = epoch + 33 * 3600;
+
+            const result = getNightMoonVisibility(
+                moonrise,
+                moonset,
+                sunset,
+                sunrise,
+                mockLat,
+                mockLng,
+            );
+
+            expect(result.moonUpDuringNight).toBe(0);
+            expect(result.moonDownDuringNight).toBe(result.nightDuration);
+        });
+
         it("should return partial visibility, given moon overlaps start of night", () => {
             // Moon rises during night, sets after
             const moonrise = epoch + 22 * 3600;

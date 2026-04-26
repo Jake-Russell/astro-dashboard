@@ -155,6 +155,26 @@ describe("weatherUtils", () => {
             expect(result).toHaveProperty("primeScore");
         });
 
+        it("should return single-hour result, given only one dark hour is available", () => {
+            const singleHour = [{ dt: sunset + 3600, clouds: 20 }];
+
+            const result = getAstroScore(
+                singleHour,
+                moonIllumination,
+                moonrise,
+                moonset,
+                sunset,
+                sunrise,
+                latitude,
+                longitude,
+            );
+
+            expect(result.hourlyScores).toHaveLength(1);
+            expect(result.primeTimeStart).toBe(singleHour[0].dt);
+            expect(result.primeTimeEnd).toBeDefined();
+            expect(result.primeScore).toBe(result.currentScore);
+        });
+
         it("should calculate higher scores, given clear skies", () => {
             const clear = Array.from({ length: 10 }, (_, i) => ({
                 dt: sunset + i * 3600,

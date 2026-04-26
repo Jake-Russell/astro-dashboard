@@ -1,4 +1,4 @@
-import { getAdjustedMoonRiseAndSet, getMoonPhase } from "../moonUtils";
+import { getAdjustedMoonRiseAndSet, getMoonIllumination, getMoonPhase } from "../moonUtils";
 
 describe("moonUtils", () => {
     describe("getAdjustedMoonRiseAndSet", () => {
@@ -50,6 +50,22 @@ describe("moonUtils", () => {
             ["New Moon", 1],
         ])("should return %s, given phase is %d", (expected, phase) => {
             expect(getMoonPhase(phase)).toBe(expected);
+        });
+    });
+
+    describe("getMoonIllumination", () => {
+        it.each([
+            [0, 0], // New Moon
+            [15, 0.125], // Waxing Crescent
+            [50, 0.25], // First Quarter
+            [85, 0.375], // Waxing Gibbous
+            [100, 0.5], // Full Moon
+            [85, 0.625], // Waning Gibbous
+            [50, 0.75], // Last Quarter
+            [15, 0.875], // Waning Crescent
+            [0, 1], // New Moon
+        ])("should return %d% illumination, given moon phase is %d", (expected, phase) => {
+            expect(getMoonIllumination(phase)).toBe(expected);
         });
     });
 });

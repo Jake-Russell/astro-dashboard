@@ -1,17 +1,16 @@
 "use client";
 import { FunctionComponent } from "react";
+import { isAfter, isBefore, format } from "date-fns";
 import { Tile } from "atoms/Tile";
+import { getAdjustedMoonRiseAndSet, getMoonIllumination } from "utils/moonUtils";
 import {
     getFormattedTime,
     getLocalTime,
-    getMoonIllumination,
     getNightMoonVisibility,
     isCurrentlyPrime,
 } from "utils/timeUtils";
-import { AstroScoreCardProps } from "./types";
-import { isAfter, isBefore, format } from "date-fns";
 import { getAstroScore } from "utils/weatherUtils";
-import { getAdjustedMoonRiseAndSet } from "utils/moonUtils";
+import { AstroScoreCardProps } from "./types";
 
 export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     latitude,
@@ -52,6 +51,8 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         moonsetTomorrow,
     );
 
+    const moonIllumination = getMoonIllumination(moonPhase);
+
     const {
         currentScore,
         currentBreakdown,
@@ -63,7 +64,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         primeScore,
     } = getAstroScore(
         nightHours,
-        getMoonIllumination(moonPhase),
+        moonIllumination,
         moonrise,
         moonset,
         sunsetToday,
@@ -245,12 +246,10 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                 </p>
                                 <div className="flex items-center gap-3">
                                     <span className="text-2xl font-bold text-(--accent-secondary)">
-                                        {getMoonIllumination(moonPhase)}%
+                                        {moonIllumination}%
                                     </span>
                                     <span className="text-sm text-(--text-secondary)">
-                                        {getMoonIllumination(moonPhase) < 50
-                                            ? "🌑 Dark"
-                                            : "🌕 Bright"}
+                                        {moonIllumination < 50 ? "🌑 Dark" : "🌕 Bright"}
                                     </span>
                                 </div>
                             </div>

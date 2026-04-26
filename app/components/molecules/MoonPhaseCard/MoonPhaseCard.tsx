@@ -2,8 +2,8 @@
 import { FunctionComponent, useMemo } from "react";
 import { MoonPhaseCircle } from "atoms/MoonPhaseCircle";
 import { Tile } from "atoms/Tile";
-import { getAdjustedMoonRiseAndSet, getMoonPhase } from "utils/moonUtils";
-import { getFormattedTime, getMoonIllumination, isBodyUp } from "utils/timeUtils";
+import { getAdjustedMoonRiseAndSet, getMoonIllumination, getMoonPhase } from "utils/moonUtils";
+import { getFormattedTime, isBodyUp } from "utils/timeUtils";
 import { MoonPhaseCardProps } from "./types";
 
 export const MoonPhaseCard: FunctionComponent<MoonPhaseCardProps> = ({

@@ -23,3 +23,8 @@ export const getMoonPhase = (value: number): string => {
     if (value > 0.75 && value < 1) return "Waning Crescent";
     return "Unknown";
 };
+
+export const getMoonIllumination = (value: number): number => {
+    const illumination = 0.5 * (1 - Math.cos(2 * Math.PI * value));
+    return Math.round(illumination * 100);
+};

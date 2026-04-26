@@ -15,13 +15,6 @@ export const getFormattedTime = (epoch: number, lat: number, lng: number): strin
     return format(localTime, "HH:mm");
 };
 
-export const getMoonIllumination = (value?: number): number => {
-    if (value === undefined) return 0;
-
-    const illumination = 0.5 * (1 - Math.cos(2 * Math.PI * value));
-    return Math.round(illumination * 100); // percentage
-};
-
 export const isBodyUp = (
     riseEpoch: number,
     /**

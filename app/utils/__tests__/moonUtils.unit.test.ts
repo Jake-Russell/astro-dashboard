@@ -54,9 +54,14 @@ describe("moonUtils", () => {
             ["Last Quarter", 0.75],
             ["Waning Crescent", 0.875],
             ["New Moon", 1],
-        ])("should return %s, given phase is %d", (expected, phase) => {
-            expect(getMoonPhase(phase)).toBe(expected);
-        });
+        ])("should return %s, given phase is %d", (expected, phase) =>
+            expect(getMoonPhase(phase)).toBe(expected),
+        );
+
+        it.each([-1, 1.5, 10])(
+            "should return unknown, given phase is outside of range (%d)",
+            (phase) => expect(getMoonPhase(phase)).toBe("Unknown"),
+        );
     });
 
     describe("getMoonIllumination", () => {

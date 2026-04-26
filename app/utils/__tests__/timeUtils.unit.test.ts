@@ -1,9 +1,16 @@
-import { getLocalTime, isBodyUp, isCurrentlyPrime } from "../timeUtils";
+import { getFormattedTime, getLocalTime, isBodyUp, isCurrentlyPrime } from "../timeUtils";
 import { mockLat, mockLng } from "../../mocks/mockWeatherData";
 
 describe("timeUtils", () => {
+    const tokyoLat = 35.6762;
+    const tokyoLng = 139.6503;
+    const newYorkLat = 40.7128;
+    const newYorkLng = -74.006;
+    let epoch: number;
+
     beforeEach(() => {
         vi.setSystemTime(new Date("2025-01-01T15:00:00Z")); // 3 PM
+        epoch = new Date("2025-01-01T12:00:00Z").getTime() / 1000; // 12 PM
     });
 
     beforeAll(() => vi.useFakeTimers());
@@ -11,11 +18,6 @@ describe("timeUtils", () => {
     afterAll(() => vi.useRealTimers());
 
     describe("getLocalTime", () => {
-        let epoch: number;
-        beforeEach(() => {
-            epoch = new Date("2025-01-01T12:00:00Z").getTime() / 1000;
-        });
-
         it("should convert epoch to a Date representing the same UTC instant, given an epoch timestamp and coordinates", () => {
             const localTime = getLocalTime(epoch, mockLat, mockLng);
 
@@ -24,9 +26,9 @@ describe("timeUtils", () => {
         });
 
         it("should convert UTC epoch to correct local time per timezone, given location coordinates", () => {
-            const londonTime = getLocalTime(epoch, 51.5074, -0.1278); // GMT
-            const tokyoTime = getLocalTime(epoch, 35.6762, 139.6503); // JST (+9)
-            const newYorkTime = getLocalTime(epoch, 40.7128, -74.006); // EST (-5)
+            const londonTime = getLocalTime(epoch, 51.5074, -0.1278);
+            const tokyoTime = getLocalTime(epoch, tokyoLat, tokyoLng);
+            const newYorkTime = getLocalTime(epoch, newYorkLat, newYorkLng);
 
             expect(tokyoTime.getHours()).toBe((londonTime.getHours() + 9) % 24);
             expect(newYorkTime.getHours()).toBe((londonTime.getHours() - 5) % 24);
@@ -47,10 +49,37 @@ describe("timeUtils", () => {
         });
 
         it("should return consistent results for locations within the same timezone, given identical epoch", () => {
-            const oxfordTime = getLocalTime(epoch, mockLat, mockLng);
-            const londonTime = getLocalTime(epoch, 51.5074, -0.1278);
+            const oxfordTime = getLocalTime(epoch, 51.75, -1.25);
+            const londonTime = getLocalTime(epoch, mockLat, mockLng);
 
             expect(oxfordTime.getTime()).toBe(londonTime.getTime());
+        });
+    });
+
+    describe("getFormattedTime", () => {
+        it("should return a string in HH:mm format, given an epoch timestamp and coordinates", () => {
+            const result = getFormattedTime(epoch, mockLat, mockLng);
+
+            expect(typeof result).toBe("string");
+            expect(result).toMatch(/^\d{2}:\d{2}$/);
+        });
+
+        it("should format time using local timezone, given different coordinates", () => {
+            const londonTime = getFormattedTime(epoch, mockLat, mockLng);
+            const tokyoTime = getFormattedTime(epoch, tokyoLat, tokyoLng);
+            const newYorkTime = getFormattedTime(epoch, newYorkLat, newYorkLng);
+
+            expect(londonTime).toBe("12:00");
+            expect(tokyoTime).toBe("21:00");
+            expect(newYorkTime).toBe("07:00");
+        });
+
+        it("should zero-pad hours and minutes correctly, given early morning timestamps", () => {
+            epoch = new Date("2025-01-01T00:05:00Z").getTime() / 1000;
+
+            const result = getFormattedTime(epoch, mockLat, mockLng);
+            expect(result).toMatch(/^\d{2}:\d{2}$/);
+            expect(result).toBe("00:05");
         });
     });
 

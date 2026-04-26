@@ -250,6 +250,17 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                             </div>
                         </div>
                     </div>
+                    <div className="p-3 rounded-lg bg-yellow-500/20 border border-yellow-500/40 mb-4">
+                        <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-1">
+                            ⚠️ Viewing Conditions
+                        </p>
+                        <p className="text-sm text-(--text-secondary)">
+                            For the best stargazing results, use a location with minimal light
+                            pollution and a clear, unobstructed view of the sky. Best results come
+                            from dark-sky locations away from street lights and buildings, with
+                            clear skies overhead.
+                        </p>
+                    </div>
                 </div>
             </div>
         </Tile>

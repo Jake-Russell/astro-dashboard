@@ -35,6 +35,8 @@ jobs:
             - name: Install Playwright browsers
               run: npx playwright install --with-deps chromium
             - name: Run tests
+              env:
+                  TZ: UTC
               run: npm run test:coverage
 
     audit:

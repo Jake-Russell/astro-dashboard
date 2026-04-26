@@ -11,18 +11,12 @@ export async function getWeatherData(lat: string, lng: string): Promise<WeatherR
 
     try {
         const res = await fetch(`/api/weather?lat=${lat}&lng=${lng}`);
-        const data = await res.json();
-        if (!res.ok) {
-            return {
-                ...errorResponse,
-                error: data.error || "API error",
-            };
-        }
+        const data: WeatherResponse = await res.json();
+
+        if (!res.ok) return { ...errorResponse, error: data.error || "API error" };
+
         return data;
-    } catch {
-        return {
-            ...errorResponse,
-            error: "Network error",
-        };
+    } catch (err) {
+        return { ...errorResponse, error: `Network error: ${err}` };
     }
 }

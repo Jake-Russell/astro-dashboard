@@ -1,6 +1,7 @@
-import { WeatherResponse } from "api/weather/route";
-import { mockLat, mockLng, mockWeatherResponse } from "mocks/mockWeatherData";
 import { delay, http, HttpResponse } from "msw";
+import { WeatherResponse } from "api/weather/route";
+import { mockLat, mockLng } from "mocks/mockLocationData";
+import { mockWeatherResponse } from "mocks/mockWeatherData";
 
 export const getMswLocationReverseLoader = (status: number = 200) => {
     return http.get("/api/location/reverse", async () => {

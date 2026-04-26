@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { fn, mocked } from "storybook/test";
 import { getCurrentPosition } from "services/geolocationService";
 import { getMswLocationReverseLoader, getMswLocationSearchLoader } from "storybook/mswHelpers";
+import { mockLat, mockLng } from "mocks/mockLocationData";
 import { LocationSelectorCard } from "./LocationSelectorCard";
-import { mockLat, mockLng } from "mocks/mockWeatherData";
 
 const baseHandlers = [getMswLocationReverseLoader(), getMswLocationSearchLoader()];
 

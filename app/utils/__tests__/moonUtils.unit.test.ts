@@ -4,7 +4,7 @@ import {
     getMoonPhase,
     getNightMoonVisibility,
 } from "../moonUtils";
-import { mockLat, mockLng } from "../../mocks/mockWeatherData";
+import { mockLat, mockLng } from "../../mocks/mockLocationData";
 
 describe("moonUtils", () => {
     describe("getAdjustedMoonRiseAndSet", () => {

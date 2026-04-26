@@ -1,5 +1,5 @@
 import { getFormattedTime, getLocalTime, isBodyUp, isCurrentlyPrime } from "../timeUtils";
-import { mockLat, mockLng } from "../../mocks/mockWeatherData";
+import { mockLat, mockLng } from "../../mocks/mockLocationData";
 
 describe("timeUtils", () => {
     const tokyoLat = 35.6762;

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { mockHourlyData, mockLat, mockLng } from "mocks/mockWeatherData";
+import { mockLat, mockLng } from "mocks/mockLocationData";
+import { mockHourlyData } from "mocks/mockWeatherData";
 import { AstroScoreCard } from "./AstroScoreCard";
 
 const meta = {

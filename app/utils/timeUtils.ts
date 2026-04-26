@@ -16,7 +16,7 @@ export const getFormattedTime = (epoch: number, lat: number, lng: number): strin
 };
 
 export const getMoonPhase = (value?: number): string => {
-    if (!value) return "Unknown";
+    if (value === undefined) return "Unknown";
 
     if (value === 0 || value === 1) return "New Moon";
     if (value > 0 && value < 0.25) return "Waxing Crescent";

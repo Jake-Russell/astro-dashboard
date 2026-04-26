@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { mockDayData, mockHourlyData, mockLat, mockLng } from "mocks/mockWeatherData";
 import { NightWeatherForecastCard } from "./NightWeatherForecastCard";
 
 const meta = {
@@ -10,270 +11,117 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        latitude: 40.7128,
-        longitude: -74.006,
-        hourlyForecast: [
-            {
-                dt: 1775836800,
-                temp: 284.27,
-                feels_like: 282.77,
-                pressure: 1015,
-                humidity: 51,
-                dew_point: 274.52,
-                uvi: 0.87,
-                clouds: 40,
-                visibility: 10000,
-                wind_speed: 4.91,
-                wind_deg: 175,
-                wind_gust: 6.64,
-                weather: [
-                    {
-                        id: 802,
-                        main: "Clouds",
-                        description: "scattered clouds",
-                        icon: "03d",
-                    },
-                ],
-                pop: 0,
-            },
-            {
-                dt: 1775840400,
-                temp: 284.21,
-                feels_like: 282.76,
-                pressure: 1015,
-                humidity: 53,
-                dew_point: 275,
-                uvi: 0.25,
-                clouds: 52,
-                visibility: 10000,
-                wind_speed: 5.03,
-                wind_deg: 172,
-                wind_gust: 7.87,
-                weather: [
-                    {
-                        id: 803,
-                        main: "Clouds",
-                        description: "broken clouds",
-                        icon: "04d",
-                    },
-                ],
-                pop: 0,
-            },
-            {
-                dt: 1775844000,
-                temp: 283.93,
-                feels_like: 282.53,
-                pressure: 1014,
-                humidity: 56,
-                dew_point: 275.51,
-                uvi: 0.07,
-                clouds: 64,
-                visibility: 10000,
-                wind_speed: 5.49,
-                wind_deg: 168,
-                wind_gust: 10.05,
-                weather: [
-                    {
-                        id: 803,
-                        main: "Clouds",
-                        description: "broken clouds",
-                        icon: "04d",
-                    },
-                ],
-                pop: 0,
-            },
-            {
-                dt: 1775847600,
-                temp: 283.11,
-                feels_like: 280.48,
-                pressure: 1014,
-                humidity: 61,
-                dew_point: 275.95,
-                uvi: 0,
-                clouds: 76,
-                visibility: 10000,
-                wind_speed: 5.58,
-                wind_deg: 161,
-                wind_gust: 11.16,
-                weather: [
-                    {
-                        id: 803,
-                        main: "Clouds",
-                        description: "broken clouds",
-                        icon: "04n",
-                    },
-                ],
-                pop: 0,
-            },
-            {
-                dt: 1775851200,
-                temp: 282.3,
-                feels_like: 279.33,
-                pressure: 1013,
-                humidity: 65,
-                dew_point: 276.07,
-                uvi: 0,
-                clouds: 88,
-                visibility: 10000,
-                wind_speed: 5.96,
-                wind_deg: 155,
-                wind_gust: 12.38,
-                weather: [
-                    {
-                        id: 804,
-                        main: "Clouds",
-                        description: "overcast clouds",
-                        icon: "04n",
-                    },
-                ],
-                pop: 0,
-            },
-            {
-                dt: 1775854800,
-                temp: 281.71,
-                feels_like: 278.23,
-                pressure: 1011,
-                humidity: 67,
-                dew_point: 274.82,
-                uvi: 0,
-                clouds: 100,
-                visibility: 10000,
-                wind_speed: 7.03,
-                wind_deg: 147,
-                wind_gust: 14.54,
-                weather: [
-                    {
-                        id: 804,
-                        main: "Clouds",
-                        description: "overcast clouds",
-                        icon: "04n",
-                    },
-                ],
-                pop: 0,
-            },
-            {
-                dt: 1775858400,
-                temp: 281.69,
-                feels_like: 278.22,
-                pressure: 1010,
-                humidity: 70,
-                dew_point: 274.69,
-                uvi: 0,
-                clouds: 100,
-                visibility: 10000,
-                wind_speed: 6.99,
-                wind_deg: 150,
-                wind_gust: 16.25,
-                weather: [
-                    {
-                        id: 804,
-                        main: "Clouds",
-                        description: "overcast clouds",
-                        icon: "04n",
-                    },
-                ],
-                pop: 0,
-            },
-            {
-                dt: 1775862000,
-                temp: 282.23,
-                feels_like: 278.89,
-                pressure: 1008,
-                humidity: 75,
-                dew_point: 275.88,
-                uvi: 0,
-                clouds: 100,
-                visibility: 10000,
-                wind_speed: 7.05,
-                wind_deg: 154,
-                wind_gust: 16.83,
-                weather: [
-                    {
-                        id: 804,
-                        main: "Clouds",
-                        description: "overcast clouds",
-                        icon: "04n",
-                    },
-                ],
-                pop: 0,
-            },
-            {
-                dt: 1775865600,
-                temp: 282.69,
-                feels_like: 279.38,
-                pressure: 1007,
-                humidity: 79,
-                dew_point: 277.05,
-                uvi: 0,
-                clouds: 100,
-                visibility: 10000,
-                wind_speed: 7.4,
-                wind_deg: 156,
-                wind_gust: 16.42,
-                weather: [
-                    {
-                        id: 804,
-                        main: "Clouds",
-                        description: "overcast clouds",
-                        icon: "04n",
-                    },
-                ],
-                pop: 0,
-            },
-            {
-                dt: 1775869200,
-                temp: 282.69,
-                feels_like: 279.33,
-                pressure: 1005,
-                humidity: 80,
-                dew_point: 277.91,
-                uvi: 0,
-                clouds: 100,
-                visibility: 10000,
-                wind_speed: 7.59,
-                wind_deg: 160,
-                wind_gust: 16.72,
-                weather: [
-                    {
-                        id: 804,
-                        main: "Clouds",
-                        description: "overcast clouds",
-                        icon: "04n",
-                    },
-                ],
-                pop: 0,
-            },
-            {
-                dt: 1775872800,
-                temp: 282.89,
-                feels_like: 279.62,
-                pressure: 1004,
-                humidity: 77,
-                dew_point: 278.11,
-                uvi: 0,
-                clouds: 100,
-                visibility: 10000,
-                wind_speed: 7.48,
-                wind_deg: 170,
-                wind_gust: 16.46,
-                weather: [
-                    {
-                        id: 804,
-                        main: "Clouds",
-                        description: "overcast clouds",
-                        icon: "04n",
-                    },
-                ],
-                pop: 0,
-            },
-        ],
-        sunsetToday: 1775847223,
-        sunriseTomorrow: 1775884778,
+        latitude: mockLat,
+        longitude: mockLng,
+        hourlyForecast: mockHourlyData,
+        sunsetToday: mockDayData[0].sunset,
+        sunriseTomorrow: mockDayData[1].sunrise,
     },
-    // TODO
+};
+
+export const WithCloudyNight: Story = {
+    ...Default,
+    args: {
+        ...Default.args,
+        hourlyForecast: mockHourlyData.map((hour) => ({
+            ...hour,
+            clouds: 90,
+        })),
+    },
+};
+
+export const WithClearNight: Story = {
+    ...Default,
+    args: {
+        ...Default.args,
+        hourlyForecast: mockHourlyData.map((hour) => ({
+            ...hour,
+            clouds: 5,
+            weather: [
+                {
+                    id: 800,
+                    main: "Clear",
+                    description: "clear sky",
+                    icon: hour.dt % 86400 < 43200 ? "01d" : "01n",
+                },
+            ],
+        })),
+    },
+};
+
+export const WithPartlyCloudyNight: Story = {
+    ...Default,
+    args: {
+        ...Default.args,
+        hourlyForecast: mockHourlyData.map((hour) => ({
+            ...hour,
+            clouds: 50,
+            weather: [
+                {
+                    id: 802,
+                    main: "Clouds",
+                    description: "scattered clouds",
+                    icon: hour.dt % 86400 < 43200 ? "03d" : "03n",
+                },
+            ],
+        })),
+    },
 };
 
 export const DarkMode: Story = {
     ...Default,
     beforeEach: () => localStorage.setItem("theme", "dark"),
+};
+
+type PlaygroundStoryArgs = {
+    cloudiness: number;
+};
+
+export const Playground: StoryObj<PlaygroundStoryArgs> = {
+    args: {
+        cloudiness: 50,
+    },
+    argTypes: {
+        cloudiness: {
+            control: { type: "range", min: 0, max: 100, step: 5 },
+            name: "Cloudiness (%)",
+        },
+    },
+    render: ({ cloudiness }) => (
+        <NightWeatherForecastCard
+            latitude={mockLat}
+            longitude={mockLng}
+            hourlyForecast={mockHourlyData.map((hour) => ({
+                ...hour,
+                clouds: cloudiness,
+                weather: [
+                    {
+                        id: cloudiness < 20 ? 800 : cloudiness < 70 ? 802 : 804,
+                        main: cloudiness < 20 ? "Clear" : cloudiness < 70 ? "Clouds" : "Clouds",
+                        description:
+                            cloudiness < 20
+                                ? "clear sky"
+                                : cloudiness < 70
+                                  ? "scattered clouds"
+                                  : "overcast clouds",
+                        icon:
+                            cloudiness < 20
+                                ? hour.dt % 86400 < 43200
+                                    ? "01d"
+                                    : "01n"
+                                : cloudiness < 70
+                                  ? hour.dt % 86400 < 43200
+                                      ? "03d"
+                                      : "03n"
+                                  : hour.dt % 86400 < 43200
+                                    ? "04d"
+                                    : "04n",
+                    },
+                ],
+            }))}
+            sunsetToday={mockDayData[0].sunset}
+            sunriseTomorrow={mockDayData[1].sunrise}
+        />
+    ),
+    parameters: { chromatic: { disableSnapshot: true } },
 };

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { mockDayData, mockLat, mockLng } from "mocks/mockWeatherData";
 import { SunCycleCard } from "./SunCycleCard";
 
 const meta = {
@@ -10,16 +11,55 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     args: {
-        latitude: 40.7128,
-        longitude: -74.006,
-        sunrise: 1775798510,
-        sunset: 1775847223,
-        tomorrowSunrise: 1775883610,
+        latitude: mockLat,
+        longitude: mockLng,
+        sunrise: mockDayData[0].sunrise,
+        sunset: mockDayData[0].sunset,
+        tomorrowSunrise: mockDayData[1].sunrise,
     },
-    // TODO
+};
+
+export const WithSunUp: Story = {
+    ...Default,
+    parameters: {
+        mockingDate: new Date(mockDayData[0].sunrise * 1000 + 3600 * 1000), // 1 hour after sunrise
+    },
+};
+
+export const WithSunDown: Story = {
+    ...Default,
+    parameters: {
+        mockingDate: new Date(mockDayData[0].sunset * 1000 + 3600 * 1000), // 1 hour after sunset
+    },
 };
 
 export const DarkMode: Story = {
     ...Default,
     beforeEach: () => localStorage.setItem("theme", "dark"),
+};
+
+type PlaygroundStoryArgs = {
+    isSunUp: boolean;
+};
+
+export const Playground: StoryObj<PlaygroundStoryArgs> = {
+    args: {
+        isSunUp: true,
+    },
+    argTypes: {
+        isSunUp: {
+            type: "boolean",
+            name: "Is Sun Up?",
+        },
+    },
+    render: ({ isSunUp }) => (
+        <SunCycleCard
+            latitude={mockLat}
+            longitude={mockLng}
+            sunrise={mockDayData[0].sunrise}
+            sunset={isSunUp ? mockDayData[0].sunset + 3600 : mockDayData[0].sunset}
+            tomorrowSunrise={mockDayData[1].sunrise}
+        />
+    ),
+    parameters: { chromatic: { disableSnapshot: true } },
 };

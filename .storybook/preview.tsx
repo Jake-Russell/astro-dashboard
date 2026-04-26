@@ -32,6 +32,8 @@ const preview: Preview = {
             // 'off' - skip a11y checks entirely
             test: "error",
         },
+
+        mockingDate: new Date(new Date("2026-01-01T19:00:00Z")),
     },
     decorators: [
         (Story) => (
@@ -42,6 +44,7 @@ const preview: Preview = {
     ],
     beforeEach: () => localStorage.setItem("theme", "light"),
     loaders: [mswLoader],
+    tags: ["autodocs"],
 };
 
 export default preview;

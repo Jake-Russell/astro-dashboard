@@ -22,12 +22,31 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+    play: async ({ canvas, userEvent }) => {
+        const input = canvas.getByTestId("location-input");
+        await userEvent.type(input, "Test Location");
+        await userEvent.click(canvas.getByTestId("search-button"));
+    },
     parameters: {
         msw: {
             handlers: [
                 getMswLocationReverseLoader(),
                 getMswLocationSearchLoader(),
                 getMswWeatherLoader(),
+            ],
+        },
+    },
+};
+
+export const NoWeatherData: Story = {
+    ...Default,
+    parameters: {
+        ...Default.parameters,
+        msw: {
+            handlers: [
+                getMswLocationReverseLoader(),
+                getMswLocationSearchLoader(),
+                getMswWeatherLoader(500),
             ],
         },
     },

@@ -20,7 +20,9 @@
         ],
         "types": ["vitest/globals", "node"],
         "paths": {
+            "atoms": ["./app/components/atoms"],
             "atoms/*": ["./app/components/atoms/*"],
+            "molecules": ["./app/components/molecules"],
             "molecules/*": ["./app/components/molecules/*"],
             "organisms/*": ["./app/components/organisms/*"],
             "services/*": ["./app/services/*"],

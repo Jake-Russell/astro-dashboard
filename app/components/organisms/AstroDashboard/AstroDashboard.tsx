@@ -1,18 +1,22 @@
 "use client";
 import { useMemo } from "react";
 import { WeatherResponse } from "api/weather/route";
-import { StarsBackground } from "atoms/StarsBackground";
-import { ThemeToggle } from "atoms/ThemeToggle";
+import { StarsBackground, ThemeToggle } from "atoms";
 import { useAstronomy } from "contexts/AstronomyContext";
-import { AstroScoreCard, AstroScoreCardProps } from "molecules/AstroScoreCard";
-import { LocationSelector } from "molecules/LocationSelectorCard";
-import { MoonPhaseCard, MoonPhaseCardProps } from "molecules/MoonPhaseCard";
 import {
+    AstroScoreCard,
+    LocationSelector,
+    MoonPhaseCard,
     NightWeatherForecastCard,
+    SunCycleCard,
+} from "molecules";
+import type {
+    AstroScoreCardProps,
+    BaseCardProps,
+    MoonPhaseCardProps,
     NightWeatherForecastCardProps,
-} from "molecules/NightWeatherForecastCard";
-import { SunCycleCard, SunCycleCardProps } from "molecules/SunCycleCard";
-import { BaseCardProps } from "molecules/types";
+    SunCycleCardProps,
+} from "molecules";
 
 const getBaseProps = (latitude: string, longitude: string): BaseCardProps => {
     return {
@@ -32,7 +36,6 @@ const getMoonData = (
         moonsetToday: todayData.moonset,
         moonsetTomorrow: tomorrowData.moonset,
         moonPhase: todayData.moon_phase,
-        error: weatherData.error,
     };
 };
 
@@ -46,7 +49,6 @@ const getSunData = (
         sunrise: todayData.sunrise,
         sunset: todayData.sunset,
         tomorrowSunrise: tomorrowData.sunrise,
-        error: weatherData.error,
     };
 };
 
@@ -60,7 +62,6 @@ const getWeatherForecastData = (
         hourlyForecast: weatherData.hourly,
         sunsetToday: todayData.sunset,
         sunriseTomorrow: tomorrowData.sunrise,
-        error: weatherData.error,
     };
 };
 
@@ -78,7 +79,6 @@ const getScoreCardData = (
         sunsetToday: todayData.sunset,
         sunriseTomorrow: tomorrowData.sunrise,
         hourlyForecast: weatherData.hourly,
-        error: weatherData.error,
     };
 };
 
@@ -96,22 +96,22 @@ export const AstroDashboard = () => {
     const baseProps = useMemo(() => getBaseProps(latitude, longitude), [latitude, longitude]);
 
     const moonPhaseData = useMemo(() => {
-        if (!weatherData) return null;
+        if (!weatherData || weatherData.error) return null;
         return { ...baseProps, ...getMoonData(weatherData) };
     }, [weatherData, baseProps]);
 
     const sunCycleData = useMemo(() => {
-        if (!weatherData) return null;
+        if (!weatherData || weatherData.error) return null;
         return { ...baseProps, ...getSunData(weatherData) };
     }, [weatherData, baseProps]);
 
     const weatherForecastData = useMemo(() => {
-        if (!weatherData) return null;
+        if (!weatherData || weatherData.error) return null;
         return { ...baseProps, ...getWeatherForecastData(weatherData) };
     }, [weatherData, baseProps]);
 
     const astroScoreCardData = useMemo(() => {
-        if (!weatherData) return null;
+        if (!weatherData || weatherData.error) return null;
         return { ...baseProps, ...getScoreCardData(weatherData) };
     }, [weatherData, baseProps]);
 

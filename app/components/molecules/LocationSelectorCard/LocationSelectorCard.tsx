@@ -1,6 +1,6 @@
 "use client";
 import { FunctionComponent, useEffect, useState } from "react";
-import { Tile } from "atoms/Tile";
+import { Tile } from "atoms";
 import { getCurrentPosition } from "services/geolocationService";
 import { getLatLng, getLocationName } from "utils/getLocationData";
 import { LocationSelectorCardProps } from "./types";

@@ -27,11 +27,10 @@ const preview: Preview = {
         },
 
         a11y: {
-            // 'todo' - show a11y violations in the test UI only
-            // 'error' - fail CI on a11y violations
-            // 'off' - skip a11y checks entirely
             test: "error",
         },
+
+        mockingDate: new Date(new Date("2026-01-01T19:00:00Z")),
     },
     decorators: [
         (Story) => (
@@ -42,6 +41,7 @@ const preview: Preview = {
     ],
     beforeEach: () => localStorage.setItem("theme", "light"),
     loaders: [mswLoader],
+    tags: ["autodocs"],
 };
 
 export default preview;

@@ -35,8 +35,9 @@ jobs:
             - name: Install Playwright browsers
               run: npx playwright install --with-deps chromium
             - name: Run tests
-              run: npm test
-            #  TODO: Use test coverage instead -  run: npm run test:coverage
+              env:
+                  TZ: Europe/London
+              run: npm run test:coverage
 
     audit:
         name: Audit
@@ -47,7 +48,7 @@ jobs:
               with:
                   NODE_VERSION: "24.14.1"
                   NODE_AUTH_TOKEN: ${{ secrets.GH_NPM_AUTH_TOKEN }}
-            - run: npm audit
+            - run: npm audit --audit-level=high
 
     storybook:
         name: Storybook Build

@@ -1,2 +1,2 @@
 export { AstroScoreCard } from "./AstroScoreCard";
-export type { AstroScoreCardProps } from "./types";
+export type { AstroScoreCardProps, AstroScoreResult } from "./types";

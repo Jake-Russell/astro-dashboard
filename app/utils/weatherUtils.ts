@@ -1,4 +1,4 @@
-import { AstroScoreResult } from "molecules/AstroScoreCard/types";
+import type { AstroScoreResult } from "molecules";
 import { isBodyUp } from "./timeUtils";
 
 const ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS = 90 * 60; // 90 minutes in seconds

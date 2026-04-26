@@ -1,4 +1,4 @@
-import { BaseCardProps } from "molecules/types";
+import type { BaseCardProps } from "molecules";
 
 export type SunCycleCardProps = BaseCardProps & {
     sunrise: number;

@@ -20,14 +20,17 @@
         ],
         "types": ["vitest/globals", "node"],
         "paths": {
+            "atoms": ["./app/components/atoms"],
             "atoms/*": ["./app/components/atoms/*"],
+            "molecules": ["./app/components/molecules"],
             "molecules/*": ["./app/components/molecules/*"],
             "organisms/*": ["./app/components/organisms/*"],
             "services/*": ["./app/services/*"],
             "utils/*": ["./app/utils/*"],
             "api/*": ["./app/api/*"],
             "contexts/*": ["./app/components/contexts/*"],
-            "mocks/*": ["./app/mocks/*"]
+            "mocks/*": ["./app/mocks/*"],
+            "storybook/*": ["./.storybook/static/*"]
         }
     },
     "include": [

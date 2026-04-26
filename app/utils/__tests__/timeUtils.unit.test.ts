@@ -1,5 +1,5 @@
-import { mockLat, mockLng } from "mocks/mockWeatherData";
-import { isBodyUp, isCurrentlyPrime } from "../timeUtils";
+import { getLocalTime, isBodyUp, isCurrentlyPrime } from "../timeUtils";
+import { mockLat, mockLng } from "../../mocks/mockWeatherData";
 
 describe("timeUtils", () => {
     beforeEach(() => {
@@ -9,6 +9,50 @@ describe("timeUtils", () => {
     beforeAll(() => vi.useFakeTimers());
 
     afterAll(() => vi.useRealTimers());
+
+    describe("getLocalTime", () => {
+        let epoch: number;
+        beforeEach(() => {
+            epoch = new Date("2025-01-01T12:00:00Z").getTime() / 1000;
+        });
+
+        it("should convert epoch to a Date representing the same UTC instant, given an epoch timestamp and coordinates", () => {
+            const localTime = getLocalTime(epoch, mockLat, mockLng);
+
+            expect(localTime).toBeInstanceOf(Date);
+            expect(Math.floor(localTime.getTime() / 1000)).toBe(epoch);
+        });
+
+        it("should convert UTC epoch to correct local time per timezone, given location coordinates", () => {
+            const londonTime = getLocalTime(epoch, 51.5074, -0.1278); // GMT
+            const tokyoTime = getLocalTime(epoch, 35.6762, 139.6503); // JST (+9)
+            const newYorkTime = getLocalTime(epoch, 40.7128, -74.006); // EST (-5)
+
+            expect(tokyoTime.getHours()).toBe((londonTime.getHours() + 9) % 24);
+            expect(newYorkTime.getHours()).toBe((londonTime.getHours() - 5) % 24);
+        });
+
+        it("should reflect daylight saving time changes in local hour values, given epoch timestamps", () => {
+            const winter = new Date("2025-01-15T12:00:00Z").getTime() / 1000;
+            const summer = new Date("2025-07-15T12:00:00Z").getTime() / 1000;
+
+            const winterTime = getLocalTime(winter, mockLat, mockLng);
+            const summerTime = getLocalTime(summer, mockLat, mockLng);
+
+            expect(winterTime.getTime()).toBe(new Date(winter * 1000).getTime());
+            expect(summerTime.getTime()).toBe(new Date(summer * 1000).getTime());
+
+            const offsetDiff = summerTime.getHours() - winterTime.getHours();
+            expect(Math.abs(offsetDiff)).toBe(1);
+        });
+
+        it("should return consistent results for locations within the same timezone, given identical epoch", () => {
+            const oxfordTime = getLocalTime(epoch, mockLat, mockLng);
+            const londonTime = getLocalTime(epoch, 51.5074, -0.1278);
+
+            expect(oxfordTime.getTime()).toBe(londonTime.getTime());
+        });
+    });
 
     describe("isCurrentlyPrime", () => {
         let primeTimeStartEpoch: number;

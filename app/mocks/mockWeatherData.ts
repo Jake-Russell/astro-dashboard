@@ -106,20 +106,20 @@ export const mockHourlyData: HourData[] = [
 export const mockDayData: DayData[] = [
     {
         dt: BASE,
-        sunrise: BASE - 3600,
-        sunset: BASE + 3600,
-        moonrise: BASE - 1800,
-        moonset: BASE + 5400,
+        sunrise: BASE - 9 * 3600, // 6AM
+        sunset: BASE + 4 * 3600, // 7PM
+        moonrise: BASE - 4 * 3600, // 11AM
+        moonset: BASE + 12 * 3600, // 3AM next day
         moon_phase: 0.25,
         clouds: 20,
         weather: [{ id: 801, main: "Clouds", description: "few clouds", icon: "02d" }],
     },
     {
         dt: BASE + 24 * 3600,
-        sunrise: BASE + 24 * 3600 - 3600,
-        sunset: BASE + 24 * 3600 + 3600,
-        moonrise: BASE + 24 * 3600 - 1800,
-        moonset: BASE + 24 * 3600 + 5400,
+        sunrise: BASE + (24 - 9.5) * 3600, // 5:30AM
+        sunset: BASE + (24 + 4.5) * 3600, // 7:30PM
+        moonrise: BASE + (24 - 4.5) * 3600, // 11:30AM
+        moonset: BASE + (24 + 12.5) * 3600, // 3:30AM next day
         moon_phase: 0.5,
         clouds: 80,
         weather: [{ id: 804, main: "Clouds", description: "overcast clouds", icon: "04d" }],
@@ -131,8 +131,8 @@ export const mockWeatherResponse: WeatherResponse = {
     lon: mockLng,
     current: {
         dt: BASE,
-        sunrise: BASE - 3600,
-        sunset: BASE + 3600,
+        sunrise: BASE - 9 * 3600, // 6AM
+        sunset: BASE + 4 * 3600, // 7PM
         clouds: 20,
         visibility: 10000,
         weather: [{ id: 801, main: "Clouds", description: "few clouds", icon: "02d" }],

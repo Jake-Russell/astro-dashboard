@@ -1,4 +1,10 @@
-import { getAdjustedMoonRiseAndSet, getMoonIllumination, getMoonPhase } from "../moonUtils";
+import {
+    getAdjustedMoonRiseAndSet,
+    getMoonIllumination,
+    getMoonPhase,
+    getNightMoonVisibility,
+} from "../moonUtils";
+import { mockLat, mockLng } from "../../mocks/mockWeatherData";
 
 describe("moonUtils", () => {
     describe("getAdjustedMoonRiseAndSet", () => {
@@ -67,5 +73,109 @@ describe("moonUtils", () => {
         ])("should return %d% illumination, given moon phase is %d", (expected, phase) => {
             expect(getMoonIllumination(phase)).toBe(expected);
         });
+    });
+
+    describe("getNightMoonVisibility", () => {
+        const epoch = new Date("2025-01-01T00:00:00Z").getTime() / 1000;
+        const sunset = epoch + 20 * 3600;
+        const sunrise = epoch + 30 * 3600;
+
+        it("should return full moon visibility, given moon is up all night", () => {
+            // Moon: 18:00 → 08:00 (fully covers night)
+            const moonrise = epoch + 18 * 3600;
+            const moonset = epoch + 32 * 3600;
+
+            const result = getNightMoonVisibility(
+                moonrise,
+                moonset,
+                sunset,
+                sunrise,
+                mockLat,
+                mockLng,
+            );
+
+            expect(result.nightDuration).toBe(10 * 60); // 600 minutes
+            expect(result.moonUpDuringNight).toBe(10 * 60);
+            expect(result.moonDownDuringNight).toBe(0);
+        });
+
+        it("should return zero moon visibility, given moon is fully outside night", () => {
+            // Moon entirely before night
+            const moonrise = epoch + 10 * 3600;
+            const moonset = epoch + 15 * 3600;
+
+            const result = getNightMoonVisibility(
+                moonrise,
+                moonset,
+                sunset,
+                sunrise,
+                mockLat,
+                mockLng,
+            );
+
+            expect(result.moonUpDuringNight).toBe(0);
+            expect(result.moonDownDuringNight).toBe(result.nightDuration);
+        });
+
+        it("should return partial visibility, given moon overlaps start of night", () => {
+            // Moon rises during night, sets after
+            const moonrise = epoch + 22 * 3600;
+            const moonset = epoch + 28 * 3600;
+
+            const result = getNightMoonVisibility(
+                moonrise,
+                moonset,
+                sunset,
+                sunrise,
+                mockLat,
+                mockLng,
+            );
+
+            expect(result.moonUpDuringNight).toBe(6 * 60);
+            expect(result.moonDownDuringNight).toBe(4 * 60);
+        });
+
+        it("should handle moonset before moonrise (crossing midnight)", () => {
+            // Moon rises before midnight, sets after midnight (next day)
+            const moonrise = epoch + 23 * 3600;
+            const moonset = epoch + 48 * 3600; // next day
+
+            const result = getNightMoonVisibility(
+                moonrise,
+                moonset,
+                sunset,
+                sunrise,
+                mockLat,
+                mockLng,
+            );
+
+            expect(result.moonUpDuringNight).toBeGreaterThanOrEqual(0);
+            expect(result.moonUpDuringNight + result.moonDownDuringNight).toBe(
+                result.nightDuration,
+            );
+        });
+
+        it.each([
+            [18, 19],
+            [21, 23],
+            [22, 2],
+            [0, 6],
+        ])(
+            "should always ensure moonUp + moonDown equals night duration (moonrise: %d, moonset: %d)",
+            (moonrise, moonset) => {
+                const result = getNightMoonVisibility(
+                    epoch + moonrise * 3600,
+                    epoch + moonset * 3600,
+                    sunset,
+                    sunrise,
+                    mockLat,
+                    mockLng,
+                );
+
+                expect(result.moonUpDuringNight + result.moonDownDuringNight).toBe(
+                    result.nightDuration,
+                );
+            },
+        );
     });
 });

@@ -1,4 +1,4 @@
-import { addDays, differenceInMinutes, format, fromUnixTime, isAfter, isBefore } from "date-fns";
+import { format, fromUnixTime, isAfter, isBefore } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import tzLookup from "tz-lookup";
 
@@ -27,8 +27,6 @@ export const isBodyUp = (
     lng: number,
     timeEpoch?: number,
 ): boolean => {
-    if (!riseEpoch || !setEpoch || !lat || !lng) return false;
-
     const time = timeEpoch
         ? getLocalTime(timeEpoch, lat, lng)
         : getLocalTime(Math.floor(Date.now() / 1000), lat, lng);
@@ -36,54 +34,9 @@ export const isBodyUp = (
     const rise = getLocalTime(riseEpoch, lat, lng);
     const set = getLocalTime(setEpoch, lat, lng);
 
-    if (isBefore(set, rise)) {
-        return false;
-    }
+    if (isBefore(set, rise)) return false;
 
     return isAfter(time, rise) && isBefore(time, set);
-};
-
-export const getNightMoonVisibility = (
-    moonriseEpoch: number,
-    moonsetEpoch: number,
-    sunsetEpoch: number,
-    sunriseEpoch: number,
-    lat: number,
-    lng: number,
-) => {
-    const moonrise = getLocalTime(moonriseEpoch, lat, lng);
-    const moonset = getLocalTime(moonsetEpoch, lat, lng);
-    // Adjust if moonset is before moonrise (i.e., after midnight)
-    const adjustedMoonset = isBefore(moonset, moonrise) ? addDays(moonset, 1) : moonset;
-
-    const sunset = getLocalTime(sunsetEpoch, lat, lng);
-    const sunrise = getLocalTime(sunriseEpoch, lat, lng);
-
-    const nightStart = sunset;
-    const nightEnd = sunrise;
-
-    let moonUpDuringNight = 0;
-
-    // Case 1: Moon sets before night starts → 0
-    if (isBefore(adjustedMoonset, nightStart)) moonUpDuringNight = 0;
-    // Case 2: Moon rises after night ends → 0
-    else if (isAfter(moonrise, nightEnd)) moonUpDuringNight = 0;
-    else {
-        // Compute overlap interval
-        const overlapStart = isAfter(moonrise, nightStart) ? moonrise : nightStart;
-        const overlapEnd = isBefore(adjustedMoonset, nightEnd) ? adjustedMoonset : nightEnd;
-
-        moonUpDuringNight = Math.max(0, differenceInMinutes(overlapEnd, overlapStart));
-    }
-
-    const nightDuration = differenceInMinutes(nightEnd, nightStart);
-    const moonDownDuringNight = nightDuration - moonUpDuringNight;
-
-    return {
-        nightDuration,
-        moonUpDuringNight,
-        moonDownDuringNight,
-    };
 };
 
 export const isCurrentlyPrime = (

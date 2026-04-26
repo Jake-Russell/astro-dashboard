@@ -2,13 +2,12 @@
 import { FunctionComponent } from "react";
 import { isAfter, isBefore, format } from "date-fns";
 import { Tile } from "atoms/Tile";
-import { getAdjustedMoonRiseAndSet, getMoonIllumination } from "utils/moonUtils";
 import {
-    getFormattedTime,
-    getLocalTime,
+    getAdjustedMoonRiseAndSet,
+    getMoonIllumination,
     getNightMoonVisibility,
-    isCurrentlyPrime,
-} from "utils/timeUtils";
+} from "utils/moonUtils";
+import { getFormattedTime, getLocalTime, isCurrentlyPrime } from "utils/timeUtils";
 import { getAstroScore } from "utils/weatherUtils";
 import { AstroScoreCardProps } from "./types";
 

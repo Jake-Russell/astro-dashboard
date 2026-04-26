@@ -36,11 +36,13 @@ const unitTestsProject: TestProjectConfiguration = {
     extends: true,
     test: {
         name: "unit",
+        environment: "jsdom",
         include: ["**/*.unit.{test,spec}.{ts,tsx,js,jsx}"],
         globals: true,
         expect: {
             requireAssertions: true,
         },
+        setupFiles: ["./vitest.setup.ts"],
     },
 };
 

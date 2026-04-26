@@ -46,7 +46,7 @@ jobs:
               with:
                   NODE_VERSION: "24.14.1"
                   NODE_AUTH_TOKEN: ${{ secrets.GH_NPM_AUTH_TOKEN }}
-            - run: npm audit
+            - run: npm audit --audit-level=high
 
     storybook:
         name: Storybook Build

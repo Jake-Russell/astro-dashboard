@@ -1,6 +1,6 @@
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { WeatherResponse } from "api/weather/route";
+import { WeatherResponse } from "api/weather/types";
 import { mockWeatherResponse } from "../../../mocks/mockWeatherData";
 import { mockLat, mockLng } from "../../../mocks/mockLocationData";
 import * as weatherApi from "../../../utils/getWeatherData";

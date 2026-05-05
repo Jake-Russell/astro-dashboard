@@ -1,6 +1,6 @@
 "use client";
 import { useMemo } from "react";
-import { WeatherResponse } from "api/weather/route";
+import { WeatherResponse } from "api/weather/types";
 import { StarsBackground, ThemeToggle } from "atoms";
 import { useAstronomy } from "contexts/AstronomyContext";
 import {

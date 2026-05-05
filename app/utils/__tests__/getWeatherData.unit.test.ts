@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { WeatherResponse } from "api/weather/route";
+import { WeatherResponse } from "api/weather/types";
 import { mockLat, mockLng } from "../../mocks/mockLocationData";
 import { mockWeatherResponse } from "../../mocks/mockWeatherData";
 import { getWeatherData } from "../getWeatherData";

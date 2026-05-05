@@ -6,7 +6,7 @@
  * - Please do NOT modify this file.
  */
 
-const PACKAGE_VERSION = "2.13.2";
+const PACKAGE_VERSION = "2.14.3";
 const INTEGRITY_CHECKSUM = "4db4a41e972cec1b64cc569c66952d82";
 const IS_MOCKED_RESPONSE = Symbol("isMockedResponse");
 const activeClientIds = new Set();
@@ -208,8 +208,6 @@ async function getResponse(event, client, requestId, requestInterceptedAt) {
         // Cast the request headers to a new Headers instance
         // so the headers can be manipulated with.
         const headers = new Headers(requestClone.headers);
-
-        // console.log(`Passthrough - ${requestClone.method} ${requestClone.url}`);
 
         // Remove the "accept" header value that marked this request as passthrough.
         // This prevents request alteration and also keeps it compliant with the

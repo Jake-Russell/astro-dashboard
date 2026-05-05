@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { WeatherResponse } from "api/weather/route";
+import { WeatherResponse } from "api/weather/types";
 import { getWeatherData } from "../../utils/getWeatherData";
 
 export type AstronomyContextType = {

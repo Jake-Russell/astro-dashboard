@@ -1,5 +1,5 @@
 import { delay, http, HttpResponse } from "msw";
-import { WeatherResponse } from "api/weather/route";
+import { WeatherResponse } from "api/weather/types";
 import { mockLat, mockLng } from "mocks/mockLocationData";
 import { mockWeatherResponse } from "mocks/mockWeatherData";
 

@@ -1,4 +1,4 @@
-import { HourData } from "api/weather/route";
+import { HourData } from "api/weather/types";
 import type { BaseCardProps } from "molecules";
 
 export type AstroScoreCardProps = BaseCardProps & {

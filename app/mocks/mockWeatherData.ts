@@ -1,4 +1,4 @@
-import { DayData, HourData, WeatherResponse } from "api/weather/route";
+import { DayData, HourData, WeatherResponse } from "api/weather/types";
 import { mockLat, mockLng } from "./mockLocationData";
 
 const BASE = 1767279600; // 2026-01-01T15:00:00Z

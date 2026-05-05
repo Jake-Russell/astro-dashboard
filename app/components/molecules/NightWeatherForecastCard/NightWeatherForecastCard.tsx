@@ -1,7 +1,7 @@
 "use client";
 import { FunctionComponent } from "react";
 import { isAfter, isBefore } from "date-fns";
-import { HourData } from "api/weather/route";
+import { HourData } from "api/weather/types";
 import { Tile } from "atoms";
 import { getFormattedTime, getLocalTime } from "utils/timeUtils";
 import { NightWeatherForecastCardProps } from "./types";
@@ -45,9 +45,16 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
                                 <span className="text-sm font-medium text-foreground">
                                     {getFormattedTime(hour.dt, latitude, longitude)}
                                 </span>
-                                <span className="text-sm text-(--text-secondary)">
-                                    {hour.weather[0].main}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                    <img
+                                        src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}@2x.png`}
+                                        alt={`${hour.weather[0].main} Icon`}
+                                        className="w-6 h-6"
+                                    />
+                                    <span className="text-sm text-(--text-secondary)">
+                                        {hour.weather[0].main}
+                                    </span>
+                                </div>
                                 <span className="text-right">
                                     <span className="inline-block px-2 py-1 rounded-lg bg-(--accent-primary)/10 text-xs font-semibold text-(--accent-primary)">
                                         {hour.clouds}%

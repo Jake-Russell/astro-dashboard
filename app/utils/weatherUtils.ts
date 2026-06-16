@@ -2,8 +2,8 @@ import type { AstroScoreResult } from "molecules";
 import { isBodyUp } from "./timeUtils";
 
 const ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS = 90 * 60; // 90 minutes in seconds
-const CLOUD_COVERAGE_WEIGHT = 0.5;
-const MOON_WEIGHT = 0.5;
+export const CLOUD_WEIGHT = 6;
+export const MOON_WEIGHT = 4;
 const WINDOW_SIZE = 2;
 
 export const getCloudScore = (cloudCoverage: number): number => {
@@ -29,8 +29,8 @@ export const calculateHourlyScore = (
     const cloudScore = getCloudScore(cloudCoverage);
     const moonScore = getMoonScore(moonIllumination, moonUp);
 
-    const cloudWeighted = cloudScore * CLOUD_COVERAGE_WEIGHT;
-    const moonWeighted = moonScore * MOON_WEIGHT;
+    const cloudWeighted = cloudScore * (CLOUD_WEIGHT / 10);
+    const moonWeighted = moonScore * (MOON_WEIGHT / 10);
 
     const total = cloudWeighted + moonWeighted;
 

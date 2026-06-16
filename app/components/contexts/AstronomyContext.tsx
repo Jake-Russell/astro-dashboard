@@ -1,6 +1,6 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { WeatherResponse } from "api/weather/types";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import type { WeatherResponse } from "api/weather/types";
 import { getWeatherData } from "../../utils/getWeatherData";
 
 export type AstronomyContextType = {
@@ -21,7 +21,7 @@ export const useAstronomy = () => {
     return ctx;
 };
 
-export const AstronomyProvider = ({ children }: { children: React.ReactNode }) => {
+export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
     const [latitude, setLatitude] = useState("");
     const [longitude, setLongitude] = useState("");
     const [weatherData, setWeatherData] = useState<WeatherResponse>();

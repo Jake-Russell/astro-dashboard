@@ -1,5 +1,5 @@
-import { FunctionComponent } from "react";
-import { MoonPhaseCircleProps } from "./types";
+import type { FunctionComponent } from "react";
+import type { MoonPhaseCircleProps } from "./types";
 
 export const MoonPhaseCircle: FunctionComponent<MoonPhaseCircleProps> = ({ phase }) => {
     const p = Math.max(0, Math.min(1, phase));

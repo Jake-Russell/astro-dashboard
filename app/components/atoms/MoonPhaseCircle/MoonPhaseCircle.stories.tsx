@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { MoonPhaseCircle } from "./MoonPhaseCircle";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useEffect } from "react";
+import { MoonPhaseCircle } from "./MoonPhaseCircle";
 
 const meta = {
     component: MoonPhaseCircle,

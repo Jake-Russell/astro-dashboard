@@ -1,8 +1,8 @@
 "use client";
-import { FunctionComponent, useMemo } from "react";
+import { type FunctionComponent, useMemo } from "react";
 import { Tile } from "atoms";
 import { getFormattedTime, isBodyUp } from "utils/timeUtils";
-import { SunCycleCardProps } from "./types";
+import type { SunCycleCardProps } from "./types";
 
 export const SunCycleCard: FunctionComponent<SunCycleCardProps> = ({
     latitude,

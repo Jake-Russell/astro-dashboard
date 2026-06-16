@@ -1,9 +1,9 @@
 "use client";
-import { FunctionComponent, useEffect, useState } from "react";
+import { type FunctionComponent, useEffect, useState } from "react";
 import { Tile } from "atoms";
 import { getCurrentPosition } from "services/geolocationService";
 import { getLatLng, getLocationName } from "utils/getLocationData";
-import { LocationSelectorCardProps } from "./types";
+import type { LocationSelectorCardProps } from "./types";
 
 export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> = ({
     isWeatherDataLoading,

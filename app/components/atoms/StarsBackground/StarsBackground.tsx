@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Star } from "./types";
+import type { Star } from "./types";
 
 import "./StarsBackground.css";
 

@@ -1,5 +1,5 @@
 "use client";
-import { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
 import { isAfter, isBefore, format } from "date-fns";
 import { Tile } from "atoms";
 import {
@@ -8,8 +8,8 @@ import {
     getNightMoonVisibility,
 } from "utils/moonUtils";
 import { getFormattedTime, getLocalTime, isCurrentlyPrime } from "utils/timeUtils";
-import { getAstroScore } from "utils/weatherUtils";
-import { AstroScoreCardProps } from "./types";
+import { getAstroScore, CLOUD_WEIGHT, MOON_WEIGHT } from "utils/weatherUtils";
+import type { AstroScoreCardProps } from "./types";
 
 export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     latitude,
@@ -132,14 +132,16 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                 <div className="space-y-1">
                                     <div className="flex justify-between items-center">
                                         <span>☁️ Clouds</span>
-                                        <span>{currentBreakdown.cloud.toFixed(1)} / 5</span>
+                                        <span>
+                                            {currentBreakdown.cloud.toFixed(1)} / {CLOUD_WEIGHT}
+                                        </span>
                                     </div>
 
                                     <div className="h-2 w-full bg-(--card-border) rounded">
                                         <div
                                             className="h-2 bg-(--accent-primary) rounded transition-all"
                                             style={{
-                                                width: `${(currentBreakdown.cloud / 5) * 100}%`,
+                                                width: `${(currentBreakdown.cloud / CLOUD_WEIGHT) * 100}%`,
                                             }}
                                         />
                                     </div>
@@ -149,14 +151,16 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                 <div className="space-y-1">
                                     <div className="flex justify-between items-center">
                                         <span>🌕 Moon</span>
-                                        <span>{currentBreakdown.moon.toFixed(1)} / 5</span>
+                                        <span>
+                                            {currentBreakdown.moon.toFixed(1)} / {MOON_WEIGHT}
+                                        </span>
                                     </div>
 
                                     <div className="h-2 w-full bg-(--card-border) rounded">
                                         <div
                                             className="h-2 bg-(--accent-secondary) rounded transition-all"
                                             style={{
-                                                width: `${(currentBreakdown.moon / 5) * 100}%`,
+                                                width: `${(currentBreakdown.moon / MOON_WEIGHT) * 100}%`,
                                             }}
                                         />
                                     </div>

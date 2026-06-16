@@ -7,6 +7,8 @@ import {
     getMoonIlluminationScore,
     getMoonScore,
     getScoreSummary,
+    CLOUD_WEIGHT,
+    MOON_WEIGHT,
 } from "../weatherUtils";
 
 describe("weatherUtils", () => {
@@ -67,8 +69,8 @@ describe("weatherUtils", () => {
             const result = calculateHourlyScore(cloudCoverage, moonIllumination, moonUp);
 
             const expected =
-                5 * 0.5 + // clouds (50% coverage → score 5)
-                10 * 0.5; // moon (not up → score 10)
+                5 * (CLOUD_WEIGHT / 10) + // clouds (50% coverage → score 5)
+                10 * (MOON_WEIGHT / 10); // moon (not up → score 10)
 
             expect(result.total).toBeCloseTo(expected);
         });
@@ -80,8 +82,8 @@ describe("weatherUtils", () => {
 
             const result = calculateHourlyScore(cloudCoverage, moonIllumination, moonUp);
             const expected =
-                5 * 0.5 + // clouds (50% coverage → score 5)
-                8 * 0.5; // moon (up, 20% illumination → score 8)
+                5 * (CLOUD_WEIGHT / 10) + // clouds (50% coverage → score 5)
+                8 * (MOON_WEIGHT / 10); // moon (up, 20% illumination → score 8)
 
             expect(result.total).toBeCloseTo(expected);
         });

@@ -1,4 +1,4 @@
-import { LocationReverseResponse, LocationSearchResponse } from "api/location/types";
+import type { LocationReverseResponse, LocationSearchResponse } from "api/location/types";
 
 export async function getLatLng(location: string): Promise<LocationSearchResponse> {
     const errorResponse: LocationSearchResponse = { lat: "", lon: "", displayName: "" };

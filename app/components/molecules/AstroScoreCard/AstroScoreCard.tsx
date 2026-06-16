@@ -148,40 +148,15 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                 {/* MOON BRIGHTNESS */}
                                 <div className="space-y-1">
                                     <div className="flex justify-between items-center">
-                                        <span>🌕 Moon Brightness</span>
-                                        <span>
-                                            {currentBreakdown.moonIllumination.toFixed(1)} / 3
-                                        </span>
+                                        <span>🌕 Moon</span>
+                                        <span>{currentBreakdown.moon.toFixed(1)} / 5</span>
                                     </div>
 
                                     <div className="h-2 w-full bg-(--card-border) rounded">
                                         <div
                                             className="h-2 bg-(--accent-secondary) rounded transition-all"
                                             style={{
-                                                width: `${
-                                                    (currentBreakdown.moonIllumination / 3) * 100
-                                                }%`,
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* MOON VISIBILITY */}
-                                <div className="space-y-1">
-                                    <div className="flex justify-between items-center">
-                                        <span>🌙 Moon Visibility</span>
-                                        <span>
-                                            {currentBreakdown.moonVisibility.toFixed(1)} / 2
-                                        </span>
-                                    </div>
-
-                                    <div className="h-2 w-full bg-(--card-border) rounded">
-                                        <div
-                                            className="h-2 bg-(--accent-tertiary) rounded transition-all"
-                                            style={{
-                                                width: `${
-                                                    (currentBreakdown.moonVisibility / 2) * 100
-                                                }%`,
+                                                width: `${(currentBreakdown.moon / 5) * 100}%`,
                                             }}
                                         />
                                     </div>

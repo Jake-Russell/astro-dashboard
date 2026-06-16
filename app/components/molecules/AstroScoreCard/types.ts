@@ -22,8 +22,7 @@ export type AstroScoreResult = {
     currentScore: number;
     currentBreakdown: {
         cloud: number;
-        moonIllumination: number;
-        moonVisibility: number;
+        moon: number;
     };
     summary: string;
     breakdownTime: number;

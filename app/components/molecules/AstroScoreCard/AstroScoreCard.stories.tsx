@@ -45,6 +45,23 @@ export const WithDarkNewMoon: Story = {
     },
 };
 
+export const WithBrightFullMoonBelowHorizon: Story = {
+    ...Default,
+    args: {
+        ...Default.args,
+        moonPhase: 0.5,
+        moonsetToday: 1767294000, // 2026-01-01T19:00:00Z
+    },
+};
+
+export const WithDarkNewMoonAboveHorizon: Story = {
+    ...Default,
+    args: {
+        ...Default.args,
+        moonPhase: 0,
+    },
+};
+
 export const WithHighCloudCover: Story = {
     ...Default,
     args: {

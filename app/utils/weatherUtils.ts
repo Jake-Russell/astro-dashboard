@@ -3,8 +3,7 @@ import { isBodyUp } from "./timeUtils";
 
 const ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS = 90 * 60; // 90 minutes in seconds
 const CLOUD_COVERAGE_WEIGHT = 0.5;
-const MOON_ILLUMINATION_WEIGHT = 0.3;
-const MOON_VISIBILITY_WEIGHT = 0.2;
+const MOON_WEIGHT = 0.5;
 const WINDOW_SIZE = 2;
 
 export const getCloudScore = (cloudCoverage: number): number => {
@@ -17,8 +16,9 @@ export const getMoonIlluminationScore = (illumination: number): number => {
     return Math.max(0, Math.min(10, score));
 };
 
-export const getMoonVisibilityScore = (moonUp: boolean): number => {
-    return moonUp ? 0 : 10;
+export const getMoonScore = (illumination: number, moonUp: boolean): number => {
+    if (!moonUp) return 10; // Moon below horizon — perfect conditions regardless of illumination
+    return getMoonIlluminationScore(illumination);
 };
 
 export const calculateHourlyScore = (
@@ -27,21 +27,18 @@ export const calculateHourlyScore = (
     moonUp: boolean,
 ) => {
     const cloudScore = getCloudScore(cloudCoverage);
-    const illuminationScore = getMoonIlluminationScore(moonIllumination);
-    const moonVisScore = getMoonVisibilityScore(moonUp);
+    const moonScore = getMoonScore(moonIllumination, moonUp);
 
     const cloudWeighted = cloudScore * CLOUD_COVERAGE_WEIGHT;
-    const illuminationWeighted = illuminationScore * MOON_ILLUMINATION_WEIGHT;
-    const moonVisWeighted = moonVisScore * MOON_VISIBILITY_WEIGHT;
+    const moonWeighted = moonScore * MOON_WEIGHT;
 
-    const total = cloudWeighted + illuminationWeighted + moonVisWeighted;
+    const total = cloudWeighted + moonWeighted;
 
     return {
         total: Math.round(total * 10) / 10,
         breakdown: {
             cloud: cloudWeighted,
-            moonIllumination: illuminationWeighted,
-            moonVisibility: moonVisWeighted,
+            moon: moonWeighted,
         },
     };
 };
@@ -60,23 +57,15 @@ export const getScoreSummary = (
 ): string => {
     const veryCloudy = cloudCoverage > 80;
     const cloudy = cloudCoverage > 60;
-
     const brightMoon = moonUp && moonIllumination > 60;
     const moderateMoon = moonUp && moonIllumination > 30;
 
     if (veryCloudy) return "Poor — heavy cloud cover dominates the sky";
     if (brightMoon && cloudy) return "Very poor — bright moon and clouds limit visibility";
     if (brightMoon) return "Poor — bright moon reduces dark sky contrast";
-
     if (cloudy) return "Below average — clouds reducing clarity";
-
-    if (cloudCoverage < 20 && !moonUp) {
-        return "Excellent — clear, dark sky conditions";
-    }
-
-    if (cloudCoverage < 40 && !moderateMoon) {
-        return "Good — mostly clear with mild interference";
-    }
+    if (cloudCoverage < 20 && !moonUp) return "Excellent — clear, dark sky conditions";
+    if (cloudCoverage < 40 && !moderateMoon) return "Good — mostly clear with mild interference";
 
     return "Mixed conditions — some visibility limitations";
 };
@@ -116,8 +105,7 @@ export const getAstroScore = (
             currentScore: 0,
             currentBreakdown: {
                 cloud: 0,
-                moonIllumination: 0,
-                moonVisibility: 0,
+                moon: 0,
             },
             summary: "No astronomical darkness during this period",
             breakdownTime: 0,

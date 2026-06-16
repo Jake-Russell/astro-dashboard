@@ -5,7 +5,7 @@ import {
     getAstroScore,
     getCloudScore,
     getMoonIlluminationScore,
-    getMoonVisibilityScore,
+    getMoonScore,
     getScoreSummary,
 } from "../weatherUtils";
 
@@ -38,13 +38,23 @@ describe("weatherUtils", () => {
         });
     });
 
-    describe("getMoonVisibilityScore", () => {
-        it("should return 10 when moon is not up", () => {
-            expect(getMoonVisibilityScore(false)).toBe(10);
+    describe("getMoonScore", () => {
+        it("should return 10 when moon is not up, regardless of illumination", () => {
+            expect(getMoonScore(100, false)).toBe(10);
+            expect(getMoonScore(0, false)).toBe(10);
+            expect(getMoonScore(50, false)).toBe(10);
         });
 
-        it("should return 0 when moon is up", () => {
-            expect(getMoonVisibilityScore(true)).toBe(0);
+        it("should return 0 when moon is up and fully illuminated", () => {
+            expect(getMoonScore(100, true)).toBe(0);
+        });
+
+        it("should return 10 when moon is up but not illuminated (new moon)", () => {
+            expect(getMoonScore(0, true)).toBe(10);
+        });
+
+        it("should return 5 when moon is up at 50% illumination", () => {
+            expect(getMoonScore(50, true)).toBe(5);
         });
     });
 
@@ -57,9 +67,21 @@ describe("weatherUtils", () => {
             const result = calculateHourlyScore(cloudCoverage, moonIllumination, moonUp);
 
             const expected =
-                5 * 0.5 + // clouds
-                8 * 0.3 + // illumination
-                10 * 0.2; // visibility
+                5 * 0.5 + // clouds (50% coverage → score 5)
+                10 * 0.5; // moon (not up → score 10)
+
+            expect(result.total).toBeCloseTo(expected);
+        });
+
+        it("should calculate correct weighted score when moon is up", () => {
+            const cloudCoverage = 50;
+            const moonIllumination = 20;
+            const moonUp = true;
+
+            const result = calculateHourlyScore(cloudCoverage, moonIllumination, moonUp);
+            const expected =
+                5 * 0.5 + // clouds (50% coverage → score 5)
+                8 * 0.5; // moon (up, 20% illumination → score 8)
 
             expect(result.total).toBeCloseTo(expected);
         });
@@ -271,6 +293,22 @@ describe("weatherUtils", () => {
             );
 
             expect(low.currentScore).toBeGreaterThan(high.currentScore);
+        });
+
+        it("should return zero score when no dark hours are available", () => {
+            const result = getAstroScore(
+                [],
+                moonIllumination,
+                moonrise,
+                moonset,
+                sunset,
+                sunrise,
+                latitude,
+                longitude,
+            );
+
+            expect(result.currentScore).toBe(0);
+            expect(result.hourlyScores).toHaveLength(0);
         });
     });
 });

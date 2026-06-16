@@ -1,10 +1,10 @@
 "use client";
-import { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
 import { isAfter, isBefore } from "date-fns";
-import { HourData } from "api/weather/types";
+import type { HourData } from "api/weather/types";
 import { Tile } from "atoms";
 import { getFormattedTime, getLocalTime } from "utils/timeUtils";
-import { NightWeatherForecastCardProps } from "./types";
+import type { NightWeatherForecastCardProps } from "./types";
 
 export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCardProps> = ({
     latitude,

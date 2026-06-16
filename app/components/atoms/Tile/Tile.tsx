@@ -1,5 +1,5 @@
-import { FunctionComponent, PropsWithChildren } from "react";
-import { TileProps } from "./types";
+import type { FunctionComponent, PropsWithChildren } from "react";
+import type { TileProps } from "./types";
 
 export const Tile: FunctionComponent<PropsWithChildren<TileProps>> = ({
     title,

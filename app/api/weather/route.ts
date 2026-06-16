@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { WeatherResponse } from "./types";
+import type { WeatherResponse } from "./types";
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);

@@ -1,5 +1,5 @@
 "use client";
-import { FunctionComponent } from "react";
+import type { FunctionComponent } from "react";
 import { isAfter, isBefore, format } from "date-fns";
 import { Tile } from "atoms";
 import {
@@ -9,7 +9,7 @@ import {
 } from "utils/moonUtils";
 import { getFormattedTime, getLocalTime, isCurrentlyPrime } from "utils/timeUtils";
 import { getAstroScore, CLOUD_WEIGHT, MOON_WEIGHT } from "utils/weatherUtils";
-import { AstroScoreCardProps } from "./types";
+import type { AstroScoreCardProps } from "./types";
 
 export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     latitude,

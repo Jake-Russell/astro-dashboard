@@ -2,11 +2,7 @@
 import type { FunctionComponent } from "react";
 import { isAfter, isBefore, format } from "date-fns";
 import { Tile } from "atoms";
-import {
-    getAdjustedMoonRiseAndSet,
-    getMoonIllumination,
-    getNightMoonVisibility,
-} from "utils/moonUtils";
+import { getAdjustedMoonRiseAndSet, getMoonIllumination } from "utils/moonUtils";
 import { getFormattedTime, getLocalTime, isCurrentlyPrime } from "utils/timeUtils";
 import { getAstroScore, CLOUD_WEIGHT, MOON_WEIGHT } from "utils/weatherUtils";
 import type { AstroScoreCardProps } from "./types";
@@ -22,18 +18,6 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     sunriseTomorrow,
     hourlyForecast,
 }) => {
-    // TODO: Review unused vars and clean up
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-
-    const { nightDuration, moonUpDuringNight, moonDownDuringNight } = getNightMoonVisibility(
-        moonriseToday,
-        moonsetToday,
-        sunsetToday,
-        sunriseTomorrow,
-        latitude,
-        longitude,
-    );
-
     const sunsetTime = getLocalTime(sunsetToday, latitude, longitude);
     const sunriseTime = getLocalTime(sunriseTomorrow, latitude, longitude);
 
@@ -56,7 +40,6 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         currentBreakdown,
         summary,
         breakdownTime,
-        hourlyScores,
         primeTimeStart,
         primeTimeEnd,
         primeScore,

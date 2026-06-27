@@ -209,8 +209,8 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
 
         return (
             <AstroScoreCard
-                latitude={51.60084}
-                longitude={-1.66199}
+                latitude={mockLat}
+                longitude={mockLng}
                 moonriseToday={formattedMoonriseToday}
                 moonsetToday={formattedMoonsetToday}
                 moonsetTomorrow={formattedMoonsetTomorrow}

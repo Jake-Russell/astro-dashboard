@@ -20,8 +20,8 @@ export type NominatimReverseResponse = {
 };
 
 export type LocationSearchResponse = {
-    lat: string;
-    lon: string;
+    lat: number;
+    lon: number;
     displayName: string;
     error?: string;
 };

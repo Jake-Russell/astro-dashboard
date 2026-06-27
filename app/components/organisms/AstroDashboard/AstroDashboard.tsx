@@ -18,11 +18,8 @@ import type {
     SunCycleCardProps,
 } from "molecules";
 
-const getBaseProps = (latitude: string, longitude: string): BaseCardProps => {
-    return {
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
-    };
+const getBaseProps = (latitude: number | null, longitude: number | null): BaseCardProps => {
+    return { latitude, longitude };
 };
 
 const getMoonData = (

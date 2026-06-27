@@ -13,7 +13,7 @@ describe("getLocationData", () => {
     afterEach(() => vi.restoreAllMocks());
 
     describe("getLatLng", () => {
-        const baseErrorResponse: LocationSearchResponse = { lat: "", lon: "", displayName: "" };
+        const baseErrorResponse: LocationSearchResponse = { lat: 0, lon: 0, displayName: "" };
 
         it("should return location data, given the API responds successfully", async () => {
             vi.stubGlobal(
@@ -82,7 +82,7 @@ describe("getLocationData", () => {
                 }),
             );
 
-            const result = await getLocationName(mockLat.toString(), mockLng.toString());
+            const result = await getLocationName(mockLat, mockLng);
 
             expect(fetch).toHaveBeenCalledWith(
                 `/api/location/reverse?lat=${mockLat}&lon=${mockLng}`,
@@ -99,7 +99,7 @@ describe("getLocationData", () => {
                 }),
             );
 
-            const result = await getLocationName(mockLat.toString(), mockLng.toString());
+            const result = await getLocationName(mockLat, mockLng);
 
             expect(result).toEqual({ ...baseErrorResponse, error: "Bad request" });
         });
@@ -113,7 +113,7 @@ describe("getLocationData", () => {
                 }),
             );
 
-            const result = await getLocationName(mockLat.toString(), mockLng.toString());
+            const result = await getLocationName(mockLat, mockLng);
 
             expect(result).toEqual({ ...baseErrorResponse, error: "API error" });
         });
@@ -121,7 +121,7 @@ describe("getLocationData", () => {
         it("should return network error, given fetch throws", async () => {
             vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Network fail")));
 
-            const result = await getLocationName(mockLat.toString(), mockLng.toString());
+            const result = await getLocationName(mockLat, mockLng);
 
             expect(result).toEqual({
                 ...baseErrorResponse,

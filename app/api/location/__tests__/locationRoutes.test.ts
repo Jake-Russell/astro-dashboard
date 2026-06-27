@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { GET as searchGET } from "../search/route";
 import { GET as reverseGET } from "../reverse/route";
 import { NextRequest } from "next/server";
+import { mockLat, mockLng } from "mocks/mockLocationData";
 
 describe("Location API routes", () => {
     const fetchMock = vi.fn();
@@ -59,8 +60,8 @@ describe("Location API routes", () => {
                 ok: true,
                 json: vi.fn().mockResolvedValueOnce([
                     {
-                        lat: "51.75",
-                        lon: "-1.25",
+                        lat: mockLat,
+                        lon: mockLng,
                         display_name: "Swindon, Wiltshire, UK",
                     },
                 ]),
@@ -70,8 +71,8 @@ describe("Location API routes", () => {
 
             expect(response.status).toBe(200);
             expect(await response.json()).toEqual({
-                lat: "51.75",
-                lon: "-1.25",
+                lat: mockLat,
+                lon: mockLng,
                 displayName: "Swindon, UK",
             });
         });
@@ -92,13 +93,13 @@ describe("Location API routes", () => {
         let request: NextRequest;
         beforeEach(() => {
             request = new NextRequest(
-                "https://example.com/api/location/reverse?lat=51.75&lon=-1.25",
+                `https://example.com/api/location/reverse?lat=${mockLat}&lon=${mockLng}`,
             );
         });
 
         it.each([
-            "https://example.com/api/location/reverse?lat=51.75",
-            "https://example.com/api/location/reverse?lon=-1.25",
+            `https://example.com/api/location/reverse?lat=${mockLat}`,
+            `https://example.com/api/location/reverse?lon=${mockLng}`,
         ])("should return 400 when lat or lon are missing", async (url) => {
             request = new NextRequest(url);
 

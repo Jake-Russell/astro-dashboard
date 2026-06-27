@@ -1,6 +1,6 @@
 import type { WeatherResponse } from "api/weather/types";
 
-export async function getWeatherData(lat: string, lng: string): Promise<WeatherResponse> {
+export async function getWeatherData(lat: number, lng: number): Promise<WeatherResponse> {
     const errorResponse: WeatherResponse = {
         lat: 0,
         lon: 0,
@@ -10,7 +10,9 @@ export async function getWeatherData(lat: string, lng: string): Promise<WeatherR
     };
 
     try {
-        const res = await fetch(`/api/weather?lat=${lat}&lng=${lng}`);
+        const res = await fetch(
+            `/api/weather?lat=${encodeURIComponent(String(lat))}&lng=${encodeURIComponent(String(lng))}`,
+        );
         const data: WeatherResponse = await res.json();
 
         if (!res.ok) return { ...errorResponse, error: data.error || "API error" };

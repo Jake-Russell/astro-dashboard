@@ -4,10 +4,10 @@ import type { WeatherResponse } from "api/weather/types";
 import { getWeatherData } from "../../utils/getWeatherData";
 
 export type AstronomyContextType = {
-    latitude: string;
-    longitude: string;
-    setLatitude: (lat: string) => void;
-    setLongitude: (lng: string) => void;
+    latitude: number | null;
+    longitude: number | null;
+    setLatitude: (lat: number) => void;
+    setLongitude: (lng: number) => void;
     weatherData?: WeatherResponse;
     weatherLoading: boolean;
     setWeatherLoading: (loading: boolean) => void;
@@ -22,13 +22,13 @@ export const useAstronomy = () => {
 };
 
 export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
-    const [latitude, setLatitude] = useState("");
-    const [longitude, setLongitude] = useState("");
+    const [latitude, setLatitude] = useState<number | null>(null);
+    const [longitude, setLongitude] = useState<number | null>(null);
     const [weatherData, setWeatherData] = useState<WeatherResponse>();
     const [weatherLoading, setWeatherLoading] = useState(false);
 
     useEffect(() => {
-        if (!latitude || !longitude) return;
+        if (latitude === null || longitude === null) return;
         setWeatherLoading(true);
         getWeatherData(latitude, longitude)
             .then((weatherData) => {

@@ -6,8 +6,8 @@ import { getWeatherData } from "../getWeatherData";
 
 describe("getWeatherData", () => {
     const baseErrorResponse: WeatherResponse = {
-        lat: 0,
-        lon: 0,
+        latitude: 0,
+        longitude: 0,
         current: { dt: 0, sunrise: 0, sunset: 0, clouds: 0, visibility: 0, weather: [] },
         hourly: [],
         daily: [],

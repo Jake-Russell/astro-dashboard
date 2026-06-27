@@ -1,3 +1,5 @@
+import { GeoPosition } from "services/geolocationService";
+
 export type NominatimSearchResponse = {
     lat: string;
     lon: string;
@@ -19,9 +21,7 @@ export type NominatimReverseResponse = {
     };
 };
 
-export type LocationSearchResponse = {
-    lat: number;
-    lon: number;
+export type LocationSearchResponse = GeoPosition & {
     displayName: string;
     error?: string;
 };

@@ -12,13 +12,13 @@ import {
 } from "molecules";
 import type {
     AstroScoreCardProps,
-    BaseCardProps,
     MoonPhaseCardProps,
     NightWeatherForecastCardProps,
     SunCycleCardProps,
 } from "molecules";
+import type { GeoPosition } from "services/geolocationService";
 
-const getBaseProps = (latitude: number | null, longitude: number | null): BaseCardProps => {
+const getBaseProps = (latitude: number, longitude: number): GeoPosition => {
     return { latitude, longitude };
 };
 

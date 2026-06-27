@@ -4,8 +4,8 @@ export const mockLat = 51.5074;
 export const mockLng = -0.1278;
 
 export const mockLocationSearchResponse: LocationSearchResponse = {
-    lat: mockLat,
-    lon: mockLng,
+    latitude: mockLat,
+    longitude: mockLng,
     displayName: "London, UK",
 };
 

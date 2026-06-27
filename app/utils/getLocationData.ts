@@ -1,7 +1,7 @@
 import type { LocationReverseResponse, LocationSearchResponse } from "api/location/types";
 
 export async function getLatLng(location: string): Promise<LocationSearchResponse> {
-    const errorResponse: LocationSearchResponse = { lat: 0, lon: 0, displayName: "" };
+    const errorResponse: LocationSearchResponse = { latitude: 0, longitude: 0, displayName: "" };
 
     try {
         const res = await fetch(`/api/location/search?location=${encodeURIComponent(location)}`);
@@ -15,12 +15,15 @@ export async function getLatLng(location: string): Promise<LocationSearchRespons
     }
 }
 
-export async function getLocationName(lat: number, lon: number): Promise<LocationReverseResponse> {
+export async function getLocationName(
+    latitude: number,
+    longitude: number,
+): Promise<LocationReverseResponse> {
     const errorResponse: LocationReverseResponse = { name: "", displayName: "" };
 
     try {
         const res = await fetch(
-            `/api/location/reverse?lat=${encodeURIComponent(String(lat))}&lon=${encodeURIComponent(String(lon))}`,
+            `/api/location/reverse?lat=${encodeURIComponent(String(latitude))}&lon=${encodeURIComponent(String(longitude))}`,
         );
         const data: LocationReverseResponse = await res.json();
 

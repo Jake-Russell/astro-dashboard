@@ -1,7 +1,7 @@
 import type { HourData } from "api/weather/types";
-import type { BaseCardProps } from "molecules";
+import type { GeoPosition } from "services/geolocationService";
 
-export type NightWeatherForecastCardProps = BaseCardProps & {
+export type NightWeatherForecastCardProps = GeoPosition & {
     hourlyForecast: HourData[];
     sunsetToday: number;
     sunriseTomorrow: number;

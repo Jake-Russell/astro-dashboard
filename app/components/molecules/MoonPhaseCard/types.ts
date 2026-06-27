@@ -1,6 +1,6 @@
-import type { BaseCardProps } from "molecules";
+import type { GeoPosition } from "services/geolocationService";
 
-export type MoonPhaseCardProps = BaseCardProps & {
+export type MoonPhaseCardProps = GeoPosition & {
     moonriseToday: number;
     moonsetToday: number;
     moonsetTomorrow: number;

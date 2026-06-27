@@ -33,8 +33,8 @@ export async function GET(request: NextRequest) {
         const displayName = `${data[0].display_name.split(",")[0]},${data[0].display_name.split(",").at(-1)}`;
 
         const response: LocationSearchResponse = {
-            lat: data[0].lat,
-            lon: data[0].lon,
+            latitude: parseFloat(data[0].lat),
+            longitude: parseFloat(data[0].lon),
             displayName,
         };
 

@@ -1,7 +1,7 @@
 export type LocationSelectorCardProps = {
     isWeatherDataLoading: boolean;
     weatherDataError?: string;
-    setLatitude: (lat: number) => void;
-    setLongitude: (long: number) => void;
+    setLatitude: (latitude: number) => void;
+    setLongitude: (longitude: number) => void;
     setWeatherLoading: (loading: boolean) => void;
 };

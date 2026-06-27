@@ -13,7 +13,11 @@ describe("getLocationData", () => {
     afterEach(() => vi.restoreAllMocks());
 
     describe("getLatLng", () => {
-        const baseErrorResponse: LocationSearchResponse = { lat: 0, lon: 0, displayName: "" };
+        const baseErrorResponse: LocationSearchResponse = {
+            latitude: 0,
+            longitude: 0,
+            displayName: "",
+        };
 
         it("should return location data, given the API responds successfully", async () => {
             vi.stubGlobal(

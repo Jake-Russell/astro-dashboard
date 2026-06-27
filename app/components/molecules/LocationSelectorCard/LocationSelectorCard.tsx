@@ -78,8 +78,8 @@ export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> 
             return;
         }
 
-        setLatitude(locationData.lat);
-        setLongitude(locationData.lon);
+        setLatitude(locationData.latitude);
+        setLongitude(locationData.longitude);
         setLocationDisplayName(locationData.displayName);
         setLastSearchedLocation(normalisedLocation);
     };

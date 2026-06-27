@@ -6,8 +6,8 @@ import { getWeatherData } from "../getWeatherData";
 
 describe("getWeatherData", () => {
     const baseErrorResponse: WeatherResponse = {
-        lat: 0,
-        lon: 0,
+        latitude: 0,
+        longitude: 0,
         current: { dt: 0, sunrise: 0, sunset: 0, clouds: 0, visibility: 0, weather: [] },
         hourly: [],
         daily: [],
@@ -25,7 +25,7 @@ describe("getWeatherData", () => {
             }),
         );
 
-        const result = await getWeatherData(mockLat.toString(), mockLng.toString());
+        const result = await getWeatherData(mockLat, mockLng);
 
         expect(fetch).toHaveBeenCalledWith(`/api/weather?lat=${mockLat}&lng=${mockLng}`);
         expect(result).toEqual(mockWeatherResponse);
@@ -40,7 +40,7 @@ describe("getWeatherData", () => {
             }),
         );
 
-        const result = await getWeatherData(mockLat.toString(), mockLng.toString());
+        const result = await getWeatherData(mockLat, mockLng);
 
         expect(result).toEqual({ ...baseErrorResponse, error: "Bad request" });
     });
@@ -54,7 +54,7 @@ describe("getWeatherData", () => {
             }),
         );
 
-        const result = await getWeatherData(mockLat.toString(), mockLng.toString());
+        const result = await getWeatherData(mockLat, mockLng);
 
         expect(result).toEqual({ ...baseErrorResponse, error: "API error" });
     });
@@ -62,7 +62,7 @@ describe("getWeatherData", () => {
     it("should return network error, given fetch throws", async () => {
         vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("Network fail")));
 
-        const result = await getWeatherData(mockLat.toString(), mockLng.toString());
+        const result = await getWeatherData(mockLat, mockLng);
 
         expect(result).toEqual({
             ...baseErrorResponse,

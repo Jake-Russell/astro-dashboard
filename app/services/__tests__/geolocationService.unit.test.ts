@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { getCurrentPosition } from "../geolocationService";
-import { mockLat, mockLng } from "../../mocks/mockLocationData";
 
 describe("geolocationService", () => {
     describe("getCurrentPosition", () => {
@@ -22,12 +21,14 @@ describe("geolocationService", () => {
             });
         });
 
-        it("should resolve with formatted coordinates, given geolocation succeeds", async () => {
+        it("should resolve with rounded numeric coordinates, given geolocation succeeds", async () => {
+            const latitude = 12.3456789;
+            const longitude = -98.7654321;
             const getCurrentPositionMock = vi
                 .fn()
                 .mockImplementation((success: PositionCallback) => {
                     success({
-                        coords: { latitude: mockLat, longitude: mockLng },
+                        coords: { latitude, longitude },
                     } as GeolocationPosition);
                 });
 
@@ -38,7 +39,10 @@ describe("geolocationService", () => {
             const result = await getCurrentPosition();
 
             expect(getCurrentPositionMock).toHaveBeenCalled();
-            expect(result).toEqual({ latitude: mockLat.toFixed(5), longitude: mockLng.toFixed(5) });
+            expect(result).toEqual({
+                latitude: Number(latitude.toFixed(5)),
+                longitude: Number(longitude.toFixed(5)),
+            });
         });
 
         it("should reject with permission denied message, given PERMISSION_DENIED error", async () => {

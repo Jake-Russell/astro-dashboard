@@ -23,8 +23,8 @@ export const Default: Story = {
     },
     beforeEach() {
         mocked(getCurrentPosition).mockResolvedValue({
-            latitude: mockLat.toString(),
-            longitude: mockLng.toString(),
+            latitude: mockLat,
+            longitude: mockLng,
         });
     },
     parameters: {

@@ -1,7 +1,7 @@
-import { HourData } from "api/weather/types";
-import type { BaseCardProps } from "molecules";
+import type { HourData } from "api/weather/types";
+import type { GeoPosition } from "services/geolocationService";
 
-export type AstroScoreCardProps = BaseCardProps & {
+export type AstroScoreCardProps = GeoPosition & {
     moonriseToday: number;
     moonsetToday: number;
     moonsetTomorrow: number;

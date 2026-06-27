@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { mockLat, mockLng } from "mocks/mockLocationData";
-import { mockHourlyData } from "mocks/mockWeatherData";
+import { mockDayData, mockHourlyData } from "mocks/mockWeatherData";
 import { AstroScoreCard } from "./AstroScoreCard";
 
 const meta = {
@@ -16,12 +16,12 @@ export const Default: Story = {
     args: {
         latitude: mockLat,
         longitude: mockLng,
-        moonriseToday: 1767261600, // 2026-01-01T10:00:00Z
-        moonsetToday: 1767240000, // 2026-01-01T04:00:00Z
-        moonsetTomorrow: 1767326400, // 2026-01-02T04:00:00Z
-        moonPhase: 0.25,
-        sunsetToday: 1767294000, // 2026-01-01T19:00:00Z
-        sunriseTomorrow: 1767330000, // 2026-01-02T05:00:00Z
+        moonriseToday: mockDayData[0].moonrise,
+        moonsetToday: mockDayData[0].moonset,
+        moonsetTomorrow: mockDayData[1].moonset,
+        moonPhase: mockDayData[0].moon_phase,
+        sunsetToday: mockDayData[0].sunset,
+        sunriseTomorrow: mockDayData[1].sunrise,
         hourlyForecast: mockHourlyData.filter((hour) => hour.dt >= now.getTime() / 1000),
     },
     parameters: {
@@ -209,8 +209,8 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
 
         return (
             <AstroScoreCard
-                latitude={51.60084}
-                longitude={-1.66199}
+                latitude={mockLat}
+                longitude={mockLng}
                 moonriseToday={formattedMoonriseToday}
                 moonsetToday={formattedMoonsetToday}
                 moonsetTomorrow={formattedMoonsetTomorrow}

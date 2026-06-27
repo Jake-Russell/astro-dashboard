@@ -2,14 +2,14 @@ import { format, fromUnixTime, isAfter, isBefore } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import tzLookup from "tz-lookup";
 
-export const getLocalTime = (epoch: number, lat: number, lng: number): Date => {
-    const tz = tzLookup(lat, lng);
+export const getLocalTime = (epoch: number, latitude: number, longitude: number): Date => {
+    const tz = tzLookup(latitude, longitude);
     const utcTime = fromUnixTime(epoch);
     return toZonedTime(utcTime, tz);
 };
 
-export const getFormattedTime = (epoch: number, lat: number, lng: number): string => {
-    const localTime = getLocalTime(epoch, lat, lng);
+export const getFormattedTime = (epoch: number, latitude: number, longitude: number): string => {
+    const localTime = getLocalTime(epoch, latitude, longitude);
     return format(localTime, "HH:mm");
 };
 
@@ -21,16 +21,16 @@ export const isBodyUp = (
      * I.e., if the body sets before it rises, use tomorrow's set time.
      */
     setEpoch: number,
-    lat: number,
-    lng: number,
+    latitude: number,
+    longitude: number,
     timeEpoch?: number,
 ): boolean => {
     const time = timeEpoch
-        ? getLocalTime(timeEpoch, lat, lng)
-        : getLocalTime(Math.floor(Date.now() / 1000), lat, lng);
+        ? getLocalTime(timeEpoch, latitude, longitude)
+        : getLocalTime(Math.floor(Date.now() / 1000), latitude, longitude);
 
-    const rise = getLocalTime(riseEpoch, lat, lng);
-    const set = getLocalTime(setEpoch, lat, lng);
+    const rise = getLocalTime(riseEpoch, latitude, longitude);
+    const set = getLocalTime(setEpoch, latitude, longitude);
 
     if (isBefore(set, rise)) return false;
 
@@ -40,14 +40,14 @@ export const isBodyUp = (
 export const isCurrentlyPrime = (
     primeTimeStartEpoch: number = 0,
     primeTimeEndEpoch: number = 0,
-    lat: number,
-    lng: number,
+    latitude: number,
+    longitude: number,
 ): boolean => {
     if (primeTimeStartEpoch === 0 || primeTimeEndEpoch === 0) return false;
 
-    const primeTimeStart = getLocalTime(primeTimeStartEpoch, lat, lng);
-    const primeTimeEnd = getLocalTime(primeTimeEndEpoch, lat, lng);
-    const now = getLocalTime(Math.floor(Date.now() / 1000), lat, lng);
+    const primeTimeStart = getLocalTime(primeTimeStartEpoch, latitude, longitude);
+    const primeTimeEnd = getLocalTime(primeTimeEndEpoch, latitude, longitude);
+    const now = getLocalTime(Math.floor(Date.now() / 1000), latitude, longitude);
 
     return !isBefore(now, primeTimeStart) && !isAfter(now, primeTimeEnd);
 };

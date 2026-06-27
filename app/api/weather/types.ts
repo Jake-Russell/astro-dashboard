@@ -1,3 +1,5 @@
+import type { GeoPosition } from "services/geolocationService";
+
 type WeatherData = {
     id: number;
     main: string;
@@ -20,9 +22,7 @@ export type DayData = HourData & {
     weather: WeatherData[];
 };
 
-export type WeatherResponse = {
-    lat: number;
-    lon: number;
+export type WeatherResponse = GeoPosition & {
     current: {
         dt: number;
         sunrise: number;

@@ -1,6 +1,6 @@
 export type GeoPosition = {
-    latitude: string;
-    longitude: string;
+    latitude: number;
+    longitude: number;
 };
 
 export const getCurrentPosition = (): Promise<GeoPosition> => {
@@ -15,8 +15,8 @@ export const getCurrentPosition = (): Promise<GeoPosition> => {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 resolve({
-                    latitude: position.coords.latitude.toFixed(5),
-                    longitude: position.coords.longitude.toFixed(5),
+                    latitude: Number(position.coords.latitude.toFixed(5)),
+                    longitude: Number(position.coords.longitude.toFixed(5)),
                 });
             },
             (error: GeolocationPositionError) => {

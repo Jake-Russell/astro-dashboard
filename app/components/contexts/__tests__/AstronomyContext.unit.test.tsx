@@ -30,8 +30,8 @@ describe("AstronomyContext", () => {
         const { result } = renderHook(() => useAstronomy(), { wrapper });
 
         act(() => {
-            result.current.setLatitude(mockLat.toString());
-            result.current.setLongitude(mockLng.toString());
+            result.current.setLatitude(mockLat);
+            result.current.setLongitude(mockLng);
         });
 
         await waitFor(() => expect(result.current.weatherLoading).toBe(false));
@@ -51,8 +51,8 @@ describe("AstronomyContext", () => {
         const { result } = renderHook(() => useAstronomy(), { wrapper });
 
         act(() => {
-            result.current.setLatitude(mockLat.toString());
-            result.current.setLongitude(mockLng.toString());
+            result.current.setLatitude(mockLat);
+            result.current.setLongitude(mockLng);
         });
 
         expect(result.current.weatherLoading).toBe(true);
@@ -68,8 +68,8 @@ describe("AstronomyContext", () => {
         const { result } = renderHook(() => useAstronomy(), { wrapper });
 
         act(() => {
-            result.current.setLatitude(mockLat.toString());
-            result.current.setLongitude(mockLng.toString());
+            result.current.setLatitude(mockLat);
+            result.current.setLongitude(mockLng);
         });
 
         expect(result.current.weatherLoading).toBe(true);

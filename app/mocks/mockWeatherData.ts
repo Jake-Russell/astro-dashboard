@@ -125,8 +125,8 @@ export const mockDayData: DayData[] = [
 ];
 
 export const mockWeatherResponse: WeatherResponse = {
-    lat: mockLat,
-    lon: mockLng,
+    latitude: mockLat,
+    longitude: mockLng,
     current: {
         dt: BASE,
         sunrise: BASE - 9 * 3600, // 6AM

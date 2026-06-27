@@ -1,4 +1,4 @@
-import { GeoPosition } from "services/geolocationService";
+import type { GeoPosition } from "services/geolocationService";
 
 type WeatherData = {
     id: number;

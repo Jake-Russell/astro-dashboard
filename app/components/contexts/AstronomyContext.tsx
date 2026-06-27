@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import type { WeatherResponse } from "api/weather/types";
 import { getWeatherData } from "../../utils/getWeatherData";
-import { GeoPosition } from "services/geolocationService";
+import type { GeoPosition } from "services/geolocationService";
 
 export type AstronomyContextType = GeoPosition & {
     setLatitude: (latitude: number) => void;

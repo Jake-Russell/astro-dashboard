@@ -1,5 +1,5 @@
-import { HourData } from "api/weather/types";
-import { GeoPosition } from "services/geolocationService";
+import type { HourData } from "api/weather/types";
+import type { GeoPosition } from "services/geolocationService";
 
 export type AstroScoreCardProps = GeoPosition & {
     moonriseToday: number;

@@ -42,8 +42,8 @@
         "@types/tz-lookup": "^6.1.2",
         "@typescript-eslint/eslint-plugin": "^8.62.1",
         "@typescript-eslint/parser": "^8.62.1",
-        "@vitest/browser-playwright": "^4.0.7",
-        "@vitest/coverage-v8": "^4.1.4",
+        "@vitest/browser-playwright": "^4.1.9",
+        "@vitest/coverage-v8": "^4.1.9",
         "eslint": "^9.39.4",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.6",
@@ -62,7 +62,7 @@
         "typescript": "^6.0.3",
         "typescript-eslint": "^8.62.1",
         "vite": "^8.0.8",
-        "vitest": "^4.0.7"
+        "vitest": "^4.1.9"
     },
     "msw": {
         "workerDirectory": [

@@ -19,7 +19,7 @@ runs:
 
     steps:
         - name: Setup Node
-          uses: actions/setup-node@v6
+          uses: actions/setup-node@v7
           with:
               node-version: ${{ inputs.NODE_VERSION }}
               registry-url: ${{ inputs.NPM_REGISTRY_URL }}

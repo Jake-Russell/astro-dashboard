@@ -27,7 +27,7 @@ describe("getWeatherData", () => {
 
         const result = await getWeatherData(mockLat, mockLng);
 
-        expect(fetch).toHaveBeenCalledWith(`/api/weather?lat=${mockLat}&lng=${mockLng}`);
+        expect(fetch).toHaveBeenCalledWith(`/api/weather?lat=${mockLat}&lon=${mockLng}`);
         expect(result).toEqual(mockWeatherResponse);
     });
 

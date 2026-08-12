@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { NextRequest } from "next/server";
+import { mockLat, mockLng } from "../../../mocks/mockLocationData";
 import { GET as searchGET } from "../search/route";
 import { GET as reverseGET } from "../reverse/route";
-import { NextRequest } from "next/server";
-import { mockLat, mockLng } from "mocks/mockLocationData";
 
 describe("Location API routes", () => {
     const fetchMock = vi.fn();

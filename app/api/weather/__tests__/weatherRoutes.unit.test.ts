@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { NextRequest } from "next/server";
+import { mockLat, mockLng } from "../../../mocks/mockLocationData";
+import { mockWeatherResponse } from "../../../mocks/mockWeatherData";
 import { GET } from "../route";
-import { mockLat, mockLng } from "mocks/mockLocationData";
-import { mockWeatherResponse } from "mocks/mockWeatherData";
 
 describe("Weather API route", () => {
     const fetchMock = vi.fn();

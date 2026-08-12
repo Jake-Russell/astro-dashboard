@@ -6,24 +6,24 @@ describe("parseCoordinates", () => {
     it("should return error, given either coordinate is missing", () => {
         expect(parseCoordinates(mockLat.toString(), null)).toEqual({
             ok: false,
-            error: "Missing lat/lng",
+            error: "Missing lat/lon",
         });
 
         expect(parseCoordinates(null, mockLng.toString())).toEqual({
             ok: false,
-            error: "Missing lat/lng",
+            error: "Missing lat/lon",
         });
     });
 
     it("should return error, given values are not numeric", () => {
         expect(parseCoordinates("abc", mockLng.toString())).toEqual({
             ok: false,
-            error: "Invalid lat/lng values",
+            error: "Invalid lat/lon values",
         });
 
         expect(parseCoordinates(mockLat.toString(), "invalid")).toEqual({
             ok: false,
-            error: "Invalid lat/lng values",
+            error: "Invalid lat/lon values",
         });
     });
 

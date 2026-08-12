@@ -6,9 +6,9 @@ import type { WeatherResponse } from "./types";
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const lat = searchParams.get("lat");
-    const lng = searchParams.get("lng");
+    const lon = searchParams.get("lon");
 
-    const parsedCoordinates = parseCoordinates(lat, lng);
+    const parsedCoordinates = parseCoordinates(lat, lon);
     if (!parsedCoordinates.ok) {
         return NextResponse.json({ error: parsedCoordinates.error }, { status: 400 });
     }

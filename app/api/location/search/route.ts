@@ -12,7 +12,10 @@ export async function GET(request: NextRequest) {
     const url = `${NOMINATIM_BASE_URL}/search?q=${location}&format=json&limit=1`;
 
     try {
-        const res = await fetch(url, { headers: NOMINATIM_HEADERS });
+        const res = await fetch(url, {
+            headers: NOMINATIM_HEADERS,
+            signal: AbortSignal.timeout(15000),
+        });
 
         if (!res.ok) {
             return NextResponse.json(

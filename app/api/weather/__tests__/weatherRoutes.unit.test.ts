@@ -6,62 +6,48 @@ import { mockWeatherResponse } from "mocks/mockWeatherData";
 
 describe("Weather API route", () => {
     const fetchMock = vi.fn();
+    let request: NextRequest;
 
     beforeEach(() => {
         fetchMock.mockReset();
         vi.stubGlobal("fetch", fetchMock);
         process.env.OPEN_WEATHER_MAP_APP_ID = "test-weather-key";
+        request = new NextRequest(`https://example.com/api/weather?lat=${mockLat}&lon=${mockLng}`);
     });
 
     afterEach(() => vi.unstubAllGlobals());
 
-    it("should return 400, given lat is missing", async () => {
-        const request = new NextRequest(`https://example.com/api/weather?lng=${mockLng}`);
+    it.each([
+        `https://example.com/api/weather?lat=${mockLat}`,
+        `https://example.com/api/weather?lon=${mockLng}`,
+    ])("should return 400, given either lat or lon are missing", async (url) => {
+        request = new NextRequest(url);
 
         const response = await GET(request);
 
         expect(response.status).toBe(400);
-        expect(await response.json()).toEqual({ error: "Missing lat/lng" });
-    });
-
-    it("should return 400, given lng is missing", async () => {
-        const request = new NextRequest(`https://example.com/api/weather?lat=${mockLat}`);
-
-        const response = await GET(request);
-
-        expect(response.status).toBe(400);
-        expect(await response.json()).toEqual({ error: "Missing lat/lng" });
-    });
-
-    it("should return 400, given lat is invalid", async () => {
-        const request = new NextRequest(
-            `https://example.com/api/weather?lat=not-a-number&lng=${mockLng}`,
-        );
-
-        const response = await GET(request);
-
-        expect(response.status).toBe(400);
-        expect(await response.json()).toEqual({ error: "Invalid lat/lng values" });
-    });
-
-    it("should return 400, given lng is invalid", async () => {
-        const request = new NextRequest(
-            `https://example.com/api/weather?lat=${mockLat}&lng=not-a-number`,
-        );
-
-        const response = await GET(request);
-
-        expect(response.status).toBe(400);
-        expect(await response.json()).toEqual({ error: "Invalid lat/lng values" });
+        expect(await response.json()).toEqual({ error: "Missing lat/lon" });
     });
 
     it.each([
-        ["90.1", "0"],
-        ["-90.1", "0"],
-        ["0", "180.1"],
-        ["0", "-180.1"],
-    ])("should return 400, given coordinates are out of range (%s, %s)", async (lat, lng) => {
-        const request = new NextRequest(`https://example.com/api/weather?lat=${lat}&lng=${lng}`);
+        `https://example.com/api/weather?lat=not-a-number&lon=${mockLng}`,
+        `https://example.com/api/weather?lat=${mockLat}&lon=not-a-number`,
+    ])("should return 400, given either lat or lon are invalid", async (url) => {
+        request = new NextRequest(url);
+
+        const response = await GET(request);
+
+        expect(response.status).toBe(400);
+        expect(await response.json()).toEqual({ error: "Invalid lat/lon values" });
+    });
+
+    it.each([
+        `https://example.com/api/weather?lat=91&lon=${mockLng}`,
+        `https://example.com/api/weather?lat=-91&lon=${mockLng}`,
+        `https://example.com/api/weather?lat=${mockLat}&lon=181`,
+        `https://example.com/api/weather?lat=${mockLat}&lon=-181`,
+    ])("should return 400, given either lat or lon are out of range", async (url) => {
+        request = new NextRequest(url);
 
         const response = await GET(request);
 
@@ -75,10 +61,6 @@ describe("Weather API route", () => {
             status: 503,
             text: vi.fn().mockResolvedValueOnce("service unavailable"),
         });
-
-        const request = new NextRequest(
-            `https://example.com/api/weather?lat=${mockLat}&lng=${mockLng}`,
-        );
 
         const response = await GET(request);
 
@@ -95,10 +77,6 @@ describe("Weather API route", () => {
             text: vi.fn().mockResolvedValueOnce("invalid api key"),
         });
 
-        const request = new NextRequest(
-            `https://example.com/api/weather?lat=${mockLat}&lng=${mockLng}`,
-        );
-
         const response = await GET(request);
 
         expect(response.status).toBe(401);
@@ -114,10 +92,6 @@ describe("Weather API route", () => {
             text: vi.fn().mockResolvedValueOnce(""),
         });
 
-        const request = new NextRequest(
-            `https://example.com/api/weather?lat=${mockLat}&lng=${mockLng}`,
-        );
-
         const response = await GET(request);
 
         expect(response.status).toBe(502);
@@ -128,10 +102,6 @@ describe("Weather API route", () => {
 
     it("should return 500, given the required API key is missing", async () => {
         delete process.env.OPEN_WEATHER_MAP_APP_ID;
-
-        const request = new NextRequest(
-            `https://example.com/api/weather?lat=${mockLat}&lng=${mockLng}`,
-        );
 
         const response = await GET(request);
 
@@ -144,10 +114,6 @@ describe("Weather API route", () => {
     it("should return 504, given the fetch throws", async () => {
         fetchMock.mockRejectedValueOnce(new Error("Timeout"));
 
-        const request = new NextRequest(
-            `https://example.com/api/weather?lat=${mockLat}&lng=${mockLng}`,
-        );
-
         const response = await GET(request);
 
         expect(response.status).toBe(504);
@@ -158,10 +124,6 @@ describe("Weather API route", () => {
 
     it("should stringify non-Error values from the fetch rejection", async () => {
         fetchMock.mockRejectedValueOnce("non-error rejection");
-
-        const request = new NextRequest(
-            `https://example.com/api/weather?lat=${mockLat}&lng=${mockLng}`,
-        );
 
         const response = await GET(request);
 
@@ -176,10 +138,6 @@ describe("Weather API route", () => {
             ok: true,
             json: vi.fn().mockResolvedValueOnce(mockWeatherResponse),
         });
-
-        const request = new NextRequest(
-            `https://example.com/api/weather?lat=${mockLat}&lng=${mockLng}`,
-        );
 
         const response = await GET(request);
 

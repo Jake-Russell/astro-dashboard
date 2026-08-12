@@ -5,13 +5,13 @@ export const parseCoordinates = (
     latitude: string | null,
     longitude: string | null,
 ): CoordinateParseResult => {
-    if (!latitude || !longitude) return { ok: false, error: "Missing lat/lng" };
+    if (!latitude || !longitude) return { ok: false, error: "Missing lat/lon" };
 
     const parsedLatitude = Number.parseFloat(latitude);
     const parsedLongitude = Number.parseFloat(longitude);
 
     if (!Number.isFinite(parsedLatitude) || !Number.isFinite(parsedLongitude)) {
-        return { ok: false, error: "Invalid lat/lng values" };
+        return { ok: false, error: "Invalid lat/lon values" };
     }
 
     if (Math.abs(parsedLatitude) > 90 || Math.abs(parsedLongitude) > 180) {

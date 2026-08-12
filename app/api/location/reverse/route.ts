@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { parseCoordinates } from "../../utils/parseCoordinates";
 import { NOMINATIM_BASE_URL, NOMINATIM_HEADERS } from "../consts";
 import type { LocationReverseResponse, NominatimReverseResponse } from "../types";
 
@@ -7,18 +8,25 @@ export async function GET(request: NextRequest) {
     const lat = searchParams.get("lat");
     const lon = searchParams.get("lon");
 
-    if (!lat || !lon)
-        return NextResponse.json({ error: "Lat and Lon parameters are required" }, { status: 400 });
+    const parsedCoordinates = parseCoordinates(lat, lon);
+    if (!parsedCoordinates.ok) {
+        return NextResponse.json({ error: parsedCoordinates.error }, { status: 400 });
+    }
 
-    const url = `${NOMINATIM_BASE_URL}/reverse?lat=${lat}&lon=${lon}&format=json`;
+    const { latitude, longitude } = parsedCoordinates;
 
     try {
-        const res = await fetch(url, { headers: NOMINATIM_HEADERS });
+        const url = `${NOMINATIM_BASE_URL}/reverse?lat=${latitude}&lon=${longitude}&format=json`;
+        const res = await fetch(url, {
+            headers: NOMINATIM_HEADERS,
+            signal: AbortSignal.timeout(15000),
+        });
 
         if (!res.ok) {
+            const errorBody = await res.text();
             return NextResponse.json(
-                { error: `Nominatim API Error: ${res.status}` },
-                { status: res.status },
+                { error: `Nominatim API error: ${res.status} ${errorBody || "unknown"}` },
+                { status: res.status >= 500 ? 502 : res.status },
             );
         }
 
@@ -44,6 +52,6 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(response);
     } catch (e: unknown) {
         const message = e instanceof Error ? e.message : String(e);
-        return NextResponse.json({ error: `Network error: ${message}` }, { status: 500 });
+        return NextResponse.json({ error: `Network error: ${message}` }, { status: 504 });
     }
 }

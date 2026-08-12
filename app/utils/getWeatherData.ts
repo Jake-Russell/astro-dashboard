@@ -14,7 +14,7 @@ export async function getWeatherData(
 
     try {
         const res = await fetch(
-            `/api/weather?lat=${encodeURIComponent(String(latitude))}&lng=${encodeURIComponent(String(longitude))}`,
+            `/api/weather?lat=${encodeURIComponent(String(latitude))}&lon=${encodeURIComponent(String(longitude))}`,
         );
         const data: WeatherResponse = await res.json();
 

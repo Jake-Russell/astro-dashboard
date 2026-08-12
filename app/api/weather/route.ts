@@ -1,23 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
+import { env } from "../../config/env";
+import { parseCoordinates } from "../utils/parseCoordinates";
 import type { WeatherResponse } from "./types";
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
-    const apiKey = process.env.OPEN_WEATHER_MAP_APP_ID;
 
-    if (!apiKey) return NextResponse.json({ error: "API key missing" }, { status: 500 });
-    if (!lat || !lng) return NextResponse.json({ error: "Missing lat/lng" }, { status: 400 });
+    const parsedCoordinates = parseCoordinates(lat, lng);
+    if (!parsedCoordinates.ok) {
+        return NextResponse.json({ error: parsedCoordinates.error }, { status: 400 });
+    }
 
-    const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lng}&appid=${apiKey}`;
+    const { latitude, longitude } = parsedCoordinates;
 
     try {
-        const res = await fetch(url);
-        const data: WeatherResponse = await res.json();
+        const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&appid=${env.weatherApiKey}`;
+        const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
 
+        if (!res.ok) {
+            const errorBody = await res.text();
+            return NextResponse.json(
+                { error: `Weather provider error: ${res.status} ${errorBody || "unknown"}` },
+                { status: res.status >= 500 ? 502 : res.status },
+            );
+        }
+
+        const data: WeatherResponse = await res.json();
         return NextResponse.json(data);
     } catch (err) {
-        return NextResponse.json({ error: `Network error: ${err}` }, { status: 500 });
+        const message = err instanceof Error ? err.message : String(err);
+
+        if (message.includes("Missing required environment variable")) {
+            return NextResponse.json({ error: message }, { status: 500 });
+        }
+
+        return NextResponse.json({ error: `Network error: ${message}` }, { status: 504 });
     }
 }

@@ -22,7 +22,7 @@ describe("getNightForecastWindow", () => {
 
         expect(result).toEqual({
             forecastStart: mockTimestamps.jan2Midnight,
-            nightEnd: mockDayData[1].sunrise,
+            forecastEnd: mockDayData[1].sunrise,
             isActiveNight: true,
         });
     });
@@ -31,7 +31,7 @@ describe("getNightForecastWindow", () => {
         const result = getNightForecastWindow(getNextDayWeatherData(mockDayData[1].sunrise));
         expect(result).toEqual({
             forecastStart: mockDayData[1].sunset,
-            nightEnd: mockDayData[2].sunrise,
+            forecastEnd: mockDayData[2].sunrise,
             isActiveNight: false,
         });
     });
@@ -41,7 +41,7 @@ describe("getNightForecastWindow", () => {
 
         expect(getNightForecastWindow(getNextDayWeatherData(daytime))).toEqual({
             forecastStart: mockDayData[1].sunset,
-            nightEnd: mockDayData[2].sunrise,
+            forecastEnd: mockDayData[2].sunrise,
             isActiveNight: false,
         });
     });
@@ -59,7 +59,7 @@ describe("getNightForecastHours", () => {
     it("should return only the remaining hours in the night, given forecast hours on each window boundary", () => {
         const result = getNightForecastHours(hourlyForecast, {
             forecastStart: 2000,
-            nightEnd: 5000,
+            forecastEnd: 5000,
         });
 
         expect(result).toEqual([hourlyForecast[2], hourlyForecast[3]]);

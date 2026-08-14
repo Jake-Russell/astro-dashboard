@@ -13,7 +13,7 @@ type Story = StoryObj<typeof meta>;
 
 const mockNightHours = getNightForecastHours(mockHourlyData, {
     forecastStart: mockDayData[0].sunset,
-    nightEnd: mockDayData[1].sunrise,
+    forecastEnd: mockDayData[1].sunrise,
 });
 
 export const Default: Story = {

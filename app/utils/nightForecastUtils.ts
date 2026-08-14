@@ -2,7 +2,7 @@ import type { HourData, WeatherResponse } from "api/weather/types";
 
 export type NightForecastRange = {
     forecastStart: number;
-    nightEnd: number;
+    forecastEnd: number;
 };
 
 export type NightForecastWindow = NightForecastRange & {
@@ -17,21 +17,21 @@ export const getNightForecastWindow = (weatherData: WeatherResponse): NightForec
     if (isActiveNight) {
         return {
             forecastStart: Math.floor(weatherData.current.dt / 3600) * 3600,
-            nightEnd: weatherData.current.sunrise,
+            forecastEnd: weatherData.current.sunrise,
             isActiveNight,
         };
     }
 
     return {
         forecastStart: todayData.sunset,
-        nightEnd: tomorrowData.sunrise,
+        forecastEnd: tomorrowData.sunrise,
         isActiveNight,
     };
 };
 
 export const getNightForecastHours = (
     hourlyForecast: HourData[],
-    { nightEnd, forecastStart }: NightForecastRange,
+    { forecastStart, forecastEnd }: NightForecastRange,
 ): HourData[] => {
-    return hourlyForecast.filter((hour) => hour.dt >= forecastStart && hour.dt < nightEnd);
+    return hourlyForecast.filter((hour) => hour.dt >= forecastStart && hour.dt < forecastEnd);
 };

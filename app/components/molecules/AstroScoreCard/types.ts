@@ -6,7 +6,7 @@ export type AstroScoreCardProps = GeoPosition & {
     moonsetToday: number;
     moonsetTomorrow: number;
     moonPhase: number;
-    nightStart: number;
+    forecastStart: number;
     nightEnd: number;
     nightHours: HourData[];
 };

@@ -14,7 +14,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     moonsetToday,
     moonsetTomorrow,
     moonPhase,
-    nightStart,
+    forecastStart,
     nightEnd,
     nightHours,
 }) => {
@@ -39,7 +39,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         moonIllumination,
         moonrise,
         moonset,
-        nightStart,
+        forecastStart,
         nightEnd,
         latitude,
         longitude,

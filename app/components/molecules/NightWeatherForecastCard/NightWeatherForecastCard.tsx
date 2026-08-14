@@ -10,7 +10,7 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
     nightHours,
 }) => {
     return (
-        <Tile title="Weather">
+        <Tile title="Weather" testId="weather-forecast-tile">
             <div className="w-full">
                 <div className="w-full space-y-2">
                     <div className="grid grid-cols-3 gap-3 text-xs font-bold text-(--text-secondary) uppercase tracking-widest border-b border-(--card-border) pb-3 mb-3">

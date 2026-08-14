@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { mockLat, mockLng } from "mocks/mockLocationData";
 import { mockDayData, mockHourlyData } from "mocks/mockWeatherData";
+import { getNightForecastHours } from "utils/nightForecastUtils";
 import { NightWeatherForecastCard } from "./NightWeatherForecastCard";
 
 const meta = {
@@ -10,13 +11,16 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const mockNightHours = getNightForecastHours(mockHourlyData, {
+    forecastStart: mockDayData[0].sunset,
+    nightEnd: mockDayData[1].sunrise,
+});
+
 export const Default: Story = {
     args: {
         latitude: mockLat,
         longitude: mockLng,
-        hourlyForecast: mockHourlyData,
-        sunsetToday: mockDayData[0].sunset,
-        sunriseTomorrow: mockDayData[1].sunrise,
+        nightHours: mockNightHours,
     },
 };
 
@@ -24,7 +28,7 @@ export const WithCloudyNight: Story = {
     ...Default,
     args: {
         ...Default.args,
-        hourlyForecast: mockHourlyData.map((hour) => ({
+        nightHours: mockNightHours.map((hour) => ({
             ...hour,
             clouds: 90,
         })),
@@ -35,7 +39,7 @@ export const WithClearNight: Story = {
     ...Default,
     args: {
         ...Default.args,
-        hourlyForecast: mockHourlyData.map((hour) => ({
+        nightHours: mockNightHours.map((hour) => ({
             ...hour,
             clouds: 5,
             weather: [
@@ -54,7 +58,7 @@ export const WithPartlyCloudyNight: Story = {
     ...Default,
     args: {
         ...Default.args,
-        hourlyForecast: mockHourlyData.map((hour) => ({
+        nightHours: mockNightHours.map((hour) => ({
             ...hour,
             clouds: 50,
             weather: [
@@ -92,7 +96,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
         <NightWeatherForecastCard
             latitude={mockLat}
             longitude={mockLng}
-            hourlyForecast={mockHourlyData.map((hour) => ({
+            nightHours={mockNightHours.map((hour) => ({
                 ...hour,
                 clouds: cloudiness,
                 weather: [
@@ -120,8 +124,6 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
                     },
                 ],
             }))}
-            sunsetToday={mockDayData[0].sunset}
-            sunriseTomorrow={mockDayData[1].sunrise}
         />
     ),
     parameters: { chromatic: { disableSnapshot: true } },

@@ -53,12 +53,11 @@ const getSunData = (
 const getWeatherForecastData = (
     weatherData: WeatherResponse,
 ): Omit<NightWeatherForecastCardProps, "latitude" | "longitude"> => {
-    const { nightStart, nightEnd, forecastStart } = getNightForecastWindow(weatherData);
+    const { forecastStart, nightEnd } = getNightForecastWindow(weatherData);
 
     const nightHours = getNightForecastHours(weatherData.hourly, {
-        nightStart,
-        nightEnd,
         forecastStart,
+        nightEnd,
     });
 
     return { nightHours };
@@ -69,12 +68,11 @@ const getScoreCardData = (
 ): Omit<AstroScoreCardProps, "latitude" | "longitude"> => {
     const todayData = weatherData.daily[0];
     const tomorrowData = weatherData.daily[1];
-    const { nightStart, nightEnd, forecastStart } = getNightForecastWindow(weatherData);
+    const { forecastStart, nightEnd } = getNightForecastWindow(weatherData);
 
     const nightHours = getNightForecastHours(weatherData.hourly, {
-        nightStart,
-        nightEnd,
         forecastStart,
+        nightEnd,
     });
 
     return {
@@ -85,7 +83,7 @@ const getScoreCardData = (
         moonsetToday: todayData.moonset,
         moonsetTomorrow: tomorrowData.moonset,
         moonPhase: todayData.moon_phase,
-        nightStart,
+        forecastStart,
         nightEnd,
         nightHours,
     };

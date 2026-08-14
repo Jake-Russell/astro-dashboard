@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
+import type { WeatherResponse } from "api/weather/types";
 import { mockDayData, mockTimestamps, mockWeatherResponse } from "mocks/mockWeatherData";
 import { getNightForecastHours, getNightForecastWindow } from "../nightForecastUtils";
 
-const getJanuarySecondWeatherData = (currentTime: number) => ({
+const getNextDayWeatherData = (currentTime: number): WeatherResponse => ({
     ...mockWeatherResponse,
     current: {
         ...mockWeatherResponse.current,
         dt: currentTime,
-        sunset: mockDayData[0].sunset,
+        sunset: mockDayData[1].sunset,
         sunrise: mockDayData[1].sunrise,
     },
     daily: [mockDayData[1], mockDayData[2]],
@@ -17,7 +18,7 @@ describe("getNightForecastWindow", () => {
     it("should use the active night and round the forecast start down to the current hour, given a time before sunrise", () => {
         const currentTime = mockTimestamps.jan2Midnight + 15 * 60;
 
-        const result = getNightForecastWindow(getJanuarySecondWeatherData(currentTime));
+        const result = getNightForecastWindow(getNextDayWeatherData(currentTime));
 
         expect(result).toEqual({
             nightStart: mockDayData[0].sunset,
@@ -28,7 +29,7 @@ describe("getNightForecastWindow", () => {
     });
 
     it("should use the upcoming night, given the current time is sunrise", () => {
-        const result = getNightForecastWindow(getJanuarySecondWeatherData(mockDayData[1].sunrise));
+        const result = getNightForecastWindow(getNextDayWeatherData(mockDayData[1].sunrise));
         expect(result).toEqual({
             nightStart: mockDayData[1].sunset,
             nightEnd: mockDayData[2].sunrise,
@@ -40,7 +41,7 @@ describe("getNightForecastWindow", () => {
     it("should use the upcoming night, given a time during the day", () => {
         const daytime = mockDayData[1].sunrise + 6 * 3600;
 
-        expect(getNightForecastWindow(getJanuarySecondWeatherData(daytime))).toEqual({
+        expect(getNightForecastWindow(getNextDayWeatherData(daytime))).toEqual({
             nightStart: mockDayData[1].sunset,
             nightEnd: mockDayData[2].sunrise,
             forecastStart: mockDayData[1].sunset,
@@ -59,12 +60,11 @@ describe("getNightForecastHours", () => {
     ];
 
     it("should return only the remaining hours in the night, given forecast hours on each window boundary", () => {
-        expect(
-            getNightForecastHours(hourlyForecast, {
-                nightStart: 1000,
-                forecastStart: 2000,
-                nightEnd: 5000,
-            }),
-        ).toEqual([hourlyForecast[2], hourlyForecast[3]]);
+        const result = getNightForecastHours(hourlyForecast, {
+            forecastStart: 2000,
+            nightEnd: 5000,
+        });
+
+        expect(result).toEqual([hourlyForecast[2], hourlyForecast[3]]);
     });
 });

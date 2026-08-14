@@ -16,7 +16,11 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
                     <div className="text-xs text-(--text-secondary) mb-4">
                         <p>
                             Current local time:{" "}
-                            {getFormattedDateTime(new Date().getDate(), latitude, longitude)}
+                            {getFormattedDateTime(
+                                Math.floor(Date.now() / 1000),
+                                latitude,
+                                longitude,
+                            )}
                         </p>
                         <p>
                             Showing weather forecast from{" "}

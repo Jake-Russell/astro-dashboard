@@ -1,6 +1,5 @@
 "use client";
 import type { FunctionComponent } from "react";
-import { format } from "date-fns";
 import { Tile } from "atoms";
 import { getAdjustedMoonRiseAndSet, getMoonIllumination } from "utils/moonUtils";
 import { getFormattedTime, isCurrentlyPrime } from "utils/timeUtils";
@@ -54,9 +53,6 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
 
     const isInPrimeWindow = isCurrentlyPrime(primeTimeStart, primeTimeEnd, latitude, longitude);
 
-    const currentTime = getFormattedTime(new Date().getTime() / 1000, latitude, longitude);
-    const currentDate = format(new Date(), "MMM d, yyyy");
-
     const breakdownTimeFormatted =
         breakdownTime !== 0 ? getFormattedTime(breakdownTime, latitude, longitude) : undefined;
 
@@ -64,10 +60,6 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         <Tile title="Score">
             <div className="w-full">
                 <div className="space-y-6">
-                    <div className="text-xs text-(--text-secondary) mb-2">
-                        {currentDate} • {currentTime}
-                    </div>
-
                     <div className="text-center space-y-2">
                         <h3 className="text-3xl font-bold bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) bg-clip-text text-transparent">
                             🌙 Astro Score

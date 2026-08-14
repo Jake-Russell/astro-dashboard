@@ -148,7 +148,7 @@ type PlaygroundStoryArgs = {
     moonsetToday: Date;
     moonsetTomorrow: Date;
     moonPhase: number;
-    nightStart: Date;
+    forecastStart: Date;
     nightEnd: Date;
     averageCloudCover: number;
 };
@@ -162,7 +162,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
             control: { type: "range", min: 0, max: 1, step: 0.01 },
             name: "Moon Phase (0: New Moon, 0.5: Full Moon, 1: New Moon)",
         },
-        nightStart: { control: "date", name: "Night Start" },
+        forecastStart: { control: "date", name: "Forecast Start" },
         nightEnd: { control: "date", name: "Night End" },
         averageCloudCover: {
             control: { type: "range", min: 0, max: 100, step: 1 },
@@ -174,7 +174,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
         moonsetToday: new Date("2026-01-01T04:00:00Z"),
         moonsetTomorrow: new Date("2026-01-02T04:00:00Z"),
         moonPhase: 0.25,
-        nightStart: new Date("2026-01-01T19:00:00Z"),
+        forecastStart: new Date("2026-01-01T19:00:00Z"),
         nightEnd: new Date("2026-01-02T05:00:00Z"),
         averageCloudCover: 20,
     },
@@ -183,7 +183,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
         moonsetToday,
         moonsetTomorrow,
         moonPhase,
-        nightStart,
+        forecastStart,
         nightEnd,
         averageCloudCover,
     }) => {
@@ -194,8 +194,8 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
         const formattedMoonsetTomorrow =
             (typeof moonsetTomorrow !== "number" ? moonsetTomorrow.getTime() : moonsetTomorrow) /
             1000;
-        const formattedNightStart =
-            (typeof nightStart !== "number" ? nightStart.getTime() : nightStart) / 1000;
+        const formattedForecastStart =
+            (typeof forecastStart !== "number" ? forecastStart.getTime() : forecastStart) / 1000;
         const formattedNightEnd =
             (typeof nightEnd !== "number" ? nightEnd.getTime() : nightEnd) / 1000;
 
@@ -207,7 +207,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
                 moonsetToday={formattedMoonsetToday}
                 moonsetTomorrow={formattedMoonsetTomorrow}
                 moonPhase={moonPhase}
-                forecastStart={formattedNightStart}
+                forecastStart={formattedForecastStart}
                 nightEnd={formattedNightEnd}
                 nightHours={mockHourlyData
                     .filter((hour) => hour.dt >= now.getTime() / 1000)

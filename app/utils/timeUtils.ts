@@ -13,6 +13,15 @@ export const getFormattedTime = (epoch: number, latitude: number, longitude: num
     return format(localTime, "HH:mm");
 };
 
+export const getFormattedDateTime = (
+    epoch: number,
+    latitude: number,
+    longitude: number,
+): string => {
+    const localTime = getLocalTime(epoch, latitude, longitude);
+    return format(localTime, "MMM d, h:mm a");
+};
+
 export const isBodyUp = (
     riseEpoch: number,
     /**

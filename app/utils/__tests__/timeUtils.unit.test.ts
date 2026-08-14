@@ -1,4 +1,4 @@
-import { getFormattedTime, getLocalTime, isBodyUp, isCurrentlyPrime } from "../timeUtils";
+import { getFormattedDateTime, getFormattedTime, getLocalTime, isBodyUp, isCurrentlyPrime } from "../timeUtils";
 import { mockLat, mockLng } from "../../mocks/mockLocationData";
 
 describe("timeUtils", () => {
@@ -80,6 +80,25 @@ describe("timeUtils", () => {
             const result = getFormattedTime(epoch, mockLat, mockLng);
             expect(result).toMatch(/^\d{2}:\d{2}$/);
             expect(result).toBe("00:05");
+        });
+    });
+
+    describe("getFormattedDateTime", () => {
+        it("should return a string in 'MMM d, h:mm a' format, given an epoch timestamp and coordinates", () => {
+            const result = getFormattedDateTime(epoch, mockLat, mockLng);
+
+            expect(typeof result).toBe("string");
+            expect(result).toMatch(/^[A-Za-z]{3} \d{1,2}, \d{1,2}:\d{2} [AP]M$/);
+        });
+
+        it("should format date and time using local timezone, given different coordinates", () => {
+            const londonDateTime = getFormattedDateTime(epoch, mockLat, mockLng);
+            const tokyoDateTime = getFormattedDateTime(epoch, tokyoLat, tokyoLng);
+            const newYorkDateTime = getFormattedDateTime(epoch, newYorkLat, newYorkLng);
+
+            expect(londonDateTime).toBe("Jan 1, 12:00 PM");
+            expect(tokyoDateTime).toBe("Jan 1, 9:00 PM");
+            expect(newYorkDateTime).toBe("Jan 1, 7:00 AM");
         });
     });
 

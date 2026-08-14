@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mockDayData, mockTimestamps, mockWeatherResponse } from "mocks/mockWeatherData";
-import { getNightForecastWindow } from "../nightForecastUtils";
+import { getNightForecastHours, getNightForecastWindow } from "../nightForecastUtils";
 
 const getJanuarySecondWeatherData = (currentTime: number) => ({
     ...mockWeatherResponse,
@@ -46,5 +46,25 @@ describe("getNightForecastWindow", () => {
             forecastStart: mockDayData[1].sunset,
             isActiveNight: false,
         });
+    });
+});
+
+describe("getNightForecastHours", () => {
+    const hourlyForecast = [
+        { dt: 1000, clouds: 0, weather: [] },
+        { dt: 1500, clouds: 0, weather: [] },
+        { dt: 2000, clouds: 0, weather: [] },
+        { dt: 4999, clouds: 0, weather: [] },
+        { dt: 5000, clouds: 0, weather: [] },
+    ];
+
+    it("should return only the remaining hours in the night, given forecast hours on each window boundary", () => {
+        expect(
+            getNightForecastHours(hourlyForecast, {
+                nightStart: 1000,
+                forecastStart: 2000,
+                nightEnd: 5000,
+            }),
+        ).toEqual([hourlyForecast[2], hourlyForecast[3]]);
     });
 });

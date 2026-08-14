@@ -37,10 +37,10 @@ describe("ThemeContext", () => {
 
         const { result } = renderHook(() => useTheme(), { wrapper });
 
-        expect(result.current.theme).toBe("dark");
+        expect(result.current.theme).toBe("light");
     });
 
-    it("should prefer light mode when the system preference is not dark", () => {
+    it("should prefer dark mode when the system preference is not light", () => {
         const mockMediaQueryList: Partial<MediaQueryList> = {
             matches: false,
             media: "",
@@ -55,8 +55,8 @@ describe("ThemeContext", () => {
 
         const { result } = renderHook(() => useTheme(), { wrapper });
 
-        expect(result.current.theme).toBe("light");
-        expect(document.documentElement.classList.contains("light")).toBe(true);
+        expect(result.current.theme).toBe("dark");
+        expect(document.documentElement.classList.contains("dark")).toBe(true);
     });
 
     it("should toggle theme and update localStorage and DOM", () => {

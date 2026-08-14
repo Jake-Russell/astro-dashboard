@@ -1,9 +1,9 @@
 "use client";
 import type { FunctionComponent } from "react";
-import { isAfter, isBefore, format } from "date-fns";
+import { format } from "date-fns";
 import { Tile } from "atoms";
 import { getAdjustedMoonRiseAndSet, getMoonIllumination } from "utils/moonUtils";
-import { getFormattedTime, getLocalTime, isCurrentlyPrime } from "utils/timeUtils";
+import { getFormattedTime, isCurrentlyPrime } from "utils/timeUtils";
 import { getAstroScore, CLOUD_WEIGHT, MOON_WEIGHT } from "utils/weatherUtils";
 import type { AstroScoreCardProps } from "./types";
 
@@ -14,19 +14,10 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     moonsetToday,
     moonsetTomorrow,
     moonPhase,
-    sunsetToday,
-    sunriseTomorrow,
-    hourlyForecast,
+    nightStart,
+    nightEnd,
+    nightHours,
 }) => {
-    const sunsetTime = getLocalTime(sunsetToday, latitude, longitude);
-    const sunriseTime = getLocalTime(sunriseTomorrow, latitude, longitude);
-
-    // Get all hourly data for tonight
-    const nightHours = hourlyForecast.filter((hour) => {
-        const hourTime = getLocalTime(hour.dt, latitude, longitude);
-        return isAfter(hourTime, sunsetTime) && isBefore(hourTime, sunriseTime);
-    });
-
     const { moonrise, moonset } = getAdjustedMoonRiseAndSet(
         moonriseToday,
         moonsetToday,
@@ -48,8 +39,8 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         moonIllumination,
         moonrise,
         moonset,
-        sunsetToday,
-        sunriseTomorrow,
+        nightStart,
+        nightEnd,
         latitude,
         longitude,
     );

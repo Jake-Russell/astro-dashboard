@@ -1,26 +1,14 @@
 "use client";
 import type { FunctionComponent } from "react";
-import { isAfter, isBefore } from "date-fns";
-import type { HourData } from "api/weather/types";
 import { Tile } from "atoms";
-import { getFormattedTime, getLocalTime } from "utils/timeUtils";
+import { getFormattedTime } from "utils/timeUtils";
 import type { NightWeatherForecastCardProps } from "./types";
 
 export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCardProps> = ({
     latitude,
     longitude,
-    hourlyForecast,
-    sunsetToday,
-    sunriseTomorrow,
+    nightHours,
 }) => {
-    const sunsetTime = getLocalTime(sunsetToday, latitude, longitude);
-    const sunriseTime = getLocalTime(sunriseTomorrow, latitude, longitude);
-
-    const nightHours: HourData[] = hourlyForecast.filter((hour) => {
-        const hourTime = getLocalTime(hour.dt, latitude, longitude);
-        return isAfter(hourTime, sunsetTime) && isBefore(hourTime, sunriseTime);
-    });
-
     return (
         <Tile title="Weather">
             <div className="w-full">

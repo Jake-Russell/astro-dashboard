@@ -40,6 +40,25 @@ describe("ThemeContext", () => {
         expect(result.current.theme).toBe("dark");
     });
 
+    it("should prefer light mode when the system preference is not dark", () => {
+        const mockMediaQueryList: Partial<MediaQueryList> = {
+            matches: false,
+            media: "",
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+        };
+
+        vi.spyOn(window, "matchMedia").mockImplementation(
+            () => mockMediaQueryList as MediaQueryList,
+        );
+
+        const { result } = renderHook(() => useTheme(), { wrapper });
+
+        expect(result.current.theme).toBe("light");
+        expect(document.documentElement.classList.contains("light")).toBe(true);
+    });
+
     it("should toggle theme and update localStorage and DOM", () => {
         localStorage.setItem("theme", "light");
 

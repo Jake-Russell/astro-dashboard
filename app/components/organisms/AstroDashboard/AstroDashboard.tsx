@@ -17,6 +17,7 @@ import type {
     SunCycleCardProps,
 } from "molecules";
 import type { GeoPosition } from "services/geolocationService";
+import { getNightForecastHours, getNightForecastWindow } from "utils/nightForecastUtils";
 
 const getBaseProps = (latitude: number, longitude: number): GeoPosition => {
     return { latitude, longitude };
@@ -52,14 +53,14 @@ const getSunData = (
 const getWeatherForecastData = (
     weatherData: WeatherResponse,
 ): Omit<NightWeatherForecastCardProps, "latitude" | "longitude"> => {
-    const todayData = weatherData.daily[0];
-    const tomorrowData = weatherData.daily[1];
+    const { forecastStart, forecastEnd } = getNightForecastWindow(weatherData);
 
-    return {
-        hourlyForecast: weatherData.hourly,
-        sunsetToday: todayData.sunset,
-        sunriseTomorrow: tomorrowData.sunrise,
-    };
+    const nightHours = getNightForecastHours(weatherData.hourly, {
+        forecastStart,
+        forecastEnd,
+    });
+
+    return { nightHours };
 };
 
 const getScoreCardData = (
@@ -67,15 +68,24 @@ const getScoreCardData = (
 ): Omit<AstroScoreCardProps, "latitude" | "longitude"> => {
     const todayData = weatherData.daily[0];
     const tomorrowData = weatherData.daily[1];
+    const { forecastStart, forecastEnd } = getNightForecastWindow(weatherData);
+
+    const nightHours = getNightForecastHours(weatherData.hourly, {
+        forecastStart,
+        forecastEnd,
+    });
 
     return {
+        // During the active night, the forecast API has advanced to today's
+        // lunar data and does not include yesterday's moonrise. Lunar scoring
+        // is therefore approximate until sunrise.
         moonriseToday: todayData.moonrise,
         moonsetToday: todayData.moonset,
         moonsetTomorrow: tomorrowData.moonset,
         moonPhase: todayData.moon_phase,
-        sunsetToday: todayData.sunset,
-        sunriseTomorrow: tomorrowData.sunrise,
-        hourlyForecast: weatherData.hourly,
+        forecastStart,
+        forecastEnd,
+        nightHours,
     };
 };
 

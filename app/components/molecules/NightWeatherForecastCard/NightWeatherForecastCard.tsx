@@ -1,29 +1,38 @@
 "use client";
 import type { FunctionComponent } from "react";
-import { isAfter, isBefore } from "date-fns";
-import type { HourData } from "api/weather/types";
 import { Tile } from "atoms";
-import { getFormattedTime, getLocalTime } from "utils/timeUtils";
+import { getFormattedDateTime, getFormattedTime } from "utils/timeUtils";
 import type { NightWeatherForecastCardProps } from "./types";
 
 export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCardProps> = ({
     latitude,
     longitude,
-    hourlyForecast,
-    sunsetToday,
-    sunriseTomorrow,
+    nightHours,
 }) => {
-    const sunsetTime = getLocalTime(sunsetToday, latitude, longitude);
-    const sunriseTime = getLocalTime(sunriseTomorrow, latitude, longitude);
-
-    const nightHours: HourData[] = hourlyForecast.filter((hour) => {
-        const hourTime = getLocalTime(hour.dt, latitude, longitude);
-        return isAfter(hourTime, sunsetTime) && isBefore(hourTime, sunriseTime);
-    });
-
     return (
-        <Tile title="Weather">
+        <Tile title="Weather" testId="weather-forecast-tile">
             <div className="w-full">
+                {nightHours.length > 0 && (
+                    <div className="text-xs text-(--text-secondary) mb-4">
+                        <p>
+                            Current local time:{" "}
+                            {getFormattedDateTime(
+                                Math.floor(Date.now() / 1000),
+                                latitude,
+                                longitude,
+                            )}
+                        </p>
+                        <p>
+                            Showing weather forecast from{" "}
+                            {getFormattedDateTime(nightHours[0].dt, latitude, longitude)} to{" "}
+                            {getFormattedDateTime(
+                                nightHours[nightHours.length - 1].dt,
+                                latitude,
+                                longitude,
+                            )}
+                        </p>
+                    </div>
+                )}
                 <div className="w-full space-y-2">
                     <div className="grid grid-cols-3 gap-3 text-xs font-bold text-(--text-secondary) uppercase tracking-widest border-b border-(--card-border) pb-3 mb-3">
                         <span>Time</span>

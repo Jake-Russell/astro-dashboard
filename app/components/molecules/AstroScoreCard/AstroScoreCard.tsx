@@ -1,9 +1,8 @@
 "use client";
 import type { FunctionComponent } from "react";
-import { isAfter, isBefore, format } from "date-fns";
 import { Tile } from "atoms";
 import { getAdjustedMoonRiseAndSet, getMoonIllumination } from "utils/moonUtils";
-import { getFormattedTime, getLocalTime, isCurrentlyPrime } from "utils/timeUtils";
+import { getFormattedTime, isCurrentlyPrime } from "utils/timeUtils";
 import { getAstroScore, CLOUD_WEIGHT, MOON_WEIGHT } from "utils/weatherUtils";
 import type { AstroScoreCardProps } from "./types";
 
@@ -14,19 +13,10 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     moonsetToday,
     moonsetTomorrow,
     moonPhase,
-    sunsetToday,
-    sunriseTomorrow,
-    hourlyForecast,
+    forecastStart,
+    forecastEnd,
+    nightHours,
 }) => {
-    const sunsetTime = getLocalTime(sunsetToday, latitude, longitude);
-    const sunriseTime = getLocalTime(sunriseTomorrow, latitude, longitude);
-
-    // Get all hourly data for tonight
-    const nightHours = hourlyForecast.filter((hour) => {
-        const hourTime = getLocalTime(hour.dt, latitude, longitude);
-        return isAfter(hourTime, sunsetTime) && isBefore(hourTime, sunriseTime);
-    });
-
     const { moonrise, moonset } = getAdjustedMoonRiseAndSet(
         moonriseToday,
         moonsetToday,
@@ -48,8 +38,8 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         moonIllumination,
         moonrise,
         moonset,
-        sunsetToday,
-        sunriseTomorrow,
+        forecastStart,
+        forecastEnd,
         latitude,
         longitude,
     );
@@ -63,9 +53,6 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
 
     const isInPrimeWindow = isCurrentlyPrime(primeTimeStart, primeTimeEnd, latitude, longitude);
 
-    const currentTime = getFormattedTime(new Date().getTime() / 1000, latitude, longitude);
-    const currentDate = format(new Date(), "MMM d, yyyy");
-
     const breakdownTimeFormatted =
         breakdownTime !== 0 ? getFormattedTime(breakdownTime, latitude, longitude) : undefined;
 
@@ -73,10 +60,6 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         <Tile title="Score">
             <div className="w-full">
                 <div className="space-y-6">
-                    <div className="text-xs text-(--text-secondary) mb-2">
-                        {currentDate} • {currentTime}
-                    </div>
-
                     <div className="text-center space-y-2">
                         <h3 className="text-3xl font-bold bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) bg-clip-text text-transparent">
                             🌙 Astro Score

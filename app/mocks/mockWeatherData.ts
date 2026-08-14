@@ -3,6 +3,10 @@ import { mockLat, mockLng } from "./mockLocationData";
 
 const BASE = 1767279600; // 2026-01-01T15:00:00Z
 
+export const mockTimestamps = {
+    jan2Midnight: BASE + 9 * 3600, // 2026-01-02T00:00:00Z
+};
+
 export const mockHourlyData: HourData[] = [
     {
         dt: BASE + 0 * 3600,
@@ -104,23 +108,33 @@ export const mockHourlyData: HourData[] = [
 export const mockDayData: DayData[] = [
     {
         dt: BASE,
-        sunrise: BASE - 9 * 3600, // 6AM
-        sunset: BASE + 4 * 3600, // 7PM
-        moonrise: BASE - 4 * 3600, // 11AM
-        moonset: BASE + 12 * 3600, // 3AM next day
+        sunrise: BASE - 9 * 3600, // 2026-01-01T06:00:00Z
+        sunset: BASE + 4 * 3600, // 2026-01-01T19:00:00Z
+        moonrise: BASE - 4 * 3600, // 2026-01-01T11:00:00Z
+        moonset: BASE + 12 * 3600, // 2026-01-02T03:00:00Z
         moon_phase: 0.25,
         clouds: 20,
         weather: [{ id: 801, main: "Clouds", description: "few clouds", icon: "02d" }],
     },
     {
         dt: BASE + 24 * 3600,
-        sunrise: BASE + (24 - 9.5) * 3600, // 5:30AM
-        sunset: BASE + (24 + 4.5) * 3600, // 7:30PM
-        moonrise: BASE + (24 - 4.5) * 3600, // 11:30AM
-        moonset: BASE + (24 + 12.5) * 3600, // 3:30AM next day
+        sunrise: BASE + (24 - 9.5) * 3600, // 2026-01-02T05:30:00Z
+        sunset: BASE + (24 + 4.5) * 3600, // 2026-01-02T19:30:00Z
+        moonrise: BASE + (24 - 4.5) * 3600, // 2026-01-02T10:30:00Z
+        moonset: BASE + (24 + 12.5) * 3600, // 2026-01-03T03:30:00Z
         moon_phase: 0.5,
         clouds: 80,
         weather: [{ id: 804, main: "Clouds", description: "overcast clouds", icon: "04d" }],
+    },
+    {
+        dt: BASE + 48 * 3600,
+        sunrise: BASE + (48 - 10) * 3600, // 2026-01-03T05:00:00Z
+        sunset: BASE + (48 + 5) * 3600, // 2026-01-03T20:00:00Z
+        moonrise: BASE + (48 - 5) * 3600, // 2026-01-03T10:00:00Z
+        moonset: BASE + (48 + 13) * 3600, // 2026-01-04T04:00:00Z
+        moon_phase: 0.75,
+        clouds: 40,
+        weather: [{ id: 802, main: "Clouds", description: "scattered clouds", icon: "03d" }],
     },
 ];
 
@@ -129,8 +143,8 @@ export const mockWeatherResponse: WeatherResponse = {
     longitude: mockLng,
     current: {
         dt: BASE,
-        sunrise: BASE - 9 * 3600, // 6AM
-        sunset: BASE + 4 * 3600, // 7PM
+        sunrise: BASE - 9 * 3600, // 2026-01-01T06:00:00Z
+        sunset: BASE + 4 * 3600, // 2026-01-01T19:00:00Z
         clouds: 20,
         visibility: 10000,
         weather: [{ id: 801, main: "Clouds", description: "few clouds", icon: "02d" }],

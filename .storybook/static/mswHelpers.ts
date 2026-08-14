@@ -33,12 +33,15 @@ export const getMswLocationSearchLoader = (status: number = 200) => {
     });
 };
 
-export const getMswWeatherLoader = (status: number = 200) => {
+export const getMswWeatherLoader = (
+    status: number = 200,
+    weatherData: WeatherResponse = mockWeatherResponse,
+) => {
     return http.get("/api/weather", async () => {
         delay(200);
 
         const response: WeatherResponse = {
-            ...mockWeatherResponse,
+            ...weatherData,
             ...(status !== 200 && { error: "Failed to fetch weather data" }),
         };
 

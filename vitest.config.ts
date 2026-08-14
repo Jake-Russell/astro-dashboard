@@ -56,7 +56,16 @@ export default defineConfig({
                 functions: 90,
                 lines: 90,
             },
+            exclude: [
+                "**/*.{mock,mocks}.{ts,js}",
+                "**/*.d.ts",
+                "**/*.scss",
+                "**/*.css",
+                "**/*.stories.{ts,tsx,js,jsx}",
+                "**/index.ts",
+                "**/types.ts",
+                ".storybook/**",
+            ],
         },
-        exclude: ["**/*.{mock,mocks}.{ts,js}", "**/*.d.ts", "**/*.scss", ".storybook"],
     },
 });

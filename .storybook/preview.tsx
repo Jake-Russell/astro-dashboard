@@ -30,6 +30,7 @@ const preview: Preview = {
             test: "error",
         },
 
+        // Default date is set to January 1st, 2026 at 19:00 UTC
         mockingDate: new Date(new Date("2026-01-01T19:00:00Z")),
     },
     decorators: [

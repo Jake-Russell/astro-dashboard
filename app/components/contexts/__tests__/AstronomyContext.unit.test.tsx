@@ -91,7 +91,7 @@ describe("AstronomyContext", () => {
         expect(result.current.loadingState).toBe("loading-weather");
 
         await waitFor(() => expect(result.current.loadingState).toBe("idle"));
-        expect(result.current.setWeatherDataError).toBe(errorMessage);
+        expect(result.current.weatherDataError).toBe(errorMessage);
         expect(result.current.weatherData).toBeUndefined();
     });
 
@@ -104,7 +104,7 @@ describe("AstronomyContext", () => {
         act(() => result.current.setLocation(mockLat, mockLng));
 
         await waitFor(() => expect(result.current.loadingState).toBe("idle"));
-        expect(result.current.setWeatherDataError).toBe("Weather API error");
+        expect(result.current.weatherDataError).toBe("Weather API error");
     });
 
     it("should allow manual loading state management", () => {

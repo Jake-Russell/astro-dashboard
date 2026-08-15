@@ -28,8 +28,6 @@ export const LocationSelectorCard: FunctionComponent = () => {
             const { latitude, longitude } = await getCurrentPosition();
             const locationResponse = await getLocationName(latitude, longitude);
 
-            setLoadingState("idle");
-
             if (locationResponse.error) {
                 setError(locationResponse.error);
                 resetWeatherData();
@@ -43,7 +41,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setError(err.message || "Unable to retrieve your location.");
-            setLoadingState("idle");
+            resetWeatherData();
         }
     };
 
@@ -57,7 +55,6 @@ export const LocationSelectorCard: FunctionComponent = () => {
         setLoadingState("loading-location");
         const locationData = await getLatLng(normalisedLocation);
 
-        setLoadingState("idle");
         if (locationData.error) {
             setError(locationData.error);
             resetWeatherData();

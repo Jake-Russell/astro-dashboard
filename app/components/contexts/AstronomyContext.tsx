@@ -52,8 +52,11 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
     }, [latitude, longitude]);
 
     const setLocation = (lat: number, lng: number) => {
-        const locationIsSameAndDataLoaded = lat === latitude && lng === longitude;
-        if (locationIsSameAndDataLoaded) return;
+        const locationIsSame = lat === latitude && lng === longitude;
+        if (locationIsSame) {
+            setLoadingState("idle");
+            return;
+        }
 
         setLatitude(lat);
         setLongitude(lng);
@@ -64,6 +67,7 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
         setLongitude(0);
         setWeatherData(undefined);
         setWeatherDataError(undefined);
+        setLoadingState("idle");
     };
 
     return (

@@ -90,15 +90,7 @@ const getScoreCardData = (
 };
 
 export const AstroDashboard = () => {
-    const {
-        latitude,
-        longitude,
-        weatherData,
-        weatherLoading,
-        setLatitude,
-        setLongitude,
-        setWeatherLoading,
-    } = useAstronomy();
+    const { latitude, longitude, weatherData, loadingState } = useAstronomy();
 
     const baseProps = useMemo(() => getBaseProps(latitude, longitude), [latitude, longitude]);
 
@@ -163,22 +155,21 @@ export const AstroDashboard = () => {
             {/* Content Section */}
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-20">
                 <div className="flex flex-col gap-6">
-                    <LocationSelector
-                        isWeatherDataLoading={weatherLoading}
-                        weatherDataError={weatherData?.error}
-                        setLatitude={setLatitude}
-                        setLongitude={setLongitude}
-                        setWeatherLoading={setWeatherLoading}
-                    />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {moonPhaseData && !weatherLoading && <MoonPhaseCard {...moonPhaseData} />}
-                        {sunCycleData && !weatherLoading && <SunCycleCard {...sunCycleData} />}
-                    </div>
-                    {weatherForecastData && !weatherLoading && (
-                        <NightWeatherForecastCard {...weatherForecastData} />
-                    )}
-                    {astroScoreCardData && !weatherLoading && (
-                        <AstroScoreCard {...astroScoreCardData} />
+                    <LocationSelector />
+
+                    {loadingState === "idle" && (
+                        <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {moonPhaseData && <MoonPhaseCard {...moonPhaseData} />}
+                                {sunCycleData && <SunCycleCard {...sunCycleData} />}
+                            </div>
+
+                            {weatherForecastData && (
+                                <NightWeatherForecastCard {...weatherForecastData} />
+                            )}
+
+                            {astroScoreCardData && <AstroScoreCard {...astroScoreCardData} />}
+                        </>
                     )}
                 </div>
             </div>

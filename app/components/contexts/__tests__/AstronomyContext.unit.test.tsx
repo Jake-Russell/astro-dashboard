@@ -17,6 +17,12 @@ describe("AstronomyContext", () => {
         );
     });
 
+    it("should initialize with idle loading state", () => {
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+        expect(result.current.loadingState).toBe("idle");
+        expect(result.current.error).toBeUndefined();
+    });
+
     it("should not fetch weather data when latitude/longitude are empty", () => {
         const spy = vi.spyOn(weatherApi, "getWeatherData");
 
@@ -34,12 +40,12 @@ describe("AstronomyContext", () => {
             result.current.setLongitude(mockLng);
         });
 
-        await waitFor(() => expect(result.current.weatherLoading).toBe(false));
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
 
         expect(result.current.weatherData).toEqual(mockWeatherResponse);
     });
 
-    it("should set loading state correctly during fetch", async () => {
+    it("should set loading state to loading-weather during fetch", async () => {
         let resolveFn: (value: WeatherResponse) => void;
 
         const promise = new Promise<WeatherResponse>((resolve) => {
@@ -55,15 +61,37 @@ describe("AstronomyContext", () => {
             result.current.setLongitude(mockLng);
         });
 
-        expect(result.current.weatherLoading).toBe(true);
+        expect(result.current.loadingState).toBe("loading-weather");
 
         resolveFn!(mockWeatherResponse);
 
-        await waitFor(() => expect(result.current.weatherLoading).toBe(false));
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
     });
 
-    it("should handle fetch errors and reset loading", async () => {
-        vi.spyOn(weatherApi, "getWeatherData").mockRejectedValue(new Error("fail"));
+    it("should clear error before fetching weather", async () => {
+        const getWeatherDataSpy = vi
+            .spyOn(weatherApi, "getWeatherData")
+            .mockResolvedValue(mockWeatherResponse);
+
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+
+        // Set initial error
+        act(() => result.current.setError("Previous error"));
+
+        act(() => {
+            result.current.setLatitude(mockLat);
+            result.current.setLongitude(mockLng);
+        });
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+
+        expect(result.current.error).toBeUndefined();
+        expect(getWeatherDataSpy).toHaveBeenCalled();
+    });
+
+    it("should handle fetch errors and set error state", async () => {
+        const errorMessage = "Network error";
+        vi.spyOn(weatherApi, "getWeatherData").mockRejectedValue(new Error(errorMessage));
 
         const { result } = renderHook(() => useAstronomy(), { wrapper });
 
@@ -72,7 +100,41 @@ describe("AstronomyContext", () => {
             result.current.setLongitude(mockLng);
         });
 
-        expect(result.current.weatherLoading).toBe(true);
+        expect(result.current.loadingState).toBe("loading-weather");
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+        expect(result.current.error).toBe(errorMessage);
         expect(result.current.weatherData).toBeUndefined();
+    });
+
+    it("should handle API error responses", async () => {
+        const errorResponse = { ...mockWeatherResponse, error: "Weather API error" };
+        vi.spyOn(weatherApi, "getWeatherData").mockResolvedValue(errorResponse);
+
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+
+        act(() => {
+            result.current.setLatitude(mockLat);
+            result.current.setLongitude(mockLng);
+        });
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+        expect(result.current.error).toBe("Weather API error");
+    });
+
+    it("should allow manual loading state management", () => {
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+
+        act(() => {
+            result.current.setLoadingState("loading-location");
+        });
+
+        expect(result.current.loadingState).toBe("loading-location");
+
+        act(() => {
+            result.current.setLoadingState("idle");
+        });
+
+        expect(result.current.loadingState).toBe("idle");
     });
 });

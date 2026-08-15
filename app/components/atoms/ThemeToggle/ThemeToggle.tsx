@@ -3,20 +3,27 @@ import { useTheme } from "contexts/ThemeContext";
 
 export const ThemeToggle = () => {
     const { theme, toggleTheme } = useTheme();
+    const nextTheme = theme === "light" ? "dark" : "light";
 
     return (
         <button
             onClick={toggleTheme}
             className="p-2 rounded-lg bg-(--card-bg) border border-(--card-border) hover:border-(--accent-primary) transition-all duration-300 hover:shadow-md flex items-center justify-center w-10 h-10 cursor-pointer"
-            aria-label="Toggle theme"
-            title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+            aria-label={`Switch to ${nextTheme} mode`}
+            title={`Switch to ${nextTheme} mode`}
         >
             {theme === "light" ? (
-                <svg className="w-5 h-5 text-foreground" fill="currentColor" viewBox="0 0 20 20">
+                <svg
+                    aria-hidden="true"
+                    className="w-5 h-5 text-foreground"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                >
                     <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                 </svg>
             ) : (
                 <svg
+                    aria-hidden="true"
                     className="w-5 h-5 text-foreground"
                     fill="none"
                     stroke="currentColor"

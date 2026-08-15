@@ -9,6 +9,7 @@ export type AstroScoreCardProps = GeoPosition & {
     forecastStart: number;
     forecastEnd: number;
     nightHours: HourData[];
+    onAnnouncement?: (announcement: string) => void;
 };
 
 type HourlyAstroScore = {

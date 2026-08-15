@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { WeatherResponse } from "api/weather/types";
 import { StarsBackground, ThemeToggle } from "atoms";
 import { useAstronomy } from "contexts/AstronomyContext";
@@ -91,6 +91,11 @@ const getScoreCardData = (
 
 export const AstroDashboard = () => {
     const { latitude, longitude, weatherData, loadingState } = useAstronomy();
+    const [astroAnnouncement, setAstroAnnouncement] = useState("");
+
+    const handleAstroAnnouncement = useCallback((announcement: string) => {
+        setAstroAnnouncement(announcement);
+    }, []);
 
     const baseProps = useMemo(() => getBaseProps(latitude, longitude), [latitude, longitude]);
 
@@ -116,6 +121,9 @@ export const AstroDashboard = () => {
 
     return (
         <main className="min-h-screen bg-background relative overflow-x-hidden">
+            <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+                {astroAnnouncement}
+            </div>
             {/* Stars */}
             <div className="light:none dark:block absolute inset-0 z-0 pointer-events-none">
                 <div className="relative w-full h-full min-h-screen">
@@ -168,7 +176,12 @@ export const AstroDashboard = () => {
                                 <NightWeatherForecastCard {...weatherForecastData} />
                             )}
 
-                            {astroScoreCardData && <AstroScoreCard {...astroScoreCardData} />}
+                            {astroScoreCardData && (
+                                <AstroScoreCard
+                                    {...astroScoreCardData}
+                                    onAnnouncement={handleAstroAnnouncement}
+                                />
+                            )}
                         </>
                     )}
                 </div>

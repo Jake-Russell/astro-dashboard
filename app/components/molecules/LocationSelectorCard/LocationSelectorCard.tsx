@@ -84,12 +84,13 @@ export const LocationSelectorCard: FunctionComponent = () => {
 
     return (
         <>
-            <Tile title="Location" heading="h2">
+            <Tile title="Location">
                 <div className="space-y-4">
                     <div className="rounded-lg bg-(--accent-primary)/10 border border-(--accent-primary)/20 p-3">
                         <p className="text-xs text-(--text-secondary)">
-                            📍 Your location is only used to find the nearest location for your
-                            astronomy and weather data. Your browser will ask for permission.
+                            <span aria-hidden="true">📍</span> Your location is only used to find
+                            the nearest location for your astronomy and weather data. Your browser
+                            will ask for permission.
                         </p>
                     </div>
 
@@ -99,12 +100,15 @@ export const LocationSelectorCard: FunctionComponent = () => {
                         data-testid="use-location-button"
                         className="w-full px-4 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        📍 Use My Location
+                        <span aria-hidden="true">📍</span> Use My Location
                     </button>
 
-                    <div className="text-xs font-semibold text-(--text-secondary) uppercase tracking-widest mb-3">
-                        Or search by location
-                    </div>
+                    <label
+                        htmlFor="location-search"
+                        className="text-xs font-semibold text-(--text-secondary) uppercase tracking-widest mb-3"
+                    >
+                        Search by location
+                    </label>
                     <form
                         onSubmit={(e) => {
                             e.preventDefault();
@@ -113,6 +117,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
                         className="flex gap-3"
                     >
                         <input
+                            id="location-search"
                             type="text"
                             placeholder="Search location..."
                             value={locationValue}
@@ -123,24 +128,27 @@ export const LocationSelectorCard: FunctionComponent = () => {
                         />
                         <button
                             type="submit"
+                            aria-label="Search"
                             disabled={!locationValue?.trim() || loadingState !== "idle"}
                             data-testid="search-button"
                             className="px-5 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            🔍
+                            <span aria-hidden="true">🔍</span>
                         </button>
                     </form>
 
-                    {locationDisplayName && !error && (
-                        <div className="mt-4 p-3 rounded-lg bg-(--accent-primary)/10 border border-(--accent-primary)/20">
-                            <p className="text-xs font-semibold text-(--accent-primary) uppercase tracking-widest mb-1">
-                                Showing results for:
-                            </p>
-                            <p className="text-sm font-medium text-foreground">
-                                {locationDisplayName}
-                            </p>
-                        </div>
-                    )}
+                    <div role="status" aria-live="polite" aria-atomic="true">
+                        {locationDisplayName && !error && (
+                            <div className="mt-4 p-3 rounded-lg bg-(--accent-primary)/10 border border-(--accent-primary)/20">
+                                <p className="text-xs font-semibold text-(--accent-primary) uppercase tracking-widest mb-1">
+                                    Showing results for:
+                                </p>
+                                <p className="text-sm font-medium text-foreground">
+                                    {locationDisplayName}
+                                </p>
+                            </div>
+                        )}
+                    </div>
                     {error && (
                         <div className="mt-4 rounded-xl border border-(--accent-tertiary)/20 bg-(--accent-tertiary)/5 p-4">
                             <div className="flex items-start gap-3">
@@ -151,14 +159,15 @@ export const LocationSelectorCard: FunctionComponent = () => {
                                 </div>
 
                                 <div className="min-w-0 flex-1">
-                                    <p className="text-sm font-semibold text-(--accent-tertiary)">
-                                        Unable to use your location
-                                    </p>
+                                    <div role="alert">
+                                        <p className="text-sm font-semibold text-(--accent-tertiary)">
+                                            Unable to use your location
+                                        </p>
 
-                                    <p className="mt-1 text-sm leading-relaxed text-(--text-secondary)">
-                                        {error}
-                                    </p>
-
+                                        <p className="mt-1 text-sm leading-relaxed text-(--text-secondary)">
+                                            {error}
+                                        </p>
+                                    </div>
                                     {geolocationErrorCode && (
                                         <div className="mt-4 flex flex-wrap gap-2">
                                             {canRetryGeolocation && (
@@ -201,7 +210,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
 
             {loadingState !== "idle" && (
                 <div className="flex flex-col items-center justify-center gap-3 mt-8 py-8">
-                    <div className="relative w-12 h-12">
+                    <div aria-hidden="true" className="relative w-12 h-12">
                         <div className="absolute inset-0 rounded-full border-2 border-(--accent-primary)/20" />
                         <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-(--accent-primary) border-r-(--accent-secondary) animate-spin" />
                     </div>

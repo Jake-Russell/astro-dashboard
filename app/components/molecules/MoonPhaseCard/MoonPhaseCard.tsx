@@ -50,7 +50,7 @@ export const MoonPhaseCard: FunctionComponent<MoonPhaseCardProps> = ({
                     <div className="space-y-2 pt-4 border-t border-(--card-border)">
                         <div className="flex items-center justify-between p-3 rounded-lg">
                             <span className="text-sm text-(--text-secondary) font-medium">
-                                🌙 Moonrise
+                                <span aria-hidden="true">🌙</span> Moonrise
                             </span>
                             <span className="text-sm font-semibold text-foreground">
                                 {getFormattedTime(moonrise, latitude, longitude)}
@@ -58,7 +58,7 @@ export const MoonPhaseCard: FunctionComponent<MoonPhaseCardProps> = ({
                         </div>
                         <div className="flex items-center justify-between p-3 rounded-lg">
                             <span className="text-sm text-(--text-secondary) font-medium">
-                                🌕 Moonset
+                                <span aria-hidden="true">🌕</span> Moonset
                             </span>
                             <span className="text-sm font-semibold text-foreground">
                                 {getFormattedTime(moonset, latitude, longitude)}

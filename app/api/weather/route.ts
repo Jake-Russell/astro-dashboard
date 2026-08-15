@@ -1,19 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkRateLimit } from "@vercel/firewall";
 import { env } from "../../config/env";
-import { getClientIp } from "../utils/getClientIp";
 import { parseCoordinates } from "../utils/parseCoordinates";
-import { rateLimitedResponse } from "../utils/rateLimitResponse";
 import type { WeatherResponse } from "./types";
 
 export async function GET(req: NextRequest) {
-    const { rateLimited } = await checkRateLimit("api-rate-limit", {
-        request: req,
-        rateLimitKey: getClientIp(req),
-    });
-
-    if (rateLimited) return rateLimitedResponse();
-
     const { searchParams } = new URL(req.url);
     const lat = searchParams.get("lat");
     const lon = searchParams.get("lon");

@@ -3,12 +3,21 @@ export type GeoPosition = {
     longitude: number;
 };
 
+export type GeolocationErrorCode =
+    "UNSUPPORTED" | "PERMISSION_DENIED" | "POSITION_UNAVAILABLE" | "TIMEOUT";
+
+export type GeolocationError = {
+    code: GeolocationErrorCode;
+    message: string;
+};
+
 export const getCurrentPosition = (): Promise<GeoPosition> => {
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
             reject({
-                message: "Geolocation is not supported by your browser.",
-            });
+                code: "UNSUPPORTED",
+                message: "Your browser does not support device location.",
+            } satisfies GeolocationError);
             return;
         }
 
@@ -20,27 +29,42 @@ export const getCurrentPosition = (): Promise<GeoPosition> => {
                 });
             },
             (error: GeolocationPositionError) => {
-                let message = "Unable to retrieve your location.";
+                let geolocationError: GeolocationError;
 
                 switch (error.code) {
                     case error.PERMISSION_DENIED:
-                        message = "Location permission was denied.";
+                        geolocationError = {
+                            code: "PERMISSION_DENIED",
+                            message:
+                                "Location permission was denied. You can enable location access in your browser settings, or search for a location instead.",
+                        };
                         break;
 
                     case error.POSITION_UNAVAILABLE:
-                        message = "Your location could not be determined.";
+                        geolocationError = {
+                            code: "POSITION_UNAVAILABLE",
+                            message:
+                                "Your device's location could not be determined. Please try again or search for a location instead.",
+                        };
                         break;
 
                     case error.TIMEOUT:
-                        message =
-                            "We couldn't get your location in time. Please try again or search for a location instead.";
+                        geolocationError = {
+                            code: "TIMEOUT",
+                            message:
+                                "We couldn't get your location in time. Please try again or search for a location instead.",
+                        };
                         break;
+
+                    default:
+                        geolocationError = {
+                            code: "POSITION_UNAVAILABLE",
+                            message:
+                                "Unable to retrieve your location. Please try again or search for a location instead.",
+                        };
                 }
 
-                reject({
-                    code: error.code,
-                    message,
-                });
+                reject(geolocationError);
             },
             {
                 enableHighAccuracy: false,

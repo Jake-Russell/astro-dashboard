@@ -137,21 +137,18 @@ export const LocationSelectorCard: FunctionComponent = () => {
                         </button>
                     </form>
 
-                    {locationDisplayName && !error && (
-                        <div
-                            role="status"
-                            aria-live="polite"
-                            aria-atomic="true"
-                            className="mt-4 p-3 rounded-lg bg-(--accent-primary)/10 border border-(--accent-primary)/20"
-                        >
-                            <p className="text-xs font-semibold text-(--accent-primary) uppercase tracking-widest mb-1">
-                                Showing results for:
-                            </p>
-                            <p className="text-sm font-medium text-foreground">
-                                {locationDisplayName}
-                            </p>
-                        </div>
-                    )}
+                    <div role="status" aria-live="polite" aria-atomic="true">
+                        {locationDisplayName && !error && (
+                            <div className="mt-4 p-3 rounded-lg bg-(--accent-primary)/10 border border-(--accent-primary)/20">
+                                <p className="text-xs font-semibold text-(--accent-primary) uppercase tracking-widest mb-1">
+                                    Showing results for:
+                                </p>
+                                <p className="text-sm font-medium text-foreground">
+                                    {locationDisplayName}
+                                </p>
+                            </div>
+                        )}
+                    </div>
                     {error && (
                         <div className="mt-4 rounded-xl border border-(--accent-tertiary)/20 bg-(--accent-tertiary)/5 p-4">
                             <div className="flex items-start gap-3">
@@ -212,12 +209,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
             </Tile>
 
             {loadingState !== "idle" && (
-                <div
-                    role="status"
-                    aria-live="polite"
-                    aria-atomic="true"
-                    className="flex flex-col items-center justify-center gap-3 mt-8 py-8"
-                >
+                <div className="flex flex-col items-center justify-center gap-3 mt-8 py-8">
                     <div aria-hidden="true" className="relative w-12 h-12">
                         <div className="absolute inset-0 rounded-full border-2 border-(--accent-primary)/20" />
                         <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-(--accent-primary) border-r-(--accent-secondary) animate-spin" />

@@ -84,7 +84,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
 
     return (
         <>
-            <Tile title="Location" heading="h2">
+            <Tile title="Location">
                 <div className="space-y-4">
                     <div className="rounded-lg bg-(--accent-primary)/10 border border-(--accent-primary)/20 p-3">
                         <p className="text-xs text-(--text-secondary)">

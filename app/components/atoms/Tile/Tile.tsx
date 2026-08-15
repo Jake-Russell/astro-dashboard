@@ -3,7 +3,7 @@ import type { TileProps } from "./types";
 
 export const Tile: FunctionComponent<PropsWithChildren<TileProps>> = ({
     title,
-    heading = "h3",
+    heading = "h2",
     testId,
     children,
 }) => {

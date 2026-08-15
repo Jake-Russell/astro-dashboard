@@ -33,11 +33,13 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
                         </p>
                     </div>
                 )}
-                <div className="max-h-96 overflow-y-auto outline-none rounded-lg">
-                    <table
-                        aria-label="Nightly weather forecast"
-                        className="w-full border-separate border-spacing-y-2"
-                    >
+                <div
+                    tabIndex={0}
+                    role="region"
+                    aria-label="Scrollable nightly weather forecast table"
+                    className="max-h-96 overflow-y-auto outline-none rounded-lg"
+                >
+                    <table className="w-full border-separate border-spacing-y-2">
                         <thead>
                             <tr className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest">
                                 <th

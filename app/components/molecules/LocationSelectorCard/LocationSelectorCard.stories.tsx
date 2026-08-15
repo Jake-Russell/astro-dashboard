@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { fn, mocked } from "storybook/test";
 import { getCurrentPosition } from "services/geolocationService";
-import { getMswLocationReverseLoader, getMswLocationSearchLoader } from "storybook/mswHelpers";
+import {
+    getMswLocationReverseLoader,
+    getMswLocationSearchLoader,
+    getMswWeatherLoader,
+} from "storybook/mswHelpers";
 import { mockLat, mockLng } from "mocks/mockLocationData";
 import { useAstronomy, type AstronomyContextType } from "contexts/AstronomyContext";
 import { LocationSelectorCard } from "./LocationSelectorCard";
@@ -139,5 +143,32 @@ export const WithWeatherApiError: Story = {
         mocked(useAstronomy).mockReturnValue(
             createMockContext({ weatherDataError: "Failed to fetch weather data" }),
         );
+    },
+    parameters: {
+        handlers: [getMswWeatherLoader(500), ...baseHandlers],
+    },
+};
+
+export const WithLocationAndWeatherApiErrors: Story = {
+    ...Default,
+    beforeEach() {
+        mocked(getCurrentPosition).mockResolvedValue({
+            latitude: mockLat,
+            longitude: mockLng,
+        });
+
+        mocked(useAstronomy).mockReturnValue(
+            createMockContext({ weatherDataError: "Failed to fetch weather data" }),
+        );
+    },
+    play: async ({ canvas, userEvent }) => {
+        const input = canvas.getByTestId("location-input");
+        await userEvent.type(input, "Test Location");
+        await userEvent.click(canvas.getByTestId("search-button"));
+    },
+    parameters: {
+        msw: {
+            handlers: [getMswLocationSearchLoader(500), getMswWeatherLoader(500), ...baseHandlers],
+        },
     },
 };

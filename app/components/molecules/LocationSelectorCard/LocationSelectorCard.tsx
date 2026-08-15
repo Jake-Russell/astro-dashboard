@@ -1,5 +1,5 @@
 "use client";
-import { type FunctionComponent, useState } from "react";
+import { type FunctionComponent, useEffect, useState } from "react";
 import { Tile } from "atoms";
 import { useAstronomy } from "contexts/AstronomyContext";
 import { getCurrentPosition } from "services/geolocationService";
@@ -8,11 +8,14 @@ import { getLatLng, getLocationName } from "utils/getLocationData";
 export const LocationSelectorCard: FunctionComponent = () => {
     const { loadingState, setLoadingState, weatherDataError, setLocation, resetWeatherData } =
         useAstronomy();
-    const [error, setError] = useState<string | undefined>(weatherDataError);
-
+    const [error, setError] = useState<string>();
     const [locationValue, setLocationValue] = useState<string>("");
     const [lastSearchedLocation, setLastSearchedLocation] = useState<string>("");
     const [locationDisplayName, setLocationDisplayName] = useState<string>("");
+
+    useEffect(() => {
+        if (weatherDataError && !error) setError(weatherDataError);
+    }, [error, weatherDataError]);
 
     const resetSearch = () => {
         setLocationDisplayName("");

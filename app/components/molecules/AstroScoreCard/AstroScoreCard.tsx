@@ -57,13 +57,13 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         breakdownTime !== 0 ? getFormattedTime(breakdownTime, latitude, longitude) : undefined;
 
     return (
-        <Tile title="Score">
+        <Tile title="Star Grade">
             <div className="w-full">
                 <div className="space-y-6">
                     <div className="text-center space-y-2">
-                        <h3 className="text-3xl font-bold bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) bg-clip-text text-transparent">
-                            🌙 Astro Score
-                        </h3>
+                        <p className="text-3xl font-bold bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) bg-clip-text text-transparent">
+                            <span aria-hidden="true">🌙</span> Star Grade
+                        </p>
                         <p className="text-sm text-(--text-secondary)">
                             Overall conditions for stargazing tonight
                         </p>
@@ -85,9 +85,9 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                     {breakdownTimeFormatted && (
                         <div className="p-4 rounded-lg bg-(--card-background) border border-(--card-border)">
                             <div className="flex justify-between items-center mb-3">
-                                <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest">
+                                <h3 className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest">
                                     Score Breakdown
-                                </p>
+                                </h3>
                                 <p className="text-xs text-(--text-secondary)">
                                     {breakdownTimeFormatted}
                                 </p>
@@ -97,13 +97,18 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                 {/* CLOUDS */}
                                 <div className="space-y-1">
                                     <div className="flex justify-between items-center">
-                                        <span>☁️ Clouds</span>
+                                        <span>
+                                            <span aria-hidden="true">☁️</span> Clouds
+                                        </span>
                                         <span>
                                             {currentBreakdown.cloud.toFixed(1)} / {CLOUD_WEIGHT}
                                         </span>
                                     </div>
 
-                                    <div className="h-2 w-full bg-(--card-border) rounded">
+                                    <div
+                                        aria-hidden="true"
+                                        className="h-2 w-full bg-(--card-border) rounded"
+                                    >
                                         <div
                                             className="h-2 bg-(--accent-primary) rounded transition-all"
                                             style={{
@@ -116,13 +121,18 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                 {/* MOON BRIGHTNESS */}
                                 <div className="space-y-1">
                                     <div className="flex justify-between items-center">
-                                        <span>🌕 Moon</span>
+                                        <span>
+                                            <span aria-hidden="true">🌕</span> Moon
+                                        </span>
                                         <span>
                                             {currentBreakdown.moon.toFixed(1)} / {MOON_WEIGHT}
                                         </span>
                                     </div>
 
-                                    <div className="h-2 w-full bg-(--card-border) rounded">
+                                    <div
+                                        aria-hidden="true"
+                                        className="h-2 w-full bg-(--card-border) rounded"
+                                    >
                                         <div
                                             className="h-2 bg-(--accent-secondary) rounded transition-all"
                                             style={{
@@ -135,7 +145,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                         </div>
                     )}
 
-                    {!!primeStartTime && !!primeEndTime && !!primeScore && primeScore && (
+                    {primeStartTime && primeEndTime && primeScore !== undefined && (
                         <div
                             className={`p-4 rounded-lg border ${
                                 isInPrimeWindow
@@ -143,12 +153,12 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                     : "bg-(--accent-secondary)/10 border border-(--accent-secondary)/30"
                             }`}
                         >
-                            <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
-                                🌟 Prime Conditions
-                            </p>
+                            <h3 className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
+                                <span aria-hidden="true">🌟</span> Prime Conditions
+                            </h3>
                             {isInPrimeWindow && (
                                 <p className="text-sm font-bold text-green-700 mb-2">
-                                    ✨ Currently prime conditions!
+                                    <span aria-hidden="true">✨</span> Currently prime conditions!
                                 </p>
                             )}
                             <p className="text-sm text-(--text-primary) font-medium">
@@ -162,9 +172,9 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
 
                     <div className="space-y-3 border-t border-(--card-border) pt-4">
                         <div className="p-4 rounded-lg bg-(--accent-primary)/5 border border-(--accent-primary)/20 hover:border-(--accent-primary)/40 transition-colors">
-                            <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
+                            <h3 className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
                                 Cloud Coverage
-                            </p>
+                            </h3>
                             <div className="flex items-center gap-3">
                                 <span className="text-2xl font-bold text-(--accent-primary)">
                                     {nightHours.length > 0
@@ -182,23 +192,31 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                         </div>
 
                         <div className="p-4 rounded-lg bg-(--accent-secondary)/5 border border-(--accent-secondary)/20 hover:border-(--accent-secondary)/40 transition-colors">
-                            <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
+                            <h3 className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
                                 Moon Illumination
-                            </p>
+                            </h3>
                             <div className="flex items-center gap-3">
                                 <span className="text-2xl font-bold text-(--accent-secondary)">
                                     {moonIllumination}%
                                 </span>
                                 <span className="text-sm text-(--text-secondary)">
-                                    {moonIllumination < 50 ? "🌑 Dark" : "🌕 Bright"}
+                                    {moonIllumination < 50 ? (
+                                        <>
+                                            <span aria-hidden="true">🌑</span> Dark
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span aria-hidden="true">🌕</span> Bright
+                                        </>
+                                    )}
                                 </span>
                             </div>
                         </div>
                     </div>
                     <div className="p-3 rounded-lg bg-yellow-500/20 border border-yellow-500/40 mb-4">
-                        <p className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-1">
-                            ⚠️ Viewing Conditions
-                        </p>
+                        <h3 className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-1">
+                            <span aria-hidden="true">⚠️</span> Viewing Conditions
+                        </h3>
                         <p className="text-sm text-(--text-secondary)">
                             For the best stargazing results, use a location with minimal light
                             pollution and a clear, unobstructed view of the sky. Best results come

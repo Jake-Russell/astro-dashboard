@@ -22,7 +22,7 @@ export const SunCycleCard: FunctionComponent<SunCycleCardProps> = ({
                     <div className="space-y-3">
                         <div className="flex items-center justify-between p-4 rounded-lg bg-linear-to-br from-(--accent-primary)/10 to-(--accent-secondary)/5 border border-(--accent-primary)/20 hover:border-(--accent-primary)/40 transition-colors">
                             <span className="text-sm text-(--text-secondary) font-semibold uppercase tracking-widest">
-                                🌅 Sunrise
+                                <span aria-hidden="true">🌅</span> Sunrise
                             </span>
                             <span className="text-lg font-bold text-foreground">
                                 {getFormattedTime(sunrise, latitude, longitude)}
@@ -30,7 +30,7 @@ export const SunCycleCard: FunctionComponent<SunCycleCardProps> = ({
                         </div>
                         <div className="flex items-center justify-between p-4 rounded-lg bg-linear-to-br from-(--accent-secondary)/10 to-(--accent-tertiary)/5 border border-(--accent-secondary)/20 hover:border-(--accent-secondary)/40 transition-colors">
                             <span className="text-sm text-(--text-secondary) font-semibold uppercase tracking-widest">
-                                🌇 Sunset
+                                <span aria-hidden="true">🌇</span> Sunset
                             </span>
                             <span className="text-lg font-bold text-foreground">
                                 {getFormattedTime(sunset, latitude, longitude)}

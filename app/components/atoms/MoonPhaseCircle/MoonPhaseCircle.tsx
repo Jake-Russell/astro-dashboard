@@ -37,6 +37,7 @@ export const MoonPhaseCircle: FunctionComponent<MoonPhaseCircleProps> = ({ phase
                 width={size}
                 height={size}
                 viewBox={`0 0 ${size} ${size}`}
+                aria-hidden="true"
                 className="drop-shadow-lg"
                 style={{
                     filter: "drop-shadow(0 0 20px rgba(129, 140, 248, 0.3))",

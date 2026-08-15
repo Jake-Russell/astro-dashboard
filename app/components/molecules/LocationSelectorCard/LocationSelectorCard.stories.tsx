@@ -15,7 +15,7 @@ const createMockContext = (overrides: Partial<AstronomyContextType> = {}): Astro
         setLocation: fn(),
         loadingState: "idle",
         setLoadingState: fn(),
-        setError: fn(),
+        setWeatherDataError: fn(),
         ...overrides,
     };
 };
@@ -136,9 +136,7 @@ export const WithWeatherApiError: Story = {
         });
 
         mocked(useAstronomy).mockReturnValue(
-            createMockContext({
-                error: "Failed to fetch weather data",
-            }),
+            createMockContext({ weatherDataError: "Failed to fetch weather data" }),
         );
     },
 };

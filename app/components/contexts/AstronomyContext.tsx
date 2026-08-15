@@ -9,10 +9,10 @@ export type LoadingState = "idle" | "loading-location" | "loading-weather";
 export type AstronomyContextType = GeoPosition & {
     setLocation: (latitude: number, longitude: number) => void;
     weatherData?: WeatherResponse;
+    weatherDataError?: string;
+    setWeatherDataError: (error?: string) => void;
     loadingState: LoadingState;
     setLoadingState: (state: LoadingState) => void;
-    error?: string;
-    setError: (error?: string) => void;
 };
 
 const AstronomyContext = createContext<AstronomyContextType | undefined>(undefined);
@@ -27,17 +27,17 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
     const [latitude, setLatitude] = useState(0);
     const [longitude, setLongitude] = useState(0);
     const [weatherData, setWeatherData] = useState<WeatherResponse>();
+    const [weatherDataError, setWeatherDataError] = useState<string>();
     const [loadingState, setLoadingState] = useState<LoadingState>("idle");
-    const [error, setError] = useState<string>();
 
     useEffect(() => {
         if (latitude === 0 && longitude === 0) return;
         setLoadingState("loading-weather");
-        setError(undefined);
+        setWeatherDataError(undefined);
         getWeatherData(latitude, longitude)
             .then((weatherData) => {
                 if (weatherData.error) {
-                    setError(weatherData.error);
+                    setWeatherDataError(weatherData.error);
                     setLoadingState("idle");
                 } else {
                     setWeatherData(weatherData);
@@ -45,7 +45,7 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
                 }
             })
             .catch((err) => {
-                setError(err instanceof Error ? err.message : String(err));
+                setWeatherDataError(err instanceof Error ? err.message : String(err));
                 setLoadingState("idle");
             });
     }, [latitude, longitude]);
@@ -62,10 +62,10 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
                 longitude,
                 setLocation,
                 weatherData,
+                weatherDataError,
+                setWeatherDataError,
                 loadingState,
                 setLoadingState,
-                error,
-                setError,
             }}
         >
             {children}

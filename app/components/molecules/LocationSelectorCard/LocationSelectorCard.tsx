@@ -6,8 +6,8 @@ import { getCurrentPosition } from "services/geolocationService";
 import { getLatLng, getLocationName } from "utils/getLocationData";
 
 export const LocationSelectorCard: FunctionComponent = () => {
-    const { loadingState, setLoadingState, error: weatherError, setLocation } = useAstronomy();
-    const [error, setLocalError] = useState<string>();
+    const { loadingState, setLoadingState, weatherDataError, setLocation } = useAstronomy();
+    const [error, setError] = useState<string | undefined>(weatherDataError);
 
     const [locationValue, setLocationValue] = useState<string>("");
     const [lastSearchedLocation, setLastSearchedLocation] = useState<string>("");
@@ -16,7 +16,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
     const resetSearch = () => {
         setLoadingState("loading-location");
         setLocationDisplayName("");
-        setLocalError(undefined);
+        setError(undefined);
     };
 
     const handleUseLocation = async () => {
@@ -27,7 +27,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
             const locationResponse = await getLocationName(latitude, longitude);
 
             if (locationResponse.error) {
-                setLocalError(locationResponse.error);
+                setError(locationResponse.error);
                 setLoadingState("idle");
                 return;
             }
@@ -38,7 +38,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
             setLocation(latitude, longitude);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            setLocalError(err.message || "Unable to retrieve your location.");
+            setError(err.message || "Unable to retrieve your location.");
             setLoadingState("idle");
         }
     };
@@ -51,7 +51,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
 
         const locationData = await getLatLng(normalisedLocation);
         if (locationData.error) {
-            setLocalError(locationData.error);
+            setError(locationData.error);
             setLoadingState("idle");
             return;
         }
@@ -103,7 +103,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
                         </button>
                     </form>
 
-                    {locationDisplayName && !error && !weatherError && (
+                    {locationDisplayName && !error && (
                         <div className="mt-4 p-3 rounded-lg bg-(--accent-primary)/10 border border-(--accent-primary)/20">
                             <p className="text-xs font-semibold text-(--accent-primary) uppercase tracking-widest mb-1">
                                 Showing results for:
@@ -113,10 +113,10 @@ export const LocationSelectorCard: FunctionComponent = () => {
                             </p>
                         </div>
                     )}
-                    {(error || weatherError) && (
+                    {error && (
                         <div className="mt-4 p-3 rounded-lg bg-(--accent-tertiary)/10 border border-(--accent-tertiary)/20">
                             <p className="text-sm text-(--accent-tertiary) font-medium">
-                                ⚠️ {error || weatherError}
+                                ⚠️ {error}
                             </p>
                         </div>
                     )}

@@ -7,8 +7,7 @@ import type { GeoPosition } from "services/geolocationService";
 export type LoadingState = "idle" | "loading-location" | "loading-weather";
 
 export type AstronomyContextType = GeoPosition & {
-    setLatitude: (latitude: number) => void;
-    setLongitude: (longitude: number) => void;
+    setLocation: (latitude: number, longitude: number) => void;
     weatherData?: WeatherResponse;
     loadingState: LoadingState;
     setLoadingState: (state: LoadingState) => void;
@@ -51,13 +50,17 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
             });
     }, [latitude, longitude]);
 
+    const setLocation = (lat: number, lng: number) => {
+        setLatitude(lat);
+        setLongitude(lng);
+    };
+
     return (
         <AstronomyContext.Provider
             value={{
                 latitude,
                 longitude,
-                setLatitude,
-                setLongitude,
+                setLocation,
                 weatherData,
                 loadingState,
                 setLoadingState,

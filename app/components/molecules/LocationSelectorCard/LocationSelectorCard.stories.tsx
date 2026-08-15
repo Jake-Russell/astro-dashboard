@@ -12,8 +12,7 @@ const createMockContext = (overrides: Partial<AstronomyContextType> = {}): Astro
     return {
         latitude: 0,
         longitude: 0,
-        setLatitude: fn(),
-        setLongitude: fn(),
+        setLocation: fn(),
         loadingState: "idle",
         setLoadingState: fn(),
         setError: fn(),

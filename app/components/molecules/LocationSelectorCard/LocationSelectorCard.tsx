@@ -6,16 +6,10 @@ import { getCurrentPosition } from "services/geolocationService";
 import { getLatLng, getLocationName } from "utils/getLocationData";
 
 export const LocationSelectorCard: FunctionComponent = () => {
-    const {
-        loadingState,
-        setLoadingState,
-        error: weatherError,
-        setLatitude,
-        setLongitude,
-    } = useAstronomy();
+    const { loadingState, setLoadingState, error: weatherError, setLocation } = useAstronomy();
     const [error, setLocalError] = useState<string>();
 
-    const [location, setLocation] = useState<string>("");
+    const [locationValue, setLocationValue] = useState<string>("");
     const [lastSearchedLocation, setLastSearchedLocation] = useState<string>("");
     const [locationDisplayName, setLocationDisplayName] = useState<string>("");
 
@@ -38,12 +32,10 @@ export const LocationSelectorCard: FunctionComponent = () => {
                 return;
             }
 
-            setLocation(locationResponse.name);
+            setLocationValue(locationResponse.name);
             setLocationDisplayName(locationResponse.displayName);
             setLastSearchedLocation(locationResponse.name.trim());
-            setLoadingState("loading-weather");
-            setLatitude(latitude);
-            setLongitude(longitude);
+            setLocation(latitude, longitude);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setLocalError(err.message || "Unable to retrieve your location.");
@@ -52,7 +44,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
     };
 
     const handleLocationSearch = async () => {
-        const normalisedLocation = location?.trim();
+        const normalisedLocation = locationValue?.trim();
         if (!normalisedLocation || normalisedLocation === lastSearchedLocation) return;
 
         resetSearch();
@@ -66,9 +58,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
 
         setLocationDisplayName(locationData.displayName);
         setLastSearchedLocation(normalisedLocation);
-        setLoadingState("loading-weather");
-        setLatitude(locationData.latitude);
-        setLongitude(locationData.longitude);
+        setLocation(locationData.latitude, locationData.longitude);
     };
 
     return (
@@ -97,15 +87,15 @@ export const LocationSelectorCard: FunctionComponent = () => {
                         <input
                             type="text"
                             placeholder="Search location..."
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
+                            value={locationValue}
+                            onChange={(e) => setLocationValue(e.target.value)}
                             disabled={loadingState !== "idle"}
                             data-testid="location-input"
                             className="flex-1 px-4 py-3 rounded-xl bg-background border border-(--card-border) text-foreground placeholder:(--text-secondary) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         <button
                             type="submit"
-                            disabled={!location?.trim() || loadingState !== "idle"}
+                            disabled={!locationValue?.trim() || loadingState !== "idle"}
                             data-testid="search-button"
                             className="px-5 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >

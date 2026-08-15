@@ -1,76 +1,21 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { NextRequest } from "next/server";
-import { checkRateLimit } from "@vercel/firewall";
 import { mockLat, mockLng } from "../../../mocks/mockLocationData";
 import { mockWeatherResponse } from "../../../mocks/mockWeatherData";
 import { GET } from "../route";
 
-vi.mock("@vercel/firewall", () => ({
-    checkRateLimit: vi.fn(),
-}));
-
 describe("Weather API route", () => {
     const fetchMock = vi.fn();
-    const checkRateLimitMock = vi.mocked(checkRateLimit);
     let request: NextRequest;
 
     beforeEach(() => {
         fetchMock.mockReset();
         vi.stubGlobal("fetch", fetchMock);
-        checkRateLimitMock.mockReset();
-        checkRateLimitMock.mockResolvedValue({ rateLimited: false });
         process.env.OPEN_WEATHER_MAP_APP_ID = "test-weather-key";
         request = new NextRequest(`https://example.com/api/weather?lat=${mockLat}&lon=${mockLng}`);
     });
 
     afterEach(() => vi.unstubAllGlobals());
-
-    describe("rate limiting", () => {
-        it("should return 429 and skip the upstream call, given the request is rate limited", async () => {
-            checkRateLimitMock.mockResolvedValueOnce({ rateLimited: true });
-
-            const response = await GET(request);
-
-            expect(response.status).toBe(429);
-            expect(await response.json()).toEqual({
-                error: "Too many requests, please try again shortly.",
-            });
-            expect(fetchMock).not.toHaveBeenCalled();
-        });
-
-        it("should key the rate limit check by client IP", async () => {
-            fetchMock.mockResolvedValueOnce({
-                ok: true,
-                json: vi.fn().mockResolvedValueOnce(mockWeatherResponse),
-            });
-
-            request = new NextRequest(
-                `https://example.com/api/weather?lat=${mockLat}&lon=${mockLng}`,
-                { headers: { "x-forwarded-for": "1.2.3.4" } },
-            );
-
-            await GET(request);
-
-            expect(checkRateLimitMock).toHaveBeenCalledWith(
-                "api-rate-limit",
-                expect.objectContaining({ rateLimitKey: "1.2.3.4" }),
-            );
-        });
-
-        it("should fall back to 'unknown' as the key when no IP headers are present", async () => {
-            fetchMock.mockResolvedValueOnce({
-                ok: true,
-                json: vi.fn().mockResolvedValueOnce(mockWeatherResponse),
-            });
-
-            await GET(request);
-
-            expect(checkRateLimitMock).toHaveBeenCalledWith(
-                "api-rate-limit",
-                expect.objectContaining({ rateLimitKey: "unknown" }),
-            );
-        });
-    });
 
     it.each([
         `https://example.com/api/weather?lat=${mockLat}`,

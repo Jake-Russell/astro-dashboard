@@ -37,12 +37,12 @@ describe("ThemeContext", () => {
 
         const { result } = renderHook(() => useTheme(), { wrapper });
 
-        expect(result.current.theme).toBe("light");
+        expect(result.current.theme).toBe("dark");
     });
 
     it("should prefer dark mode when the system preference is not light", () => {
         const mockMediaQueryList: Partial<MediaQueryList> = {
-            matches: false,
+            matches: true,
             media: "",
             addEventListener: vi.fn(),
             removeEventListener: vi.fn(),

@@ -6,7 +6,8 @@ import { getCurrentPosition } from "services/geolocationService";
 import { getLatLng, getLocationName } from "utils/getLocationData";
 
 export const LocationSelectorCard: FunctionComponent = () => {
-    const { loadingState, setLoadingState, weatherDataError, setLocation } = useAstronomy();
+    const { loadingState, setLoadingState, weatherDataError, setLocation, resetWeatherData } =
+        useAstronomy();
     const [error, setError] = useState<string | undefined>(weatherDataError);
 
     const [locationValue, setLocationValue] = useState<string>("");
@@ -14,7 +15,6 @@ export const LocationSelectorCard: FunctionComponent = () => {
     const [locationDisplayName, setLocationDisplayName] = useState<string>("");
 
     const resetSearch = () => {
-        setLoadingState("loading-location");
         setLocationDisplayName("");
         setError(undefined);
     };
@@ -23,12 +23,16 @@ export const LocationSelectorCard: FunctionComponent = () => {
         resetSearch();
 
         try {
+            setLoadingState("loading-location");
+
             const { latitude, longitude } = await getCurrentPosition();
             const locationResponse = await getLocationName(latitude, longitude);
 
+            setLoadingState("idle");
+
             if (locationResponse.error) {
                 setError(locationResponse.error);
-                setLoadingState("idle");
+                resetWeatherData();
                 return;
             }
 
@@ -44,20 +48,23 @@ export const LocationSelectorCard: FunctionComponent = () => {
     };
 
     const handleLocationSearch = async () => {
-        const normalisedLocation = locationValue?.trim();
+        const normalisedLocation = locationValue?.replace(/[^\p{L}\p{N}\s'-]/gu, "").trim();
         if (!normalisedLocation || normalisedLocation === lastSearchedLocation) return;
 
+        setLastSearchedLocation(normalisedLocation);
         resetSearch();
 
+        setLoadingState("loading-location");
         const locationData = await getLatLng(normalisedLocation);
+
+        setLoadingState("idle");
         if (locationData.error) {
             setError(locationData.error);
-            setLoadingState("idle");
+            resetWeatherData();
             return;
         }
 
         setLocationDisplayName(locationData.displayName);
-        setLastSearchedLocation(normalisedLocation);
         setLocation(locationData.latitude, locationData.longitude);
     };
 

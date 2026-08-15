@@ -16,6 +16,7 @@ const createMockContext = (overrides: Partial<AstronomyContextType> = {}): Astro
         loadingState: "idle",
         setLoadingState: fn(),
         setWeatherDataError: fn(),
+        resetWeatherData: fn(),
         ...overrides,
     };
 };

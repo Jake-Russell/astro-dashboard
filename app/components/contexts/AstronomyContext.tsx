@@ -13,6 +13,7 @@ export type AstronomyContextType = GeoPosition & {
     setWeatherDataError: (error?: string) => void;
     loadingState: LoadingState;
     setLoadingState: (state: LoadingState) => void;
+    resetWeatherData: () => void;
 };
 
 const AstronomyContext = createContext<AstronomyContextType | undefined>(undefined);
@@ -51,8 +52,18 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
     }, [latitude, longitude]);
 
     const setLocation = (lat: number, lng: number) => {
+        const locationIsSameAndDataLoaded = lat === latitude && lng === longitude;
+        if (locationIsSameAndDataLoaded) return;
+
         setLatitude(lat);
         setLongitude(lng);
+    };
+
+    const resetWeatherData = () => {
+        setLatitude(0);
+        setLongitude(0);
+        setWeatherData(undefined);
+        setWeatherDataError(undefined);
     };
 
     return (
@@ -66,6 +77,7 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
                 setWeatherDataError,
                 loadingState,
                 setLoadingState,
+                resetWeatherData,
             }}
         >
             {children}

@@ -2,13 +2,14 @@
 import { type FunctionComponent, useEffect, useState } from "react";
 import { Tile } from "atoms";
 import { useAstronomy } from "contexts/AstronomyContext";
-import { getCurrentPosition } from "services/geolocationService";
+import { type GeolocationErrorCode, getCurrentPosition } from "services/geolocationService";
 import { getLatLng, getLocationName } from "utils/getLocationData";
 
 export const LocationSelectorCard: FunctionComponent = () => {
     const { loadingState, setLoadingState, weatherDataError, setLocation, resetWeatherData } =
         useAstronomy();
     const [error, setError] = useState<string>();
+    const [geolocationErrorCode, setGeolocationErrorCode] = useState<GeolocationErrorCode>();
     const [locationValue, setLocationValue] = useState<string>("");
     const [lastSearchedLocation, setLastSearchedLocation] = useState<string>("");
     const [locationDisplayName, setLocationDisplayName] = useState<string>("");
@@ -20,6 +21,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
     const resetSearch = () => {
         setLocationDisplayName("");
         setError(undefined);
+        setGeolocationErrorCode(undefined);
     };
 
     const handleUseLocation = async () => {
@@ -41,10 +43,19 @@ export const LocationSelectorCard: FunctionComponent = () => {
             setLocationDisplayName(locationResponse.displayName);
             setLastSearchedLocation(locationResponse.name.trim());
             setLocation(latitude, longitude);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (err: any) {
-            setError(err.message || "Unable to retrieve your location.");
+        } catch (err: unknown) {
+            const geolocationError = err as {
+                code?: GeolocationErrorCode;
+                message?: string;
+            };
+
+            setGeolocationErrorCode(geolocationError.code);
+            setError(
+                geolocationError.message ||
+                    "Unable to retrieve your location. Please try again or search for a location instead.",
+            );
             resetWeatherData();
+            setLoadingState("idle");
         }
     };
 
@@ -68,10 +79,20 @@ export const LocationSelectorCard: FunctionComponent = () => {
         setLocation(locationData.latitude, locationData.longitude);
     };
 
+    const canRetryGeolocation =
+        geolocationErrorCode === "TIMEOUT" || geolocationErrorCode === "POSITION_UNAVAILABLE";
+
     return (
         <>
             <Tile title="Location" heading="h2">
                 <div className="space-y-4">
+                    <div className="rounded-lg bg-(--accent-primary)/10 border border-(--accent-primary)/20 p-3">
+                        <p className="text-xs text-(--text-secondary)">
+                            📍 Your location is only used to find the nearest location for your
+                            astronomy and weather data. Your browser will ask for permission.
+                        </p>
+                    </div>
+
                     <button
                         onClick={handleUseLocation}
                         disabled={loadingState !== "idle"}
@@ -121,10 +142,58 @@ export const LocationSelectorCard: FunctionComponent = () => {
                         </div>
                     )}
                     {error && (
-                        <div className="mt-4 p-3 rounded-lg bg-(--accent-tertiary)/10 border border-(--accent-tertiary)/20">
-                            <p className="text-sm text-(--accent-tertiary) font-medium">
-                                ⚠️ {error}
-                            </p>
+                        <div className="mt-4 rounded-xl border border-(--accent-tertiary)/20 bg-(--accent-tertiary)/5 p-4">
+                            <div className="flex items-start gap-3">
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-(--accent-tertiary)/10">
+                                    <span className="text-sm" aria-hidden="true">
+                                        ⚠️
+                                    </span>
+                                </div>
+
+                                <div className="min-w-0 flex-1">
+                                    <p className="text-sm font-semibold text-(--accent-tertiary)">
+                                        Unable to use your location
+                                    </p>
+
+                                    <p className="mt-1 text-sm leading-relaxed text-(--text-secondary)">
+                                        {error}
+                                    </p>
+
+                                    {geolocationErrorCode && (
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            {canRetryGeolocation && (
+                                                <button
+                                                    type="button"
+                                                    onClick={handleUseLocation}
+                                                    disabled={loadingState !== "idle"}
+                                                    data-testid="retry-location-button"
+                                                    className="rounded-lg bg-(--accent-tertiary) px-4 py-2 text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                                                >
+                                                    Try again
+                                                </button>
+                                            )}
+
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setError(undefined);
+                                                    setGeolocationErrorCode(undefined);
+
+                                                    document
+                                                        .querySelector<HTMLInputElement>(
+                                                            '[data-testid="location-input"]',
+                                                        )
+                                                        ?.focus();
+                                                }}
+                                                data-testid="search-location-button"
+                                                className="rounded-lg border border-(--card-border) bg-background px-4 py-2 text-sm font-semibold text-foreground transition-all cursor-pointer hover:border-(--accent-primary) hover:text-(--accent-primary)"
+                                            >
+                                                Search instead
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>

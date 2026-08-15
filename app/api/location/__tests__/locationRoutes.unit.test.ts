@@ -1,23 +1,101 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { NextRequest } from "next/server";
+import { checkRateLimit } from "@vercel/firewall";
 import { mockLat, mockLng } from "../../../mocks/mockLocationData";
 import { GET as searchGET } from "../search/route";
 import { GET as reverseGET } from "../reverse/route";
 
+vi.mock("@vercel/firewall", () => ({
+    checkRateLimit: vi.fn(),
+}));
+
 describe("Location API routes", () => {
     const fetchMock = vi.fn();
+    const checkRateLimitMock = vi.mocked(checkRateLimit);
 
     beforeEach(() => {
         fetchMock.mockReset();
         vi.stubGlobal("fetch", fetchMock);
+        checkRateLimitMock.mockReset();
+        checkRateLimitMock.mockResolvedValue({ rateLimited: false });
     });
 
     afterEach(() => vi.unstubAllGlobals());
+
+    describe("shared Nominatim rate limit bucket", () => {
+        it("should use the same rate limit key for both search and reverse routes", async () => {
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: vi
+                    .fn()
+                    .mockResolvedValue([
+                        { lat: mockLat, lon: mockLng, display_name: "Swindon, Wiltshire, UK" },
+                    ]),
+            });
+            await searchGET(
+                new NextRequest("https://example.com/api/location/search?location=Swindon"),
+            );
+            const searchKey = checkRateLimitMock.mock.calls[0][1]?.rateLimitKey;
+
+            fetchMock.mockResolvedValue({
+                ok: true,
+                json: vi.fn().mockResolvedValue({
+                    display_name: "Swindon, Wiltshire, UK",
+                    address: { town: "Swindon", country: "United Kingdom" },
+                }),
+            });
+            await reverseGET(
+                new NextRequest(
+                    `https://example.com/api/location/reverse?lat=${mockLat}&lon=${mockLng}`,
+                ),
+            );
+            const reverseKey = checkRateLimitMock.mock.calls[1][1]?.rateLimitKey;
+
+            expect(searchKey).toBe("nominatim");
+            expect(reverseKey).toBe("nominatim");
+            expect(searchKey).toBe(reverseKey);
+        });
+    });
 
     describe("GET /api/location/search", () => {
         let request: NextRequest;
         beforeEach(() => {
             request = new NextRequest("https://example.com/api/location/search?location=Swindon");
+        });
+
+        describe("rate limiting", () => {
+            it("should return 429 and skip the upstream call, given the request is rate limited", async () => {
+                checkRateLimitMock.mockResolvedValueOnce({ rateLimited: true });
+                const response = await searchGET(request);
+                expect(response.status).toBe(429);
+                expect(await response.json()).toEqual({
+                    error: "Too many requests, please try again shortly.",
+                });
+                expect(fetchMock).not.toHaveBeenCalled();
+            });
+
+            it("should key the rate limit check by the shared 'nominatim' bucket, not client IP", async () => {
+                fetchMock.mockResolvedValueOnce({
+                    ok: true,
+                    json: vi
+                        .fn()
+                        .mockResolvedValueOnce([
+                            { lat: mockLat, lon: mockLng, display_name: "Swindon, Wiltshire, UK" },
+                        ]),
+                });
+
+                request = new NextRequest(
+                    "https://example.com/api/location/search?location=Swindon",
+                    { headers: { "x-forwarded-for": "1.2.3.4" } },
+                );
+
+                await searchGET(request);
+
+                expect(checkRateLimitMock).toHaveBeenCalledWith(
+                    "api-rate-limit",
+                    expect.objectContaining({ rateLimitKey: "nominatim" }),
+                );
+            });
         });
 
         it("should return 400, given location is missing", async () => {
@@ -104,6 +182,42 @@ describe("Location API routes", () => {
             request = new NextRequest(
                 `https://example.com/api/location/reverse?lat=${mockLat}&lon=${mockLng}`,
             );
+        });
+
+        describe("rate limiting", () => {
+            it("should return 429 and skip the upstream call, given the request is rate limited", async () => {
+                checkRateLimitMock.mockResolvedValueOnce({ rateLimited: true });
+
+                const response = await reverseGET(request);
+
+                expect(response.status).toBe(429);
+                expect(await response.json()).toEqual({
+                    error: "Too many requests, please try again shortly.",
+                });
+                expect(fetchMock).not.toHaveBeenCalled();
+            });
+
+            it("should key the rate limit check by the shared 'nominatim' bucket, not client IP", async () => {
+                fetchMock.mockResolvedValueOnce({
+                    ok: true,
+                    json: vi.fn().mockResolvedValueOnce({
+                        display_name: "Swindon, Wiltshire, UK",
+                        address: { town: "Swindon", country: "United Kingdom" },
+                    }),
+                });
+
+                request = new NextRequest(
+                    `https://example.com/api/location/reverse?lat=${mockLat}&lon=${mockLng}`,
+                    { headers: { "x-forwarded-for": "1.2.3.4" } },
+                );
+
+                await reverseGET(request);
+
+                expect(checkRateLimitMock).toHaveBeenCalledWith(
+                    "api-rate-limit",
+                    expect.objectContaining({ rateLimitKey: "nominatim" }),
+                );
+            });
         });
 
         it.each([

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { mockLat, mockLng } from "../../mocks/mockLocationData";
-import { parseCoordinates } from "./parseCoordinates";
+import { mockLat, mockLng } from "../../../mocks/mockLocationData";
+import { parseCoordinates } from "../parseCoordinates";
 
 describe("parseCoordinates", () => {
     it("should return error, given either coordinate is missing", () => {

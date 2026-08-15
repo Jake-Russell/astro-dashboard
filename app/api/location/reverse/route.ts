@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit } from "@vercel/firewall";
 import { parseCoordinates } from "../../utils/parseCoordinates";
+import { rateLimitedResponse } from "../../utils/rateLimitResponse";
 import { NOMINATIM_BASE_URL, NOMINATIM_HEADERS } from "../consts";
 import type { LocationReverseResponse, NominatimReverseResponse } from "../types";
 
 export async function GET(request: NextRequest) {
+    const { rateLimited } = await checkRateLimit("api-rate-limit", {
+        request,
+        rateLimitKey: "nominatim", // shared global bucket with the search route
+    });
+
+    if (rateLimited) return rateLimitedResponse();
+
     const { searchParams } = new URL(request.url);
     const lat = searchParams.get("lat");
     const lon = searchParams.get("lon");

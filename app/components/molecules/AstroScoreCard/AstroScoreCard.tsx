@@ -75,7 +75,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                 {currentScore}
                             </p>
                             <p className="text-xs text-(--text-secondary) uppercase tracking-widest">
-                                out of 10
+                                out of 10 at {breakdownTimeFormatted}
                             </p>
                         </div>
                     </div>
@@ -150,11 +150,11 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                             className={`p-4 rounded-lg border ${
                                 isInPrimeWindow
                                     ? "bg-green-500/10 border-green-500/30"
-                                    : "bg-(--accent-secondary)/10 border border-(--accent-secondary)/30"
+                                    : "bg-(--accent-secondary)/10 border-(--accent-secondary)/30"
                             }`}
                         >
                             <h3 className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
-                                <span aria-hidden="true">🌟</span> Prime Conditions
+                                <span aria-hidden="true">🌟</span> Prime Conditions (2 hour window)
                             </h3>
                             {isInPrimeWindow && (
                                 <p className="text-sm font-bold text-green-700 mb-2">
@@ -165,7 +165,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                 Between {primeStartTime} and {primeEndTime}
                             </p>
                             <p className="text-xs text-(--text-secondary) mt-1">
-                                Expected score: {primeScore} / 10
+                                Expected average score: {primeScore} / 10
                             </p>
                         </div>
                     )}

@@ -1,5 +1,5 @@
 "use client";
-import type { FunctionComponent } from "react";
+import { type FunctionComponent, useEffect } from "react";
 import { Tile } from "atoms";
 import { getAdjustedMoonRiseAndSet, getMoonIllumination } from "utils/moonUtils";
 import { getFormattedTime, isCurrentlyPrime } from "utils/timeUtils";
@@ -16,6 +16,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     forecastStart,
     forecastEnd,
     nightHours,
+    onAnnouncement,
 }) => {
     const { moonrise, moonset } = getAdjustedMoonRiseAndSet(
         moonriseToday,
@@ -55,6 +56,25 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
 
     const breakdownTimeFormatted =
         breakdownTime !== 0 ? getFormattedTime(breakdownTime, latitude, longitude) : undefined;
+
+    useEffect(() => {
+        const announcement = `Astro score: ${currentScore} out of 10${
+            breakdownTimeFormatted ? ` at ${breakdownTimeFormatted}` : ""
+        }.${
+            primeStartTime && primeEndTime && primeScore !== undefined
+                ? ` Prime conditions are between ${primeStartTime} and ${primeEndTime}, with an expected average score of ${primeScore} out of 10.`
+                : ""
+        }`;
+
+        onAnnouncement?.(announcement);
+    }, [
+        currentScore,
+        breakdownTimeFormatted,
+        primeStartTime,
+        primeEndTime,
+        primeScore,
+        onAnnouncement,
+    ]);
 
     return (
         <Tile title="Star Grade">

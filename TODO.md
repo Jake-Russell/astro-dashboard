@@ -1,3 +1,3 @@
 # Ideas of Features to Implement
 
-- [ ] Improve loading logic
+- [ ] Fix missing test coverage

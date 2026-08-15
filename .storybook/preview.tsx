@@ -6,6 +6,7 @@ import { ThemeProvider } from "../app/components/contexts/ThemeContext.tsx";
 import "../app/globals.css";
 
 sb.mock(import("../app/services/geolocationService.ts"), { spy: true });
+sb.mock(import("../app/components/contexts/AstronomyContext.tsx"), { spy: true });
 
 initializeMSW({
     onUnhandledRequest: "bypass",

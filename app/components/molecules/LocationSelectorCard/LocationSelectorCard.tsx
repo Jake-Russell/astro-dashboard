@@ -1,37 +1,23 @@
 "use client";
 import { type FunctionComponent, useEffect, useState } from "react";
 import { Tile } from "atoms";
+import { useAstronomy } from "contexts/AstronomyContext";
 import { getCurrentPosition } from "services/geolocationService";
 import { getLatLng, getLocationName } from "utils/getLocationData";
-import type { LocationSelectorCardProps } from "./types";
 
-export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> = ({
-    isWeatherDataLoading,
-    weatherDataError,
-    setLatitude,
-    setLongitude,
-    setWeatherLoading,
-}) => {
+export const LocationSelectorCard: FunctionComponent = () => {
+    const { loadingState, setLoadingState, weatherDataError, setLocation, resetWeatherData } =
+        useAstronomy();
     const [error, setError] = useState<string>();
-    const [isLoading, setIsLoading] = useState(false);
-
-    const [location, setLocation] = useState<string>("");
+    const [locationValue, setLocationValue] = useState<string>("");
     const [lastSearchedLocation, setLastSearchedLocation] = useState<string>("");
     const [locationDisplayName, setLocationDisplayName] = useState<string>("");
 
     useEffect(() => {
-        if (isLoading !== isWeatherDataLoading) setIsLoading(isWeatherDataLoading);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isWeatherDataLoading]);
-
-    useEffect(() => {
-        if (weatherDataError) setError(weatherDataError);
-    }, [weatherDataError]);
+        if (weatherDataError && !error) setError(weatherDataError);
+    }, [error, weatherDataError]);
 
     const resetSearch = () => {
-        // TODO: Improve loading logic
-        setWeatherLoading(true);
-        setIsLoading(true);
         setLocationDisplayName("");
         setError(undefined);
     };
@@ -40,48 +26,46 @@ export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> 
         resetSearch();
 
         try {
+            setLoadingState("loading-location");
+
             const { latitude, longitude } = await getCurrentPosition();
-
-            setLatitude(latitude);
-            setLongitude(longitude);
-
             const locationResponse = await getLocationName(latitude, longitude);
 
             if (locationResponse.error) {
-                setIsLoading(false);
                 setError(locationResponse.error);
+                resetWeatherData();
                 return;
             }
 
-            setLocation(locationResponse.name);
+            setLocationValue(locationResponse.name);
             setLocationDisplayName(locationResponse.displayName);
             setLastSearchedLocation(locationResponse.name.trim());
-            setIsLoading(false);
-            setWeatherLoading(false);
+            setLocation(latitude, longitude);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            setIsLoading(false);
             setError(err.message || "Unable to retrieve your location.");
+            resetWeatherData();
         }
     };
 
     const handleLocationSearch = async () => {
-        const normalisedLocation = location?.trim();
+        const normalisedLocation = locationValue?.replace(/[^\p{L}\p{N}\s'-]/gu, "").trim();
         if (!normalisedLocation || normalisedLocation === lastSearchedLocation) return;
 
+        setLastSearchedLocation(normalisedLocation);
         resetSearch();
 
+        setLoadingState("loading-location");
         const locationData = await getLatLng(normalisedLocation);
+
         if (locationData.error) {
-            setIsLoading(false);
             setError(locationData.error);
+            resetWeatherData();
             return;
         }
 
-        setLatitude(locationData.latitude);
-        setLongitude(locationData.longitude);
         setLocationDisplayName(locationData.displayName);
-        setLastSearchedLocation(normalisedLocation);
+        setLocation(locationData.latitude, locationData.longitude);
     };
 
     return (
@@ -90,6 +74,7 @@ export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> 
                 <div className="space-y-4">
                     <button
                         onClick={handleUseLocation}
+                        disabled={loadingState !== "idle"}
                         data-testid="use-location-button"
                         className="w-full px-4 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -109,14 +94,15 @@ export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> 
                         <input
                             type="text"
                             placeholder="Search location..."
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
+                            value={locationValue}
+                            onChange={(e) => setLocationValue(e.target.value)}
+                            disabled={loadingState !== "idle"}
                             data-testid="location-input"
-                            className="flex-1 px-4 py-3 rounded-xl bg-background border border-(--card-border) text-foreground placeholder:(--text-secondary) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent transition-all duration-300"
+                            className="flex-1 px-4 py-3 rounded-xl bg-background border border-(--card-border) text-foreground placeholder:(--text-secondary) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         <button
                             type="submit"
-                            disabled={!location?.trim() || isLoading}
+                            disabled={!locationValue?.trim() || loadingState !== "idle"}
                             data-testid="search-button"
                             className="px-5 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
@@ -144,13 +130,17 @@ export const LocationSelectorCard: FunctionComponent<LocationSelectorCardProps> 
                 </div>
             </Tile>
 
-            {isLoading && (
+            {loadingState !== "idle" && (
                 <div className="flex flex-col items-center justify-center gap-3 mt-8 py-8">
                     <div className="relative w-12 h-12">
                         <div className="absolute inset-0 rounded-full border-2 border-(--accent-primary)/20" />
                         <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-(--accent-primary) border-r-(--accent-secondary) animate-spin" />
                     </div>
-                    <span className="text-sm font-medium text-(--text-secondary)">Loading...</span>
+                    <span className="text-sm font-medium text-(--text-secondary)">
+                        {loadingState === "loading-location"
+                            ? "Loading location..."
+                            : "Loading weather..."}
+                    </span>
                 </div>
             )}
         </>

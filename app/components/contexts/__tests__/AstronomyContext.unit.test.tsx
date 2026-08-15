@@ -11,10 +11,18 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 );
 
 describe("AstronomyContext", () => {
+    afterEach(() => vi.restoreAllMocks());
+
     it("should throw error when used outside provider", () => {
         expect(() => renderHook(() => useAstronomy())).toThrow(
             "useAstronomy must be used within an AstronomyProvider",
         );
+    });
+
+    it("should initialize with idle loading state", () => {
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+        expect(result.current.loadingState).toBe("idle");
+        expect(result.current.weatherDataError).toBeUndefined();
     });
 
     it("should not fetch weather data when latitude/longitude are empty", () => {
@@ -29,17 +37,38 @@ describe("AstronomyContext", () => {
 
         const { result } = renderHook(() => useAstronomy(), { wrapper });
 
-        act(() => {
-            result.current.setLatitude(mockLat);
-            result.current.setLongitude(mockLng);
-        });
+        act(() => result.current.setLocation(mockLat, mockLng));
 
-        await waitFor(() => expect(result.current.weatherLoading).toBe(false));
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
 
         expect(result.current.weatherData).toEqual(mockWeatherResponse);
     });
 
-    it("should set loading state correctly during fetch", async () => {
+    it("should fetch weather data when changing to a different location", async () => {
+        const secondLat = mockLat + 1;
+        const secondLng = mockLng + 1;
+
+        const getWeatherDataSpy = vi
+            .spyOn(weatherApi, "getWeatherData")
+            .mockResolvedValue(mockWeatherResponse);
+
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+
+        act(() => result.current.setLocation(mockLat, mockLng));
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+
+        act(() => result.current.setLocation(secondLat, secondLng));
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+
+        expect(result.current.latitude).toBe(secondLat);
+        expect(result.current.longitude).toBe(secondLng);
+        expect(getWeatherDataSpy).toHaveBeenCalledTimes(2);
+        expect(getWeatherDataSpy).toHaveBeenLastCalledWith(secondLat, secondLng);
+    });
+
+    it("should set loading state to loading-weather during fetch", async () => {
         let resolveFn: (value: WeatherResponse) => void;
 
         const promise = new Promise<WeatherResponse>((resolve) => {
@@ -50,29 +79,154 @@ describe("AstronomyContext", () => {
 
         const { result } = renderHook(() => useAstronomy(), { wrapper });
 
-        act(() => {
-            result.current.setLatitude(mockLat);
-            result.current.setLongitude(mockLng);
-        });
+        act(() => result.current.setLocation(mockLat, mockLng));
 
-        expect(result.current.weatherLoading).toBe(true);
+        expect(result.current.loadingState).toBe("loading-weather");
 
         resolveFn!(mockWeatherResponse);
 
-        await waitFor(() => expect(result.current.weatherLoading).toBe(false));
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
     });
 
-    it("should handle fetch errors and reset loading", async () => {
-        vi.spyOn(weatherApi, "getWeatherData").mockRejectedValue(new Error("fail"));
+    it("should clear error before fetching weather", async () => {
+        const getWeatherDataSpy = vi
+            .spyOn(weatherApi, "getWeatherData")
+            .mockResolvedValue(mockWeatherResponse);
 
         const { result } = renderHook(() => useAstronomy(), { wrapper });
 
+        // Set initial error
+        act(() => result.current.setWeatherDataError("Previous error"));
+
+        act(() => result.current.setLocation(mockLat, mockLng));
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+
+        expect(result.current.weatherDataError).toBeUndefined();
+        expect(getWeatherDataSpy).toHaveBeenCalled();
+    });
+
+    it("should handle fetch errors and set error state", async () => {
+        const errorMessage = "Network error";
+        vi.spyOn(weatherApi, "getWeatherData").mockRejectedValue(new Error(errorMessage));
+
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+
+        act(() => result.current.setLocation(mockLat, mockLng));
+
+        expect(result.current.loadingState).toBe("loading-weather");
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+        expect(result.current.weatherDataError).toBe(errorMessage);
+        expect(result.current.weatherData).toBeUndefined();
+    });
+
+    it("should handle API error responses", async () => {
+        const errorResponse = { ...mockWeatherResponse, error: "Weather API error" };
+        vi.spyOn(weatherApi, "getWeatherData").mockResolvedValue(errorResponse);
+
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+
+        act(() => result.current.setLocation(mockLat, mockLng));
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+        expect(result.current.weatherDataError).toBe("Weather API error");
+    });
+
+    it("should allow manual loading state management", () => {
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+
+        act(() => result.current.setLoadingState("loading-location"));
+
+        expect(result.current.loadingState).toBe("loading-location");
+
+        act(() => result.current.setLoadingState("idle"));
+
+        expect(result.current.loadingState).toBe("idle");
+    });
+
+    it("should not refetch weather data when setting the same location", async () => {
+        const getWeatherDataSpy = vi
+            .spyOn(weatherApi, "getWeatherData")
+            .mockResolvedValue(mockWeatherResponse);
+
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+
+        act(() => result.current.setLocation(mockLat, mockLng));
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+
+        expect(getWeatherDataSpy).toHaveBeenCalledTimes(1);
+
+        act(() => result.current.setLocation(mockLat, mockLng));
+
+        expect(result.current.latitude).toBe(mockLat);
+        expect(result.current.longitude).toBe(mockLng);
+        expect(result.current.loadingState).toBe("idle");
+        expect(getWeatherDataSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should update location and refetch weather data when location changes", async () => {
+        const secondLat = mockLat + 1;
+        const secondLng = mockLng + 1;
+
+        const getWeatherDataSpy = vi
+            .spyOn(weatherApi, "getWeatherData")
+            .mockResolvedValue(mockWeatherResponse);
+
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+
+        act(() => result.current.setLocation(mockLat, mockLng));
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+
+        act(() => result.current.setLocation(secondLat, secondLng));
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+
+        expect(result.current.latitude).toBe(secondLat);
+        expect(result.current.longitude).toBe(secondLng);
+        expect(getWeatherDataSpy).toHaveBeenCalledTimes(2);
+        expect(getWeatherDataSpy).toHaveBeenLastCalledWith(secondLat, secondLng);
+    });
+
+    it("should reset location, weather data, error and loading state", async () => {
+        vi.spyOn(weatherApi, "getWeatherData").mockResolvedValue(mockWeatherResponse);
+
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+
+        act(() => result.current.setLocation(mockLat, mockLng));
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+
+        expect(result.current.weatherData).toEqual(mockWeatherResponse);
+
         act(() => {
-            result.current.setLatitude(mockLat);
-            result.current.setLongitude(mockLng);
+            result.current.setWeatherDataError("Test error");
+            result.current.setLoadingState("loading-weather");
         });
 
-        expect(result.current.weatherLoading).toBe(true);
+        act(() => result.current.resetWeatherData());
+
+        expect(result.current.latitude).toBe(0);
+        expect(result.current.longitude).toBe(0);
+        expect(result.current.weatherData).toBeUndefined();
+        expect(result.current.weatherDataError).toBeUndefined();
+        expect(result.current.loadingState).toBe("idle");
+    });
+
+    it("should handle non-Error fetch failures", async () => {
+        const errorMessage = "Unexpected API failure";
+
+        vi.spyOn(weatherApi, "getWeatherData").mockRejectedValue(errorMessage);
+
+        const { result } = renderHook(() => useAstronomy(), { wrapper });
+
+        act(() => result.current.setLocation(mockLat, mockLng));
+
+        await waitFor(() => expect(result.current.loadingState).toBe("idle"));
+
+        expect(result.current.weatherDataError).toBe(errorMessage);
         expect(result.current.weatherData).toBeUndefined();
     });
 });

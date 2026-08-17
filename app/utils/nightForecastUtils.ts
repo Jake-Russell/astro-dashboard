@@ -15,9 +15,12 @@ export const getNightForecastWindow = (weatherData: WeatherResponse): NightForec
     const isActiveNight = weatherData.current.dt < weatherData.current.sunrise;
 
     if (isActiveNight) {
+        const forecastStart = Math.floor(weatherData.current.dt / 3600) * 3600;
+        const forecastEnd = weatherData.current.sunrise;
+
         return {
-            forecastStart: Math.floor(weatherData.current.dt / 3600) * 3600,
-            forecastEnd: weatherData.current.sunrise,
+            forecastStart,
+            forecastEnd,
             isActiveNight,
         };
     }
@@ -33,5 +36,7 @@ export const getNightForecastHours = (
     hourlyForecast: HourData[],
     { forecastStart, forecastEnd }: NightForecastRange,
 ): HourData[] => {
+    if (forecastEnd <= forecastStart) return [];
+
     return hourlyForecast.filter((hour) => hour.dt >= forecastStart && hour.dt < forecastEnd);
 };

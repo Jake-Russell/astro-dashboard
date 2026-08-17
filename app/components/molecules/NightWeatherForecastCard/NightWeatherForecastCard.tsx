@@ -14,7 +14,7 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
         <Tile title="Weather" testId="weather-forecast-tile">
             <div className="w-full">
                 {nightHours.length === 0 ? (
-                    <div role="status" className="py-8 px-4 text-center">
+                    <div className="py-8 px-4 text-center">
                         <div className="text-4xl mb-4" aria-hidden="true">
                             🌙
                         </div>

@@ -73,7 +73,7 @@ export const WithPartlyCloudyNight: Story = {
     },
 };
 
-export const WithNoAstronomicalDarkness: Story = {
+export const WithNoNightHours: Story = {
     ...Default,
     args: {
         ...Default.args,

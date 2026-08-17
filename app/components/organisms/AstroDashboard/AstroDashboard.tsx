@@ -1,9 +1,10 @@
 "use client";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { WeatherResponse } from "api/weather/types";
 import { StarsBackground, ThemeToggle } from "atoms";
 import { useAstronomy } from "contexts/AstronomyContext";
 import {
+    AstroDashboardSkeleton,
     AstroScoreCard,
     LocationSelector,
     MoonPhaseCard,
@@ -90,14 +91,20 @@ const getScoreCardData = (
 };
 
 export const AstroDashboard = () => {
-    const { latitude, longitude, weatherData, loadingState } = useAstronomy();
+    const { latitude, longitude, weatherData, weatherDataError, loadingState } = useAstronomy();
     const [astroAnnouncement, setAstroAnnouncement] = useState("");
 
     const handleAstroAnnouncement = useCallback((announcement: string) => {
         setAstroAnnouncement(announcement);
     }, []);
 
+    useEffect(() => {
+        if (loadingState !== "idle") setAstroAnnouncement("");
+    }, [loadingState]);
+
     const baseProps = useMemo(() => getBaseProps(latitude, longitude), [latitude, longitude]);
+    const hasWeatherData = Boolean(weatherData && !weatherData.error);
+    const isLoading = loadingState !== "idle";
 
     const moonPhaseData = useMemo(() => {
         if (!weatherData || weatherData.error) return null;
@@ -122,8 +129,14 @@ export const AstroDashboard = () => {
     return (
         <main className="min-h-screen bg-background relative overflow-x-hidden">
             <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+                {loadingState === "loading-location" && "Finding your location"}
+                {loadingState === "loading-weather" && "Loading weather and astronomy data"}
+            </div>
+
+            <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
                 {astroAnnouncement}
             </div>
+
             {/* Stars */}
             <div className="light:none dark:block absolute inset-0 z-0 pointer-events-none">
                 <div className="relative w-full h-full min-h-screen">
@@ -139,7 +152,6 @@ export const AstroDashboard = () => {
                 </div>
 
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Header with title and toggle */}
                     <div className="relative mb-8">
                         <div className="text-center space-y-4 flex flex-col items-center">
                             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold max-w-[calc(100vw-100px)]">
@@ -160,12 +172,37 @@ export const AstroDashboard = () => {
                 </div>
             </div>
 
-            {/* Content Section */}
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-20">
                 <div className="flex flex-col gap-6">
                     <LocationSelector />
 
-                    {loadingState === "idle" && (
+                    {!isLoading && !hasWeatherData && !weatherDataError && (
+                        <section
+                            aria-labelledby="dashboard-empty-title"
+                            className="rounded-2xl border border-(--card-border) bg-(--card-background) p-8 md:p-12 text-center"
+                        >
+                            <div className="text-5xl mb-5" aria-hidden="true">
+                                🌌
+                            </div>
+
+                            <h2
+                                id="dashboard-empty-title"
+                                className="text-2xl font-bold text-foreground"
+                            >
+                                Your night sky awaits
+                            </h2>
+
+                            <p className="mt-3 max-w-xl mx-auto text-sm md:text-base leading-relaxed text-(--text-secondary)">
+                                Select a location above to see tonight&apos;s moon, sun, weather and
+                                stargazing conditions.
+                            </p>
+                        </section>
+                    )}
+
+                    {isLoading && <AstroDashboardSkeleton />}
+
+                    {/* Loaded dashboard */}
+                    {!isLoading && hasWeatherData && (
                         <>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {moonPhaseData && <MoonPhaseCard {...moonPhaseData} />}

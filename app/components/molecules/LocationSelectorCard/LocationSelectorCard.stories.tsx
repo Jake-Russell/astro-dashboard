@@ -1,16 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, fn, mocked } from "storybook/test";
 import { getCurrentPosition } from "services/geolocationService";
-import {
-    getMswLocationReverseLoader,
-    getMswLocationSearchLoader,
-    getMswWeatherLoader,
-} from "storybook/mswHelpers";
+import { getMswLocationReverseLoader, getMswLocationSearchLoader } from "storybook/mswHelpers";
 import { mockLat, mockLng } from "mocks/mockLocationData";
 import { useAstronomy, type AstronomyContextType } from "contexts/AstronomyContext";
 import { LocationSelectorCard } from "./LocationSelectorCard";
-
-const baseHandlers = [getMswLocationReverseLoader(), getMswLocationSearchLoader()];
 
 const createMockContext = (overrides: Partial<AstronomyContextType> = {}): AstronomyContextType => {
     return {
@@ -21,6 +15,7 @@ const createMockContext = (overrides: Partial<AstronomyContextType> = {}): Astro
         setLoadingState: fn(),
         setWeatherDataError: fn(),
         resetWeatherData: fn(),
+        retryWeather: fn(),
         ...overrides,
     };
 };
@@ -30,6 +25,7 @@ const meta = {
 } satisfies Meta<typeof LocationSelectorCard>;
 
 export default meta;
+
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
@@ -42,27 +38,13 @@ export const Default: Story = {
         mocked(useAstronomy).mockReturnValue(createMockContext());
     },
     parameters: {
-        msw: {
-            handlers: baseHandlers,
-        },
-    },
-};
-
-export const Success: Story = {
-    ...Default,
-    play: async ({ canvas, userEvent }) => {
-        await userEvent.click(canvas.getByTestId("use-location-button"));
+        msw: { handlers: [getMswLocationReverseLoader(), getMswLocationSearchLoader()] },
     },
 };
 
 export const LoadingLocation: Story = {
     ...Default,
     beforeEach() {
-        mocked(getCurrentPosition).mockResolvedValue({
-            latitude: mockLat,
-            longitude: mockLng,
-        });
-
         mocked(useAstronomy).mockReturnValue(
             createMockContext({ loadingState: "loading-location" }),
         );
@@ -72,46 +54,35 @@ export const LoadingLocation: Story = {
 export const LoadingWeather: Story = {
     ...Default,
     beforeEach() {
-        mocked(getCurrentPosition).mockResolvedValue({
-            latitude: mockLat,
-            longitude: mockLng,
-        });
-
         mocked(useAstronomy).mockReturnValue(
-            createMockContext({ loadingState: "loading-weather" }),
+            createMockContext({
+                latitude: mockLat,
+                longitude: mockLng,
+                loadingState: "loading-weather",
+            }),
         );
     },
 };
-export const DarkMode: Story = {
+
+export const SuccessUsingCurrentLocation: Story = {
     ...Default,
-    beforeEach: () => {
-        localStorage.setItem("theme", "dark");
-
-        mocked(getCurrentPosition).mockResolvedValue({
-            latitude: mockLat,
-            longitude: mockLng,
-        });
-
-        mocked(useAstronomy).mockReturnValue(createMockContext());
+    play: async ({ canvas, userEvent }) => {
+        await userEvent.click(canvas.getByTestId("use-location-button"));
     },
 };
 
-export const WithGeoLocationError: Story = {
+export const SuccessSearchingLocation: Story = {
     ...Default,
-    beforeEach() {
-        mocked(getCurrentPosition).mockRejectedValue(
-            new Error(
-                "User denied geolocation permission. You can try again, or search for a location instead.",
-            ),
-        );
+    play: async ({ canvas, userEvent }) => {
+        const input = canvas.getByTestId("location-input");
 
-        mocked(useAstronomy).mockReturnValue(createMockContext());
+        await userEvent.type(input, "Test Location");
+        await userEvent.click(canvas.getByTestId("search-button"));
     },
-    play: Success.play,
 };
 
 export const WithPermissionDeniedError: Story = {
-    ...Default,
+    ...SuccessUsingCurrentLocation,
     beforeEach() {
         mocked(getCurrentPosition).mockRejectedValue({
             code: "PERMISSION_DENIED",
@@ -121,11 +92,10 @@ export const WithPermissionDeniedError: Story = {
 
         mocked(useAstronomy).mockReturnValue(createMockContext());
     },
-    play: Success.play,
 };
 
 export const WithTimeoutError: Story = {
-    ...Default,
+    ...SuccessUsingCurrentLocation,
     beforeEach() {
         mocked(getCurrentPosition).mockRejectedValue({
             code: "TIMEOUT",
@@ -135,11 +105,10 @@ export const WithTimeoutError: Story = {
 
         mocked(useAstronomy).mockReturnValue(createMockContext());
     },
-    play: Success.play,
 };
 
 export const WithPositionUnavailableError: Story = {
-    ...Default,
+    ...SuccessUsingCurrentLocation,
     beforeEach() {
         mocked(getCurrentPosition).mockRejectedValue({
             code: "POSITION_UNAVAILABLE",
@@ -149,11 +118,10 @@ export const WithPositionUnavailableError: Story = {
 
         mocked(useAstronomy).mockReturnValue(createMockContext());
     },
-    play: Success.play,
 };
 
 export const WithUnsupportedBrowserError: Story = {
-    ...Default,
+    ...SuccessUsingCurrentLocation,
     beforeEach() {
         mocked(getCurrentPosition).mockRejectedValue({
             code: "UNSUPPORTED",
@@ -162,76 +130,52 @@ export const WithUnsupportedBrowserError: Story = {
 
         mocked(useAstronomy).mockReturnValue(createMockContext());
     },
-    play: Success.play,
 };
 
 export const WithReverseLocationApiError: Story = {
-    ...Default,
-    play: Success.play,
+    ...SuccessUsingCurrentLocation,
     parameters: {
-        msw: {
-            handlers: [getMswLocationReverseLoader(500), ...baseHandlers],
-        },
+        ...SuccessSearchingLocation.parameters,
+        msw: { handlers: [getMswLocationReverseLoader(500), getMswLocationSearchLoader()] },
     },
 };
 
 export const WithSearchLocationApiError: Story = {
-    ...Default,
-    play: async ({ canvas, userEvent }) => {
-        const input = canvas.getByTestId("location-input");
-        await userEvent.type(input, "Test Location");
-        await userEvent.click(canvas.getByTestId("search-button"));
-    },
+    ...SuccessSearchingLocation,
     parameters: {
-        msw: {
-            handlers: [getMswLocationSearchLoader(500), ...baseHandlers],
-        },
+        ...SuccessSearchingLocation.parameters,
+        msw: { handlers: [getMswLocationReverseLoader(), getMswLocationSearchLoader(500)] },
     },
 };
 
 export const WithWeatherApiError: Story = {
     ...Default,
     beforeEach() {
-        mocked(getCurrentPosition).mockResolvedValue({
-            latitude: mockLat,
-            longitude: mockLng,
-        });
-
         mocked(useAstronomy).mockReturnValue(
-            createMockContext({ weatherDataError: "Failed to fetch weather data" }),
+            createMockContext({
+                latitude: mockLat,
+                longitude: mockLng,
+                weatherDataError: "Failed to fetch weather data",
+            }),
         );
-    },
-    parameters: {
-        handlers: [getMswWeatherLoader(500), ...baseHandlers],
     },
 };
 
-export const WithLocationAndWeatherApiErrors: Story = {
+export const DarkMode: Story = {
     ...Default,
     beforeEach() {
-        mocked(getCurrentPosition).mockResolvedValue({
-            latitude: mockLat,
-            longitude: mockLng,
-        });
+        localStorage.setItem("theme", "dark");
 
-        mocked(useAstronomy).mockReturnValue(
-            createMockContext({ weatherDataError: "Failed to fetch weather data" }),
-        );
-    },
-    play: async ({ canvas, userEvent }) => {
-        const input = canvas.getByTestId("location-input");
-        await userEvent.type(input, "Test Location");
-        await userEvent.click(canvas.getByTestId("search-button"));
-    },
-    parameters: {
-        msw: {
-            handlers: [getMswLocationSearchLoader(500), getMswWeatherLoader(500), ...baseHandlers],
-        },
+        mocked(useAstronomy).mockReturnValue(createMockContext());
     },
 };
 
+/* -------------------------------------------------------------------------- */
+/* Interaction Tests                                                          */
+/* -------------------------------------------------------------------------- */
+
 export const RetryLocation: Story = {
-    ...WithTimeoutError,
+    ...SuccessUsingCurrentLocation,
     beforeEach() {
         mocked(getCurrentPosition)
             .mockRejectedValueOnce({
@@ -247,13 +191,17 @@ export const RetryLocation: Story = {
         mocked(useAstronomy).mockReturnValue(createMockContext());
     },
     play: async ({ context, canvas, userEvent }) => {
-        await Success.play!(context);
-        const retryLocationButton = canvas.getByTestId("retry-location-button");
-        await userEvent.click(retryLocationButton);
-        expect(retryLocationButton).not.toBeInTheDocument();
+        await SuccessUsingCurrentLocation.play!(context);
+
+        expect(canvas.queryByTestId("location-selector-error")).toBeInTheDocument();
+
+        const retryLocationButton = canvas.queryByTestId("retry-location-button");
+        await userEvent.click(retryLocationButton!);
+
+        expect(canvas.queryByTestId("location-selector-error")).not.toBeInTheDocument();
     },
     parameters: {
-        msw: { handlers: baseHandlers },
+        ...SuccessUsingCurrentLocation.parameters,
         chromatic: { disableSnapshot: true },
     },
 };
@@ -261,10 +209,44 @@ export const RetryLocation: Story = {
 export const SearchAfterLocationError: Story = {
     ...RetryLocation,
     play: async ({ context, canvas, userEvent }) => {
-        await Success.play!(context);
-        const searchLocationButton = canvas.getByTestId("search-location-button");
-        await userEvent.click(searchLocationButton);
-        await userEvent.keyboard("Test Location{Enter}");
-        expect(searchLocationButton).not.toBeInTheDocument();
+        await SuccessUsingCurrentLocation.play!(context);
+
+        expect(canvas.queryByTestId("location-selector-error")).toBeInTheDocument();
+        await userEvent.click(canvas.getByTestId("search-location-button"));
+
+        await SuccessSearchingLocation.play!(context);
+
+        expect(canvas.queryByTestId("location-selector-error")).not.toBeInTheDocument();
+    },
+};
+
+export const RetryWeather: Story = {
+    ...WithWeatherApiError,
+    play: async ({ canvas, userEvent }) => {
+        const context = mocked(useAstronomy).mock.results[0]?.value as AstronomyContextType;
+        expect(canvas.queryByTestId("location-selector-error")).toBeInTheDocument();
+        await userEvent.click(canvas.getByTestId("retry-weather-button"));
+        expect(context.retryWeather).toHaveBeenCalledOnce();
+    },
+    parameters: {
+        ...WithWeatherApiError.parameters,
+        chromatic: { disableSnapshot: true },
+    },
+};
+
+export const ChangeLocationAfterWeatherError: Story = {
+    ...WithWeatherApiError,
+    play: async ({ context, canvas, userEvent }) => {
+        const astroContext = mocked(useAstronomy).mock.results[0]?.value as AstronomyContextType;
+
+        expect(canvas.queryByTestId("location-selector-error")).toBeInTheDocument();
+        await userEvent.click(canvas.getByTestId("change-location-button"));
+        expect(astroContext.resetWeatherData).toHaveBeenCalledOnce();
+
+        await SuccessSearchingLocation.play!(context);
+    },
+    parameters: {
+        ...WithWeatherApiError.parameters,
+        chromatic: { disableSnapshot: true },
     },
 };

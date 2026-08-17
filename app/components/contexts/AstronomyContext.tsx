@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { WeatherResponse } from "api/weather/types";
 import { getWeatherData } from "../../utils/getWeatherData";
 import type { GeoPosition } from "services/geolocationService";
@@ -13,6 +13,7 @@ export type AstronomyContextType = GeoPosition & {
     setWeatherDataError: (error?: string) => void;
     loadingState: LoadingState;
     setLoadingState: (state: LoadingState) => void;
+    retryWeather: () => void;
     resetWeatherData: () => void;
 };
 
@@ -31,24 +32,31 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
     const [weatherDataError, setWeatherDataError] = useState<string>();
     const [loadingState, setLoadingState] = useState<LoadingState>("idle");
 
-    useEffect(() => {
-        if (latitude === 0 && longitude === 0) return;
+    const fetchWeather = async (lat: number, lng: number) => {
         setLoadingState("loading-weather");
         setWeatherDataError(undefined);
-        getWeatherData(latitude, longitude)
-            .then((weatherData) => {
-                if (weatherData.error) {
-                    setWeatherDataError(weatherData.error);
-                    setLoadingState("idle");
-                } else {
-                    setWeatherData(weatherData);
-                    setLoadingState("idle");
-                }
-            })
-            .catch((err) => {
-                setWeatherDataError(err instanceof Error ? err.message : String(err));
+
+        try {
+            const weatherResponse = await getWeatherData(lat, lng);
+
+            if (weatherResponse.error) {
+                setWeatherDataError(weatherResponse.error);
                 setLoadingState("idle");
-            });
+                return;
+            }
+
+            setWeatherData(weatherResponse);
+            setLoadingState("idle");
+        } catch (err: unknown) {
+            setWeatherDataError(err instanceof Error ? err.message : String(err));
+            setLoadingState("idle");
+        }
+    };
+
+    useEffect(() => {
+        if (latitude === 0 && longitude === 0) return;
+
+        fetchWeather(latitude, longitude);
     }, [latitude, longitude]);
 
     const setLocation = (lat: number, lng: number) => {
@@ -60,6 +68,12 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
 
         setLatitude(lat);
         setLongitude(lng);
+    };
+
+    const retryWeather = () => {
+        if (latitude === 0 && longitude === 0) return;
+
+        fetchWeather(latitude, longitude);
     };
 
     const resetWeatherData = () => {
@@ -81,6 +95,7 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
                 setWeatherDataError,
                 loadingState,
                 setLoadingState,
+                retryWeather,
                 resetWeatherData,
             }}
         >

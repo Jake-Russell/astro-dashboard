@@ -179,7 +179,7 @@ export const AstroDashboard = () => {
                     {!isLoading && !hasWeatherData && !weatherDataError && (
                         <section
                             aria-labelledby="dashboard-empty-title"
-                            className="rounded-2xl border border-(--card-border) bg-(--card-background) p-8 md:p-12 text-center"
+                            className="rounded-2xl border border-(--card-border) bg-(--card-bg) p-8 md:p-12 text-center"
                         >
                             <div className="text-5xl mb-5" aria-hidden="true">
                                 🌌
@@ -187,7 +187,7 @@ export const AstroDashboard = () => {
 
                             <h2
                                 id="dashboard-empty-title"
-                                className="text-2xl font-bold text-foreground"
+                                className="text-2xl font-bold bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) bg-clip-text text-transparent"
                             >
                                 Your night sky awaits
                             </h2>

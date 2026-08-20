@@ -61,6 +61,11 @@ export const Default: Story = {
     },
 };
 
+export const BeforeSearch: Story = {
+    ...Default,
+    play: undefined,
+};
+
 export const Loading: Story = {
     ...Default,
     parameters: {

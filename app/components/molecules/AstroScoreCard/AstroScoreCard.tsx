@@ -93,7 +93,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                             🌅
                         </div>
 
-                        <h3 className="text-base font-semibold text-foreground">
+                        <h3 className="text-base font-semibold bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) bg-clip-text text-transparent">
                             No stargazing forecast available
                         </h3>
 
@@ -128,7 +128,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                         <p className="text-sm text-(--text-secondary) text-center">{summary}</p>
 
                         {breakdownTimeFormatted && (
-                            <div className="p-4 rounded-lg bg-(--card-background) border border-(--card-border)">
+                            <div className="p-4 rounded-lg bg-(--card-bg) border border-(--card-border)">
                                 <div className="flex justify-between items-center mb-3">
                                     <h3 className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest">
                                         Score Breakdown

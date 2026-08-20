@@ -18,7 +18,7 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
                         <div className="text-4xl mb-4" aria-hidden="true">
                             🌙
                         </div>
-                        <h3 className="text-base font-semibold text-foreground">
+                        <h3 className="text-base font-semibold bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) bg-clip-text text-transparent">
                             No forecast available for tonight
                         </h3>
                         <p className="mt-2 max-w-md mx-auto text-sm leading-relaxed text-(--text-secondary)">

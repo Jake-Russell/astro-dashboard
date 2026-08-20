@@ -49,6 +49,9 @@ export const LoadingLocation: Story = {
     beforeEach() {
         mocked(getCurrentPosition).mockReturnValue(new Promise(() => {}));
     },
+    play: async ({ canvas, userEvent }) => {
+        await userEvent.click(canvas.getByTestId("use-location-button"));
+    },
 };
 
 export const LoadingWeather: Story = {
@@ -62,6 +65,9 @@ export const LoadingWeather: Story = {
                 getMswWeatherLoader(200, undefined, "infinite"),
             ],
         },
+    },
+    play: async ({ canvas, userEvent }) => {
+        await userEvent.click(canvas.getByTestId("use-location-button"));
     },
 };
 

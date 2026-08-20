@@ -118,7 +118,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
     const activeError = getActiveError(error, weatherDataError);
 
     return (
-        <Tile title="Location">
+        <Tile title="Location" interactive={!isLoading}>
             <div className="space-y-4">
                 <div className="rounded-lg bg-(--accent-primary)/10 border border-(--accent-primary)/20 p-3">
                     <p className="text-xs text-(--text-secondary)">

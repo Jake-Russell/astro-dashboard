@@ -17,7 +17,7 @@ export const StarsBackground = () => {
     const [stars, setStars] = useState<Star[]>([]);
 
     useEffect(() => {
-        setStars(generateStars(120));
+        setStars(generateStars(250));
     }, []);
 
     return (

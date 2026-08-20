@@ -64,4 +64,22 @@ describe("getNightForecastHours", () => {
 
         expect(result).toEqual([hourlyForecast[2], hourlyForecast[3]]);
     });
+
+    it("should return an empty array, given the forecast start = the forecast end", () => {
+        const result = getNightForecastHours(hourlyForecast, {
+            forecastStart: 2000,
+            forecastEnd: 2000,
+        });
+
+        expect(result).toEqual([]);
+    });
+
+    it("should return an empty array, given the forecast start > the forecast end", () => {
+        const result = getNightForecastHours(hourlyForecast, {
+            forecastStart: 5000,
+            forecastEnd: 2000,
+        });
+
+        expect(result).toEqual([]);
+    });
 });

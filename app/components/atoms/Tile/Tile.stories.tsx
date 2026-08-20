@@ -16,6 +16,14 @@ export const Default: Story = {
     },
 };
 
+export const NotInteractive: Story = {
+    ...Default,
+    args: {
+        ...Default.args,
+        interactive: false,
+    },
+};
+
 export const DarkMode: Story = {
     ...Default,
     beforeEach: () => localStorage.setItem("theme", "dark"),

@@ -6,7 +6,7 @@ import type { LocationReverseResponse, LocationSearchResponse } from "api/locati
 
 export const getMswLocationReverseLoader = (status: number = 200) => {
     return http.get("/api/location/reverse", async () => {
-        delay(200);
+        await delay(200);
 
         const response: LocationReverseResponse = {
             name: "Test Location",
@@ -20,7 +20,7 @@ export const getMswLocationReverseLoader = (status: number = 200) => {
 
 export const getMswLocationSearchLoader = (status: number = 200) => {
     return http.get("/api/location/search", async () => {
-        delay(200);
+        await delay(200);
 
         const response: LocationSearchResponse = {
             latitude: mockLat,
@@ -36,9 +36,10 @@ export const getMswLocationSearchLoader = (status: number = 200) => {
 export const getMswWeatherLoader = (
     status: number = 200,
     weatherData: WeatherResponse = mockWeatherResponse,
+    delayMs: number | "infinite" = 200,
 ) => {
     return http.get("/api/weather", async () => {
-        delay(200);
+        await delay(delayMs);
 
         const response: WeatherResponse = {
             ...weatherData,

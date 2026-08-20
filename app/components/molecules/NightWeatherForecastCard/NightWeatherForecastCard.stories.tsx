@@ -73,6 +73,14 @@ export const WithPartlyCloudyNight: Story = {
     },
 };
 
+export const WithNoNightHours: Story = {
+    ...Default,
+    args: {
+        ...Default.args,
+        nightHours: [],
+    },
+};
+
 export const DarkMode: Story = {
     ...Default,
     beforeEach: () => localStorage.setItem("theme", "dark"),

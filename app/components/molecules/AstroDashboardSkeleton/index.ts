@@ -1,0 +1,1 @@
+export { AstroDashboardSkeleton } from "./AstroDashboardSkeleton";

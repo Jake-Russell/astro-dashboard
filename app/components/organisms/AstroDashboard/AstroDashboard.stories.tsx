@@ -61,6 +61,19 @@ export const Default: Story = {
     },
 };
 
+export const Loading: Story = {
+    ...Default,
+    parameters: {
+        msw: {
+            handlers: [
+                getMswLocationReverseLoader(),
+                getMswLocationSearchLoader(),
+                getMswWeatherLoader(200, mockWeatherResponse, "infinite"),
+            ],
+        },
+    },
+};
+
 export const BeforeSunriseShowsCurrentNight: Story = {
     ...Default,
     parameters: {

@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { WeatherResponse } from "api/weather/types";
-import { StarsBackground, ThemeToggle } from "atoms";
+import { StarsBackground, ThemeToggle, Tile } from "atoms";
 import { useAstronomy } from "contexts/AstronomyContext";
 import {
     AstroDashboardSkeleton,
@@ -177,26 +177,25 @@ export const AstroDashboard = () => {
                     <LocationSelector />
 
                     {!isLoading && !hasWeatherData && !weatherDataError && (
-                        <section
-                            aria-labelledby="dashboard-empty-title"
-                            className="rounded-2xl border border-(--card-border) bg-(--card-bg) p-8 md:p-12 text-center"
-                        >
-                            <div className="text-5xl mb-5" aria-hidden="true">
-                                🌌
+                        <Tile interactive={false}>
+                            <div aria-labelledby="dashboard-empty-title" className="text-center">
+                                <div className="text-5xl mb-5" aria-hidden="true">
+                                    🌌
+                                </div>
+
+                                <h2
+                                    id="dashboard-empty-title"
+                                    className="text-2xl font-bold bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) bg-clip-text text-transparent"
+                                >
+                                    Your night sky awaits
+                                </h2>
+
+                                <p className="mt-3 max-w-xl mx-auto text-sm md:text-base leading-relaxed text-(--text-secondary)">
+                                    Select a location above to see tonight&apos;s moon, sun, weather
+                                    and stargazing conditions.
+                                </p>
                             </div>
-
-                            <h2
-                                id="dashboard-empty-title"
-                                className="text-2xl font-bold bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) bg-clip-text text-transparent"
-                            >
-                                Your night sky awaits
-                            </h2>
-
-                            <p className="mt-3 max-w-xl mx-auto text-sm md:text-base leading-relaxed text-(--text-secondary)">
-                                Select a location above to see tonight&apos;s moon, sun, weather and
-                                stargazing conditions.
-                            </p>
-                        </section>
+                        </Tile>
                     )}
 
                     {isLoading && <AstroDashboardSkeleton />}

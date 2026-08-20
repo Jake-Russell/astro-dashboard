@@ -1,4 +1,5 @@
 "use client";
+import { Tile } from "atoms";
 
 const shimmerKeyframes = `
 @keyframes astro-skeleton-shimmer {
@@ -43,7 +44,7 @@ export const AstroDashboardSkeleton = () => {
             <div className="flex flex-col gap-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Moon Phase */}
-                    <div className="rounded-2xl border border-(--card-border) bg-(--card-bg) p-8">
+                    <Tile interactive={false}>
                         <SkeletonBlock className="h-5 w-28 mb-8" />
 
                         <div className="space-y-6">
@@ -65,10 +66,10 @@ export const AstroDashboardSkeleton = () => {
                                 <SkeletonRow />
                             </div>
                         </div>
-                    </div>
+                    </Tile>
 
                     {/* Sun */}
-                    <div className="rounded-2xl border border-(--card-border) bg-(--card-bg) p-8">
+                    <Tile interactive={false}>
                         <SkeletonBlock className="h-5 w-12 mb-8" />
 
                         <div className="space-y-4">
@@ -82,11 +83,11 @@ export const AstroDashboardSkeleton = () => {
                                 <SkeletonRow />
                             </div>
                         </div>
-                    </div>
+                    </Tile>
                 </div>
 
                 {/* Weather */}
-                <div className="rounded-2xl border border-(--card-border) bg-(--card-bg) p-8">
+                <Tile interactive={false}>
                     <SkeletonBlock className="h-5 w-20 mb-8" />
 
                     <div className="space-y-2 mb-4">
@@ -103,10 +104,10 @@ export const AstroDashboardSkeleton = () => {
                             </div>
                         ))}
                     </div>
-                </div>
+                </Tile>
 
                 {/* Star Grade */}
-                <div className="rounded-2xl border border-(--card-border) bg-(--card-bg) p-8">
+                <Tile interactive={false}>
                     <SkeletonBlock className="h-5 w-24 mb-8" />
 
                     <div className="space-y-6">
@@ -146,7 +147,7 @@ export const AstroDashboardSkeleton = () => {
 
                         <SkeletonBlock className="h-16 w-full rounded-lg" />
                     </div>
-                </div>
+                </Tile>
             </div>
         </>
     );

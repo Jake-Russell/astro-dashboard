@@ -21,39 +21,43 @@ const siteUrl = "https://stargrade.co.uk";
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
     title: {
-        default: "Astro Dashboard",
-        template: "%s | Astro Dashboard",
+        default: "Star Grade",
+        template: "%s | Star Grade",
     },
     description: "A simple dashboard showing moon phase and sun data based on your location.",
-    applicationName: "Astro Dashboard",
+    applicationName: "Star Grade",
     alternates: {
         canonical: "/",
     },
     openGraph: {
         type: "website",
         url: siteUrl,
-        siteName: "Astro Dashboard",
-        title: "Astro Dashboard",
+        siteName: "Star Grade",
+        title: "Star Grade",
         description: "Moon phase, moonrise/moonset and sun data for any location, in real time.",
         images: [
             {
                 url: "/og-image.png",
                 width: 1200,
                 height: 630,
-                alt: "Astro Dashboard — moon phase and sun data",
+                alt: "Star Grade — moon phase and sun data",
             },
         ],
         locale: "en_GB",
     },
     twitter: {
         card: "summary_large_image",
-        title: "Astro Dashboard",
+        title: "Star Grade",
         description: "Moon phase, moonrise/moonset and sun data for any location, in real time.",
         images: ["/og-image.png"],
         creator: "@jake_russell123",
     },
     icons: {
-        icon: "/favicon.ico",
+        icon: [
+            { url: "/favicon.svg", type: "image/svg+xml" },
+            { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+            { url: "/favicon.ico" },
+        ],
         apple: "/apple-touch-icon.png",
     },
     manifest: "/site.webmanifest",
@@ -83,7 +87,7 @@ export default function RootLayout({
                         __html: JSON.stringify({
                             "@context": "https://schema.org",
                             "@type": "WebApplication",
-                            name: "Astro Dashboard",
+                            name: "Star Grade",
                             url: siteUrl,
                             description:
                                 "A dashboard showing moon phase, moonrise/moonset and sun data for any searched or geolocated location.",

@@ -3,9 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "contexts/ThemeContext";
 
-// TODO: Update icons (og-image.png, favicon.ico, apple-touch-icon.png)
-// realfavicongenerator.net
-
 const geistSans = Geist({
     variable: "--font-geist-sans",
     subsets: ["latin"],

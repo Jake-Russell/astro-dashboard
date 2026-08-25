@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { getMoonPosition } from "suncalc";
+import { mockLat, mockLng } from "../../mocks/mockLocationData";
+import { mockDayData } from "../../mocks/mockWeatherData";
 import {
     calculateHourlyScore,
     getAstronomicalDarknessWindow,
@@ -11,14 +13,55 @@ import {
     CLOUD_WEIGHT,
     MOON_WEIGHT,
     getMoonAltitudeScore,
+    getMoonAltitude,
 } from "../weatherUtils";
-import { mockDayData } from "../../mocks/mockWeatherData";
 
 vi.mock("suncalc", () => ({
     getMoonPosition: vi.fn(),
 }));
 
 describe("weatherUtils", () => {
+    const getMoonPositionMock = vi.mocked(getMoonPosition);
+    beforeEach(() => {
+        vi.clearAllMocks();
+
+        getMoonPositionMock.mockReturnValue({
+            altitude: 30,
+            azimuth: 0,
+            distance: 0,
+            parallacticAngle: 0,
+        });
+    });
+
+    describe("getMoonAltitude", () => {
+        it.each([30.126, -12.345])(
+            "should round the moon altitude to 2 decimal places (%s)",
+            (alt) => {
+                getMoonPositionMock.mockReturnValue({
+                    altitude: alt,
+                    azimuth: 0,
+                    distance: 0,
+                    parallacticAngle: 0,
+                });
+
+                const expected = Math.round(alt * 100) / 100;
+
+                expect(getMoonAltitude(mockDayData[0].dt, mockLat, mockLng)).toBe(expected);
+            },
+        );
+
+        it("should return zero when the moon is exactly on the horizon", () => {
+            getMoonPositionMock.mockReturnValue({
+                altitude: 0,
+                azimuth: 0,
+                distance: 0,
+                parallacticAngle: 0,
+            });
+
+            expect(getMoonAltitude(mockDayData[0].dt, mockLat, mockLng)).toBe(0);
+        });
+    });
+
     describe("getCloudScore", () => {
         it("should return 10 for 0% cloud coverage", () => {
             expect(getCloudScore(0)).toBe(10);
@@ -276,28 +319,10 @@ describe("weatherUtils", () => {
     });
 
     describe("getAstroScore", () => {
-        const getMoonPositionMock = vi.mocked(getMoonPosition);
-
-        const latitude = 51.75;
-        const longitude = -1.25;
-
+        // Astronomical Darkness: 20:30 - 04:00
         const sunset = mockDayData[0].sunset; // 2026-01-01T19:00:00Z
         const sunrise = mockDayData[1].sunrise; // 2026-01-02T05:30:00Z
-        // Astronomical Darkness: 20:30 - 04:00
-
         const moonIllumination = 50;
-
-        beforeEach(() => {
-            vi.clearAllMocks();
-
-            // Default Moon position: 30° above horizon.
-            getMoonPositionMock.mockReturnValue({
-                altitude: 30,
-                azimuth: 0,
-                distance: 0,
-                parallacticAngle: 0,
-            });
-        });
 
         it("should only include hours that fall completely within astronomical darkness", () => {
             const hourlyData = [
@@ -320,22 +345,15 @@ describe("weatherUtils", () => {
                 moonIllumination,
                 sunset,
                 sunrise,
-                latitude,
-                longitude,
+                mockLat,
+                mockLng,
             );
 
             expect(result.hourlyScores).toHaveLength(7);
         });
 
         it("should return a zero score when no dark hours are available", () => {
-            const result = getAstroScore(
-                [],
-                moonIllumination,
-                sunset,
-                sunrise,
-                latitude,
-                longitude,
-            );
+            const result = getAstroScore([], moonIllumination, sunset, sunrise, mockLat, mockLng);
 
             expect(result.currentScore).toBe(0);
             expect(result.currentBreakdown).toEqual({
@@ -361,8 +379,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 const cloudy = getAstroScore(
@@ -370,8 +388,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(clear.currentScore).toBeGreaterThan(cloudy.currentScore);
@@ -383,8 +401,8 @@ describe("weatherUtils", () => {
                     10,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 const highIllumination = getAstroScore(
@@ -392,8 +410,8 @@ describe("weatherUtils", () => {
                     90,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(lowIllumination.currentScore).toBeGreaterThan(highIllumination.currentScore);
@@ -412,8 +430,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 getMoonPositionMock.mockReturnValue({
@@ -428,8 +446,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(lowMoon.currentScore).toBeGreaterThan(highMoon.currentScore);
@@ -448,8 +466,8 @@ describe("weatherUtils", () => {
                     100,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.currentBreakdown.moon.total).toBe(4);
@@ -468,8 +486,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.currentScore).toBe(result.hourlyScores[0].score);
@@ -483,8 +501,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.breakdownTime).toBe(firstHour);
@@ -500,8 +518,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.primeTimeStart).toBe(hour);
@@ -522,8 +540,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.primeTimeEnd).toBeLessThanOrEqual(darkEnd);
@@ -545,8 +563,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.primeTimeStart).toBe(hourlyData[2].dt);
@@ -565,8 +583,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 const firstScore = result.hourlyScores[1].score;
@@ -591,8 +609,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.primeTimeStart).toBe(hourlyData[0].dt);
@@ -610,8 +628,8 @@ describe("weatherUtils", () => {
                     moonIllumination,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.primeTimeEnd! - result.primeTimeStart!).toBe(7200);
@@ -632,8 +650,8 @@ describe("weatherUtils", () => {
                     10,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.summary).toContain("Excellent");
@@ -645,8 +663,8 @@ describe("weatherUtils", () => {
                     10,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.summary).toContain("heavy cloud");
@@ -665,8 +683,8 @@ describe("weatherUtils", () => {
                     80,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.summary).toContain("bright moon");
@@ -687,8 +705,8 @@ describe("weatherUtils", () => {
                     100,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.currentBreakdown.moon.total).toBe(4);
@@ -707,8 +725,8 @@ describe("weatherUtils", () => {
                     100,
                     sunset,
                     sunrise,
-                    latitude,
-                    longitude,
+                    mockLat,
+                    mockLng,
                 );
 
                 expect(result.currentBreakdown.moon.total).toBe(0);

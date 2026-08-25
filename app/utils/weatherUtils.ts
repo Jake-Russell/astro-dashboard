@@ -13,6 +13,11 @@ export const MOON_ILLUMINATION_WEIGHT = 6;
 export const MOON_ALTITUDE_WEIGHT = 4;
 const WINDOW_SIZE = 2;
 
+export const getMoonAltitude = (dt: number, latitude: number, longitude: number): number => {
+    const { altitude } = getMoonPosition(new Date(dt * 1000), latitude, longitude);
+    return Math.round(altitude * 100) / 100;
+};
+
 export const getCloudScore = (cloudCoverage: number): number => {
     const score = 10 * (1 - cloudCoverage / 100);
     return Math.max(0, Math.min(10, score));
@@ -136,8 +141,7 @@ export const getAstroScore = (
     });
 
     const hourlyScores: HourlyAstroScore[] = darkHours.map((hour) => {
-        const moonPos = getMoonPosition(new Date(hour.dt * 1000), latitude, longitude);
-        const moonAltitude = Math.round(moonPos.altitude * 100) / 100;
+        const moonAltitude = getMoonAltitude(hour.dt, latitude, longitude);
 
         const result = calculateHourlyScore(hour.clouds, moonIllumination, moonAltitude);
 

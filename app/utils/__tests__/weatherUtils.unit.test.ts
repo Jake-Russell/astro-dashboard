@@ -293,7 +293,7 @@ describe("weatherUtils", () => {
 
             // Default Moon position: 30° above horizon.
             getMoonPositionMock.mockReturnValue({
-                altitude: (30 * Math.PI) / 180,
+                altitude: 30,
                 azimuth: 0,
                 distance: 0,
                 parallacticAngle: 0,

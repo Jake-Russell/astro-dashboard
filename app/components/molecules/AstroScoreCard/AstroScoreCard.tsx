@@ -1,7 +1,8 @@
 "use client";
 import { type FunctionComponent, useEffect } from "react";
 import { Tile } from "atoms";
-import { getAdjustedMoonRiseAndSet, getMoonIllumination } from "utils/moonUtils";
+import { NightScoreChart } from "molecules";
+import { getMoonIllumination } from "utils/moonUtils";
 import { getFormattedTime, isCurrentlyPrime } from "utils/timeUtils";
 import { getAstroScore, CLOUD_WEIGHT, MOON_WEIGHT } from "utils/weatherUtils";
 import type { AstroScoreCardProps } from "./types";
@@ -9,21 +10,12 @@ import type { AstroScoreCardProps } from "./types";
 export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     latitude,
     longitude,
-    moonriseToday,
-    moonsetToday,
-    moonsetTomorrow,
     moonPhase,
     forecastStart,
     forecastEnd,
     nightHours,
     onAnnouncement,
 }) => {
-    const { moonrise, moonset } = getAdjustedMoonRiseAndSet(
-        moonriseToday,
-        moonsetToday,
-        moonsetTomorrow,
-    );
-
     const moonIllumination = getMoonIllumination(moonPhase);
 
     const {
@@ -34,11 +26,10 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         primeTimeStart,
         primeTimeEnd,
         primeScore,
+        hourlyScores,
     } = getAstroScore(
         nightHours,
         moonIllumination,
-        moonrise,
-        moonset,
         forecastStart,
         forecastEnd,
         latitude,

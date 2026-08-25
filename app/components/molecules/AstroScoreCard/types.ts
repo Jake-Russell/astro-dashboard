@@ -15,12 +15,20 @@ export type HourlyAstroScore = {
     cloudCoverage: number;
 };
 
+export type MoonScoreBreakdown = {
+    total: number;
+    illumination: number;
+    altitude: number;
+};
+
+export type ScoreBreakdown = {
+    cloud: number;
+    moon: MoonScoreBreakdown;
+};
+
 export type AstroScoreResult = {
     currentScore: number;
-    currentBreakdown: {
-        cloud: number;
-        moon: number;
-    };
+    currentBreakdown: ScoreBreakdown;
     summary: string;
     breakdownTime: number;
     hourlyScores: HourlyAstroScore[];

@@ -49,39 +49,39 @@ describe("weatherUtils", () => {
 
     describe("getMoonScore", () => {
         it("should return 10 when the moon is below the horizon, regardless of illumination", () => {
-            expect(getMoonScore(0, -10)).toBe(10);
-            expect(getMoonScore(50, -10)).toBe(10);
-            expect(getMoonScore(100, -10)).toBe(10);
+            expect(getMoonScore(0, -10)).toEqual({ total: 10, illumination: 10, altitude: 10 });
+            expect(getMoonScore(50, -10)).toEqual({ total: 10, illumination: 10, altitude: 10 });
+            expect(getMoonScore(100, -10)).toEqual({ total: 10, illumination: 10, altitude: 10 });
         });
 
         it("should return 10 when the moon is exactly on the horizon, regardless of illumination", () => {
-            expect(getMoonScore(0, 0)).toBe(10);
-            expect(getMoonScore(50, 0)).toBe(10);
-            expect(getMoonScore(100, 0)).toBe(10);
+            expect(getMoonScore(0, 0)).toEqual({ total: 10, illumination: 10, altitude: 10 });
+            expect(getMoonScore(50, 0)).toEqual({ total: 10, illumination: 10, altitude: 10 });
+            expect(getMoonScore(100, 0)).toEqual({ total: 10, illumination: 10, altitude: 10 });
         });
 
         it("should return 10 when the moon is not illuminated, regardless of altitude", () => {
-            expect(getMoonScore(0, 0)).toBe(10);
-            expect(getMoonScore(0, 45)).toBe(10);
-            expect(getMoonScore(0, 90)).toBe(10);
+            expect(getMoonScore(0, 0)).toEqual({ total: 10, illumination: 10, altitude: 10 });
+            expect(getMoonScore(0, 45)).toEqual({ total: 10, illumination: 10, altitude: 10 });
+            expect(getMoonScore(0, 90)).toEqual({ total: 10, illumination: 10, altitude: 10 });
         });
 
         it("should return 0 when the moon is fully illuminated and directly overhead", () => {
-            expect(getMoonScore(100, 90)).toBe(0);
+            expect(getMoonScore(100, 90)).toEqual({ total: 0, illumination: 0, altitude: 0 });
         });
 
         it("should give a higher score when the moon is less illuminated", () => {
             const lowIllumination = getMoonScore(20, 45);
             const highIllumination = getMoonScore(80, 45);
 
-            expect(lowIllumination).toBeGreaterThan(highIllumination);
+            expect(lowIllumination.total).toBeGreaterThan(highIllumination.total);
         });
 
         it("should give a higher score when the moon is lower in the sky", () => {
             const lowMoon = getMoonScore(50, 10);
             const highMoon = getMoonScore(50, 80);
 
-            expect(lowMoon).toBeGreaterThan(highMoon);
+            expect(lowMoon.total).toBeGreaterThan(highMoon.total);
         });
 
         it("should combine illumination and altitude scores using the expected weights", () => {
@@ -93,7 +93,7 @@ describe("weatherUtils", () => {
 
             const expected = illuminationScore * 0.6 + altitudeScore * 0.4;
 
-            expect(getMoonScore(illumination, altitude)).toBe(expected);
+            expect(getMoonScore(illumination, altitude).total).toBe(expected);
         });
 
         it("should produce a monotonically decreasing score as moon illumination increases", () => {
@@ -101,7 +101,7 @@ describe("weatherUtils", () => {
             const scores = illuminations.map((illumination) => getMoonScore(illumination, 45));
 
             for (let i = 1; i < scores.length; i++) {
-                expect(scores[i]).toBeLessThan(scores[i - 1]);
+                expect(scores[i].total).toBeLessThan(scores[i - 1].total);
             }
         });
 
@@ -110,7 +110,7 @@ describe("weatherUtils", () => {
             const scores = altitudes.map((altitude) => getMoonScore(50, altitude));
 
             for (let i = 1; i < scores.length; i++) {
-                expect(scores[i]).toBeLessThan(scores[i - 1]);
+                expect(scores[i].total).toBeLessThan(scores[i - 1].total);
             }
         });
     });
@@ -172,7 +172,7 @@ describe("weatherUtils", () => {
 
             const expected =
                 Math.round(
-                    (cloudScore * (CLOUD_WEIGHT / 10) + moonScore * (MOON_WEIGHT / 10)) * 10,
+                    (cloudScore * (CLOUD_WEIGHT / 10) + moonScore.total * (MOON_WEIGHT / 10)) * 10,
                 ) / 10;
 
             const result = calculateHourlyScore(cloudCoverage, moonIllumination, moonAltitude);
@@ -213,8 +213,7 @@ describe("weatherUtils", () => {
             const expectedMoonScore = getMoonScore(moonIllumination, moonAltitude);
 
             expect(result.breakdown.cloud).toBe(expectedCloudScore * (CLOUD_WEIGHT / 10));
-
-            expect(result.breakdown.moon).toBe(expectedMoonScore * (MOON_WEIGHT / 10));
+            expect(result.breakdown.moon.total).toBe(expectedMoonScore.total * (MOON_WEIGHT / 10));
         });
 
         it("should return a maximum score with clear skies and the moon below the horizon", () => {
@@ -222,7 +221,7 @@ describe("weatherUtils", () => {
 
             expect(result.total).toBe(10);
             expect(result.breakdown.cloud).toBe(6);
-            expect(result.breakdown.moon).toBe(4);
+            expect(result.breakdown.moon.total).toBe(4);
         });
 
         it("should return a minimum score with full cloud cover and a full moon directly overhead", () => {
@@ -230,7 +229,7 @@ describe("weatherUtils", () => {
 
             expect(result.total).toBe(0);
             expect(result.breakdown.cloud).toBe(0);
-            expect(result.breakdown.moon).toBe(0);
+            expect(result.breakdown.moon.total).toBe(0);
         });
     });
 
@@ -341,7 +340,11 @@ describe("weatherUtils", () => {
             expect(result.currentScore).toBe(0);
             expect(result.currentBreakdown).toEqual({
                 cloud: 0,
-                moon: 0,
+                moon: {
+                    total: 0,
+                    illumination: 0,
+                    altitude: 0,
+                },
             });
             expect(result.summary).toBe("No astronomical darkness during this period");
             expect(result.breakdownTime).toBe(0);
@@ -449,7 +452,7 @@ describe("weatherUtils", () => {
                     longitude,
                 );
 
-                expect(result.currentBreakdown.moon).toBe(4);
+                expect(result.currentBreakdown.moon.total).toBe(4);
             });
         });
 
@@ -688,7 +691,7 @@ describe("weatherUtils", () => {
                     longitude,
                 );
 
-                expect(result.currentBreakdown.moon).toBe(4);
+                expect(result.currentBreakdown.moon.total).toBe(4);
             });
 
             it("should handle a moon directly overhead", () => {
@@ -708,7 +711,7 @@ describe("weatherUtils", () => {
                     longitude,
                 );
 
-                expect(result.currentBreakdown.moon).toBe(0);
+                expect(result.currentBreakdown.moon.total).toBe(0);
             });
         });
     });

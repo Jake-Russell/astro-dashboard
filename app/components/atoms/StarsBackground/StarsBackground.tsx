@@ -17,11 +17,11 @@ export const StarsBackground = () => {
     const [stars, setStars] = useState<Star[]>([]);
 
     useEffect(() => {
-        setStars(generateStars(250));
+        setStars(generateStars(120));
     }, []);
 
     return (
-        <div className="absolute top-0 left-0 w-full min-h-screen h-full overflow-hidden">
+        <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden">
             {stars.map((star, i) => (
                 <div
                     key={i}

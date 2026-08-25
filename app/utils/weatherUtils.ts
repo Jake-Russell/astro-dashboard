@@ -1,5 +1,5 @@
+import { getMoonPosition } from "suncalc";
 import type { AstroScoreResult } from "molecules";
-import { isBodyUp } from "./timeUtils";
 
 const ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS = 90 * 60; // 90 minutes in seconds
 export const CLOUD_WEIGHT = 6;
@@ -16,18 +16,35 @@ export const getMoonIlluminationScore = (illumination: number): number => {
     return Math.max(0, Math.min(10, score));
 };
 
-export const getMoonScore = (illumination: number, moonUp: boolean): number => {
-    if (!moonUp) return 10; // Moon below horizon — perfect conditions regardless of illumination
-    return getMoonIlluminationScore(illumination);
+export const getMoonAltitudeScore = (altitude: number): number => {
+    const clampedAltitude = Math.max(-90, Math.min(90, altitude));
+
+    if (clampedAltitude <= 0) return 10;
+
+    const altitudeRadians = (clampedAltitude * Math.PI) / 180;
+    const altitudeImpact = Math.sin(altitudeRadians);
+
+    return 10 * (1 - altitudeImpact);
+};
+
+export const getMoonScore = (illumination: number, altitude: number): number => {
+    if (altitude <= 0) return 10;
+
+    const illuminationScore = getMoonIlluminationScore(illumination);
+    if (illumination === 0) return 10;
+
+    const altitudeScore = getMoonAltitudeScore(altitude);
+
+    return illuminationScore * 0.6 + altitudeScore * 0.4;
 };
 
 export const calculateHourlyScore = (
     cloudCoverage: number,
     moonIllumination: number,
-    moonUp: boolean,
+    moonAltitude: number,
 ) => {
     const cloudScore = getCloudScore(cloudCoverage);
-    const moonScore = getMoonScore(moonIllumination, moonUp);
+    const moonScore = getMoonScore(moonIllumination, moonAltitude);
 
     const cloudWeighted = cloudScore * (CLOUD_WEIGHT / 10);
     const moonWeighted = moonScore * (MOON_WEIGHT / 10);
@@ -53,10 +70,11 @@ export const getAstronomicalDarknessWindow = (sunset: number, sunrise: number) =
 export const getScoreSummary = (
     cloudCoverage: number,
     moonIllumination: number,
-    moonUp: boolean,
+    moonAltitude: number,
 ): string => {
     const veryCloudy = cloudCoverage > 80;
     const cloudy = cloudCoverage > 60;
+    const moonUp = moonAltitude > 0;
     const brightMoon = moonUp && moonIllumination > 60;
     const moderateMoon = moonUp && moonIllumination > 30;
 
@@ -73,8 +91,8 @@ export const getScoreSummary = (
 export const getAstroScore = (
     hourlyData: Array<{ dt: number; clouds: number }>,
     moonIllumination: number,
-    moonrise: number,
-    moonset: number,
+    // moonrise: number,
+    // moonset: number,
     sunset: number,
     sunrise: number,
     latitude: number,
@@ -90,15 +108,15 @@ export const getAstroScore = (
     });
 
     const hourlyScores = darkHours.map((hour) => {
-        const isMoonUp = isBodyUp(moonrise, moonset, latitude, longitude, hour.dt);
-        const result = calculateHourlyScore(hour.clouds, moonIllumination, isMoonUp);
+        const moonPos = getMoonPosition(new Date(hour.dt * 1000), latitude, longitude);
+        const result = calculateHourlyScore(hour.clouds, moonIllumination, moonPos.altitude);
 
         return {
             time: hour.dt,
             score: result.total,
             breakdown: result.breakdown,
             cloudCoverage: hour.clouds,
-            moonUp: isMoonUp,
+            moonAltitude: moonPos.altitude,
         };
     });
 
@@ -132,7 +150,7 @@ export const getAstroScore = (
         return {
             currentScore: single.score,
             currentBreakdown: single.breakdown,
-            summary: getScoreSummary(single.cloudCoverage, moonIllumination, single.moonUp),
+            summary: getScoreSummary(single.cloudCoverage, moonIllumination, single.moonAltitude),
             breakdownTime: single.time,
             hourlyScores,
             primeTimeStart: single.time,
@@ -149,7 +167,7 @@ export const getAstroScore = (
     return {
         currentScore: current.score,
         currentBreakdown: current.breakdown,
-        summary: getScoreSummary(current.cloudCoverage, moonIllumination, current.moonUp),
+        summary: getScoreSummary(current.cloudCoverage, moonIllumination, current.moonAltitude),
         breakdownTime: current.time,
         hourlyScores,
         primeTimeStart,

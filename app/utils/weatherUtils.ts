@@ -82,9 +82,11 @@ export const getAstroScore = (
 ): AstroScoreResult => {
     const { darkStart, darkEnd } = getAstronomicalDarknessWindow(sunset, sunrise);
 
+    // Filter to hours that fall completely within darkness (from hour start to hour end)
     const darkHours = hourlyData.filter((hour) => {
-        const hourMid = hour.dt + 1800; // +30 minutes
-        return hourMid >= darkStart && hourMid < darkEnd;
+        const hourStart = hour.dt;
+        const hourEnd = hour.dt + 3600;
+        return hourStart >= darkStart && hourEnd <= darkEnd;
     });
 
     const hourlyScores = darkHours.map((hour) => {
@@ -103,10 +105,7 @@ export const getAstroScore = (
     if (hourlyScores.length === 0) {
         return {
             currentScore: 0,
-            currentBreakdown: {
-                cloud: 0,
-                moon: 0,
-            },
+            currentBreakdown: { cloud: 0, moon: 0 },
             summary: "No astronomical darkness during this period",
             breakdownTime: 0,
             hourlyScores: [],
@@ -143,10 +142,9 @@ export const getAstroScore = (
     }
 
     const current = hourlyScores[0];
-
-    // Clamp end time so it never exceeds darkness
+    const primeTimeStart = hourlyScores[bestWindow.start].time;
     const rawEnd = hourlyScores[bestWindow.end].time + 3600;
-    const primeEnd = Math.min(rawEnd, darkEnd);
+    const primeTimeEnd = Math.min(rawEnd, darkEnd);
 
     return {
         currentScore: current.score,
@@ -154,8 +152,8 @@ export const getAstroScore = (
         summary: getScoreSummary(current.cloudCoverage, moonIllumination, current.moonUp),
         breakdownTime: current.time,
         hourlyScores,
-        primeTimeStart: hourlyScores[bestWindow.start].time,
-        primeTimeEnd: primeEnd,
+        primeTimeStart,
+        primeTimeEnd,
         primeScore: Math.round(bestWindow.avgScore * 10) / 10,
     };
 };

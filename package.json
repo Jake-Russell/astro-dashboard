@@ -26,6 +26,7 @@
         "next": "^16.2.9",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
+        "suncalc": "^2.0.1",
         "tz-lookup": "^6.1.25"
     },
     "devDependencies": {

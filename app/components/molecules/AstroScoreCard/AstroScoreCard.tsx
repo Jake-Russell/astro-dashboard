@@ -1,29 +1,26 @@
 "use client";
 import { type FunctionComponent, useEffect } from "react";
 import { Tile } from "atoms";
-import { getAdjustedMoonRiseAndSet, getMoonIllumination } from "utils/moonUtils";
+import { getMoonIllumination } from "utils/moonUtils";
 import { getFormattedTime, isCurrentlyPrime } from "utils/timeUtils";
-import { getAstroScore, CLOUD_WEIGHT, MOON_WEIGHT } from "utils/weatherUtils";
+import {
+    getAstroScore,
+    CLOUD_WEIGHT,
+    MOON_WEIGHT,
+    MOON_ILLUMINATION_WEIGHT,
+    MOON_ALTITUDE_WEIGHT,
+} from "utils/weatherUtils";
 import type { AstroScoreCardProps } from "./types";
 
 export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     latitude,
     longitude,
-    moonriseToday,
-    moonsetToday,
-    moonsetTomorrow,
     moonPhase,
     forecastStart,
     forecastEnd,
     nightHours,
     onAnnouncement,
 }) => {
-    const { moonrise, moonset } = getAdjustedMoonRiseAndSet(
-        moonriseToday,
-        moonsetToday,
-        moonsetTomorrow,
-    );
-
     const moonIllumination = getMoonIllumination(moonPhase);
 
     const {
@@ -34,11 +31,10 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         primeTimeStart,
         primeTimeEnd,
         primeScore,
+        hourlyScores,
     } = getAstroScore(
         nightHours,
         moonIllumination,
-        moonrise,
-        moonset,
         forecastStart,
         forecastEnd,
         latitude,
@@ -138,7 +134,8 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                     </p>
                                 </div>
 
-                                <div className="space-y-4 text-sm">
+                                <div className="space-y-5 text-sm">
+                                    {/* Cloud score */}
                                     <div className="space-y-1">
                                         <div className="flex justify-between items-center">
                                             <span>
@@ -165,13 +162,14 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                         </div>
                                     </div>
 
-                                    <div className="space-y-1">
+                                    <div className="space-y-3">
                                         <div className="flex justify-between items-center">
                                             <span>
                                                 <span aria-hidden="true">🌕</span> Moon
                                             </span>
                                             <span>
-                                                {currentBreakdown.moon.toFixed(1)} / {MOON_WEIGHT}
+                                                {currentBreakdown.moon.total.toFixed(1)} /{" "}
+                                                {MOON_WEIGHT}
                                             </span>
                                         </div>
 
@@ -183,10 +181,29 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                                 className="h-2 bg-(--accent-secondary) rounded transition-all"
                                                 style={{
                                                     width: `${
-                                                        (currentBreakdown.moon / MOON_WEIGHT) * 100
+                                                        (currentBreakdown.moon.total /
+                                                            MOON_WEIGHT) *
+                                                        100
                                                     }%`,
                                                 }}
                                             />
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-4 pt-1 text-xs text-(--text-secondary) text-center">
+                                            <p>
+                                                <span className="font-medium text-(--text-primary)">
+                                                    Illumination{" "}
+                                                    {currentBreakdown.moon.illumination.toFixed(1)}{" "}
+                                                    / {MOON_ILLUMINATION_WEIGHT}
+                                                </span>
+                                            </p>
+                                            <p>
+                                                <span className="font-medium text-(--text-primary)">
+                                                    Altitude{" "}
+                                                    {currentBreakdown.moon.altitude.toFixed(1)} /{" "}
+                                                    {MOON_ALTITUDE_WEIGHT}
+                                                </span>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -225,6 +242,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                 <h3 className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
                                     Cloud Coverage
                                 </h3>
+
                                 <div className="flex items-center gap-3">
                                     <span className="text-2xl font-bold text-(--accent-primary)">
                                         {(
@@ -233,6 +251,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                         ).toFixed(0)}
                                         %
                                     </span>
+
                                     <span className="text-sm text-(--text-secondary)">
                                         average tonight
                                     </span>
@@ -241,23 +260,52 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
 
                             <div className="p-4 rounded-lg bg-(--accent-secondary)/5 border border-(--accent-secondary)/20 hover:border-(--accent-secondary)/40 transition-colors">
                                 <h3 className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
-                                    Moon Illumination
+                                    Moon Conditions
                                 </h3>
-                                <div className="flex items-center gap-3">
-                                    <span className="text-2xl font-bold text-(--accent-secondary)">
-                                        {moonIllumination}%
-                                    </span>
-                                    <span className="text-sm text-(--text-secondary)">
-                                        {moonIllumination < 50 ? (
-                                            <>
-                                                <span aria-hidden="true">🌑</span> Dark
-                                            </>
-                                        ) : (
-                                            <>
-                                                <span aria-hidden="true">🌕</span> Bright
-                                            </>
-                                        )}
-                                    </span>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p className="text-xs text-(--text-secondary) mb-1">
+                                            Illumination
+                                        </p>
+
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-2xl font-bold text-(--accent-secondary)">
+                                                {moonIllumination}%
+                                            </span>
+
+                                            <span className="text-sm text-(--text-secondary)">
+                                                {moonIllumination < 50 ? (
+                                                    <>
+                                                        <span aria-hidden="true">🌑</span> Dark
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span aria-hidden="true">🌕</span> Bright
+                                                    </>
+                                                )}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-xs text-(--text-secondary) mb-1">
+                                            Altitude
+                                        </p>
+
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-2xl font-bold text-(--accent-secondary)">
+                                                {hourlyScores[0]?.moonAltitude}°
+                                            </span>
+
+                                            <span className="text-sm text-(--text-secondary)">
+                                                {hourlyScores[0]?.moonAltitude !== undefined &&
+                                                hourlyScores[0].moonAltitude > 0
+                                                    ? "above horizon"
+                                                    : "below horizon"}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

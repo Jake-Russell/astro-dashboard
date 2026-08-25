@@ -3,6 +3,7 @@
 import type { FunctionComponent } from "react";
 import { Tile } from "atoms";
 import { getFormattedDateTime, getFormattedTime } from "utils/timeUtils";
+import { getMoonAltitude } from "utils/weatherUtils";
 import type { NightWeatherForecastCardProps } from "./types";
 
 export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCardProps> = ({
@@ -70,6 +71,12 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
                                         </th>
                                         <th
                                             scope="col"
+                                            className="text-center border-b border-(--card-border) pb-3"
+                                        >
+                                            Moon Alt.
+                                        </th>
+                                        <th
+                                            scope="col"
                                             className="text-right border-b border-(--card-border) pb-3"
                                         >
                                             Cloud %
@@ -78,35 +85,60 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
                                 </thead>
 
                                 <tbody>
-                                    {nightHours.map((hour) => (
-                                        <tr
-                                            key={hour.dt}
-                                            className="hover:bg-(--accent-primary)/5 transition-colors duration-200"
-                                        >
-                                            <td className="py-3 text-left text-sm font-medium text-foreground">
-                                                {getFormattedTime(hour.dt, latitude, longitude)}
-                                            </td>
+                                    {nightHours.map(({ dt, weather, clouds }) => {
+                                        const moonAlt = getMoonAltitude(dt, latitude, longitude);
 
-                                            <td className="py-3 text-center">
-                                                <div className="flex items-center justify-center gap-2">
-                                                    <img
-                                                        src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}@2x.png`}
-                                                        alt=""
-                                                        className="w-6 h-6"
-                                                    />
-                                                    <span className="text-sm text-(--text-secondary)">
-                                                        {hour.weather[0].main}
+                                        return (
+                                            <tr
+                                                key={dt}
+                                                className="hover:bg-(--accent-primary)/5 transition-colors duration-200"
+                                            >
+                                                <td className="py-3 text-left text-sm font-medium text-foreground">
+                                                    {getFormattedTime(dt, latitude, longitude)}
+                                                </td>
+
+                                                <td className="py-3 text-center">
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        <img
+                                                            src={`https://openweathermap.org/img/wn/${weather[0].icon}@2x.png`}
+                                                            alt=""
+                                                            className="w-6 h-6"
+                                                        />
+                                                        <span className="hidden sm:inline-block text-sm text-(--text-secondary)">
+                                                            {weather[0].main}
+                                                        </span>
+                                                    </div>
+                                                </td>
+
+                                                <td className="py-3 text-center">
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        <span
+                                                            aria-hidden="true"
+                                                            className="hidden sm:inline-block text-lg"
+                                                            style={{
+                                                                transform: `rotate(${moonAlt * -1}deg)`,
+                                                            }}
+                                                        >
+                                                            →
+                                                        </span>
+
+                                                        <span className="text-sm text-(--text-secondary)">
+                                                            <span className="sr-only">
+                                                                Moon bearing{" "}
+                                                            </span>
+                                                            {moonAlt.toFixed(2)}°
+                                                        </span>
+                                                    </div>
+                                                </td>
+
+                                                <td className="py-3 text-right">
+                                                    <span className="inline-block px-2 py-1 rounded-lg bg-(--accent-primary)/10 text-xs font-semibold text-(--accent-primary)">
+                                                        {clouds}%
                                                     </span>
-                                                </div>
-                                            </td>
-
-                                            <td className="py-3 text-right">
-                                                <span className="inline-block px-2 py-1 rounded-lg bg-(--accent-primary)/10 text-xs font-semibold text-(--accent-primary)">
-                                                    {hour.clouds}%
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>

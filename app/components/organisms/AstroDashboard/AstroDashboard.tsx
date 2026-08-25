@@ -68,7 +68,6 @@ const getScoreCardData = (
     weatherData: WeatherResponse,
 ): Omit<AstroScoreCardProps, "latitude" | "longitude"> => {
     const todayData = weatherData.daily[0];
-    const tomorrowData = weatherData.daily[1];
     const { forecastStart, forecastEnd } = getNightForecastWindow(weatherData);
 
     const nightHours = getNightForecastHours(weatherData.hourly, {
@@ -80,9 +79,6 @@ const getScoreCardData = (
         // During the active night, the forecast API has advanced to today's
         // lunar data and does not include yesterday's moonrise. Lunar scoring
         // is therefore approximate until sunrise.
-        moonriseToday: todayData.moonrise,
-        moonsetToday: todayData.moonset,
-        moonsetTomorrow: tomorrowData.moonset,
         moonPhase: todayData.moon_phase,
         forecastStart,
         forecastEnd,

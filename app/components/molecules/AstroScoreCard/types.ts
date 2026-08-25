@@ -2,9 +2,6 @@ import type { HourData } from "api/weather/types";
 import type { GeoPosition } from "services/geolocationService";
 
 export type AstroScoreCardProps = GeoPosition & {
-    moonriseToday: number;
-    moonsetToday: number;
-    moonsetTomorrow: number;
     moonPhase: number;
     forecastStart: number;
     forecastEnd: number;
@@ -12,19 +9,28 @@ export type AstroScoreCardProps = GeoPosition & {
     onAnnouncement?: (announcement: string) => void;
 };
 
-type HourlyAstroScore = {
+export type MoonScoreBreakdown = {
+    total: number;
+    illumination: number;
+    altitude: number;
+};
+
+export type ScoreBreakdown = {
+    cloud: number;
+    moon: MoonScoreBreakdown;
+};
+
+export type HourlyAstroScore = {
     time: number;
     score: number;
+    breakdown: ScoreBreakdown;
     cloudCoverage: number;
-    moonUp: boolean;
+    moonAltitude: number;
 };
 
 export type AstroScoreResult = {
     currentScore: number;
-    currentBreakdown: {
-        cloud: number;
-        moon: number;
-    };
+    currentBreakdown: ScoreBreakdown;
     summary: string;
     breakdownTime: number;
     hourlyScores: HourlyAstroScore[];

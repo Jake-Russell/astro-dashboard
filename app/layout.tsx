@@ -23,7 +23,8 @@ export const metadata: Metadata = {
         default: "Star Grade",
         template: "%s | Star Grade",
     },
-    description: "A simple dashboard showing moon phase and sun data based on your location.",
+    description:
+        "Star Grade rates tonight's stargazing conditions using moon phase, sun data and weather for any location.",
     applicationName: "Star Grade",
     alternates: {
         canonical: "/",
@@ -33,13 +34,14 @@ export const metadata: Metadata = {
         url: siteUrl,
         siteName: "Star Grade",
         title: "Star Grade",
-        description: "Moon phase, moonrise/moonset and sun data for any location, in real time.",
+        description:
+            "Star Grade rates tonight's stargazing conditions using moon phase, sun data and weather for any location.",
         images: [
             {
                 url: "/og-image.png",
                 width: 1200,
                 height: 630,
-                alt: "Star Grade — moon phase and sun data",
+                alt: "Star Grade — a stargazing conditions score for any location",
             },
         ],
         locale: "en_GB",
@@ -47,7 +49,8 @@ export const metadata: Metadata = {
     twitter: {
         card: "summary_large_image",
         title: "Star Grade",
-        description: "Moon phase, moonrise/moonset and sun data for any location, in real time.",
+        description:
+            "Star Grade rates tonight's stargazing conditions using moon phase, sun data and weather for any location.",
         images: ["/og-image.png"],
         creator: "@jake_russell123",
     },
@@ -89,7 +92,7 @@ export default function RootLayout({
                             name: "Star Grade",
                             url: siteUrl,
                             description:
-                                "A dashboard showing moon phase, moonrise/moonset and sun data for any searched or geolocated location.",
+                                "Star Grade rates tonight's stargazing conditions using moon phase, sun data and weather for any location.",
                             applicationCategory: "UtilitiesApplication",
                             operatingSystem: "Any",
                             offers: {

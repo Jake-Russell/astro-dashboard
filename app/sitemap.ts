@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = "https://stargrade.co.uk";
+// TODO: Update to Star Grade once setup
+const siteUrl = "https://astro-dashboard-six.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
     return [

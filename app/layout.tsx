@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
     subsets: ["latin"],
 });
 
-const siteUrl = "https://stargrade.co.uk";
+// TODO: Update to Star Grade once setup
+const siteUrl = "https://astro-dashboard-six.vercel.app";
 
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),

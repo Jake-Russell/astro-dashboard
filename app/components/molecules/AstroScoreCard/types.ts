@@ -9,12 +9,6 @@ export type AstroScoreCardProps = GeoPosition & {
     onAnnouncement?: (announcement: string) => void;
 };
 
-export type HourlyAstroScore = {
-    time: number;
-    score: number;
-    cloudCoverage: number;
-};
-
 export type MoonScoreBreakdown = {
     total: number;
     illumination: number;
@@ -24,6 +18,14 @@ export type MoonScoreBreakdown = {
 export type ScoreBreakdown = {
     cloud: number;
     moon: MoonScoreBreakdown;
+};
+
+export type HourlyAstroScore = {
+    time: number;
+    score: number;
+    breakdown: ScoreBreakdown;
+    cloudCoverage: number;
+    moonAltitude: number;
 };
 
 export type AstroScoreResult = {

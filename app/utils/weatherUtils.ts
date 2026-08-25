@@ -91,8 +91,6 @@ export const getScoreSummary = (
 export const getAstroScore = (
     hourlyData: Array<{ dt: number; clouds: number }>,
     moonIllumination: number,
-    // moonrise: number,
-    // moonset: number,
     sunset: number,
     sunrise: number,
     latitude: number,

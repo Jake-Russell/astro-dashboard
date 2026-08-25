@@ -1,7 +1,7 @@
 {
     "name": "Star Grade",
     "short_name": "Star Grade",
-    "description": "Moon phase and sun data based on your location.",
+    "description": "Rates tonight's stargazing conditions using moon phase, sun and weather data.",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#0f0f23",

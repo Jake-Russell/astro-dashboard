@@ -138,10 +138,8 @@ export const AstroDashboard = () => {
             </div>
 
             {/* Stars */}
-            <div className="light:none dark:block absolute inset-0 z-0 pointer-events-none">
-                <div className="relative w-full h-full min-h-screen">
-                    <StarsBackground />
-                </div>
+            <div className="light:none dark:block fixed inset-0 z-0 pointer-events-none">
+                <StarsBackground />
             </div>
 
             <div className="relative overflow-hidden pt-12 pb-8 md:pt-20 md:pb-12">

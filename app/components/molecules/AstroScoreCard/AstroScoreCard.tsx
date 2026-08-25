@@ -1,7 +1,6 @@
 "use client";
 import { type FunctionComponent, useEffect } from "react";
 import { Tile } from "atoms";
-import { NightScoreChart } from "molecules";
 import { getMoonIllumination } from "utils/moonUtils";
 import { getFormattedTime, isCurrentlyPrime } from "utils/timeUtils";
 import { getAstroScore, CLOUD_WEIGHT, MOON_WEIGHT } from "utils/weatherUtils";

@@ -84,13 +84,13 @@ export const calculateHourlyScore = (
     const total = cloudWeighted + moonWeighted;
 
     return {
-        total: Math.round(total * 10) / 10,
+        total: Number(total.toFixed(1)),
         breakdown: {
             cloud: cloudWeighted,
             moon: {
-                total: moonWeighted,
-                illumination: moonIlluminationWeighted,
-                altitude: moonAltitudeWeighted,
+                total: Number(moonWeighted.toFixed(2)),
+                illumination: Number(moonIlluminationWeighted.toFixed(2)),
+                altitude: Number(moonAltitudeWeighted.toFixed(2)),
             },
         },
     };
@@ -147,6 +147,7 @@ export const getAstroScore = (
 
         return {
             time: hour.dt,
+            endTime: hour.dt + 3600,
             score: result.total,
             breakdown: result.breakdown,
             cloudCoverage: hour.clouds,
@@ -198,8 +199,7 @@ export const getAstroScore = (
 
     const current = hourlyScores[0];
     const primeTimeStart = hourlyScores[bestWindow.start].time;
-    const rawEnd = hourlyScores[bestWindow.end].time + 3600;
-    const primeTimeEnd = Math.min(rawEnd, darkEnd);
+    const primeTimeEnd = hourlyScores[bestWindow.end].endTime;
 
     return {
         currentScore: current.score,

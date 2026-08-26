@@ -22,6 +22,7 @@ export type ScoreBreakdown = {
 
 export type HourlyAstroScore = {
     time: number;
+    endTime: number;
     score: number;
     breakdown: ScoreBreakdown;
     cloudCoverage: number;

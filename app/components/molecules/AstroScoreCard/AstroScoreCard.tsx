@@ -232,7 +232,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                     window)
                                 </h3>
                                 {isInPrimeWindow && (
-                                    <p className="text-sm font-bold text-green-700 mb-2">
+                                    <p className="text-sm font-bold text-(--success-text) mb-2">
                                         <span aria-hidden="true">✨</span> Currently prime
                                         conditions!
                                     </p>

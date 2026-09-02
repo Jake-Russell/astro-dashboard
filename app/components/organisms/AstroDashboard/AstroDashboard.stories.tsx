@@ -117,7 +117,7 @@ export const AfterSunriseShowsFollowingNight: Story = {
     play: async ({ context, canvas }) => {
         await Default.play!(context);
         const weatherTile = await waitFor(() => canvas.getByTestId("weather-forecast-tile"));
-        expect(within(weatherTile).queryByText("20:00")).toBeInTheDocument();
+        expect(within(weatherTile).queryByText("21:00")).toBeInTheDocument();
     },
 };
 

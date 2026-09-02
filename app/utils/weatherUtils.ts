@@ -6,7 +6,6 @@ import type {
     ScoreBreakdown,
 } from "molecules";
 
-const ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS = 90 * 60; // 90 minutes in seconds
 export const CLOUD_WEIGHT = 6;
 export const MOON_WEIGHT = 4;
 export const MOON_ILLUMINATION_WEIGHT = 6;
@@ -96,13 +95,6 @@ export const calculateHourlyScore = (
     };
 };
 
-export const getAstronomicalDarknessWindow = (sunset: number, sunrise: number) => {
-    return {
-        darkStart: sunset + ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS,
-        darkEnd: sunrise - ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS,
-    };
-};
-
 export const getScoreSummary = (
     cloudCoverage: number,
     moonIllumination: number,
@@ -127,22 +119,15 @@ export const getScoreSummary = (
 export const getAstroScore = (
     hourlyData: Array<{ dt: number; clouds: number }>,
     moonIllumination: number,
-    sunset: number,
-    sunrise: number,
+    darkStart: number,
+    darkEnd: number,
     latitude: number,
     longitude: number,
 ): AstroScoreResult => {
-    const { darkStart, darkEnd } = getAstronomicalDarknessWindow(sunset, sunrise);
-
-    const darkHours = hourlyData.filter((hour) => {
-        const hourStart = hour.dt;
-        const hourEnd = hour.dt + 3600;
-        return hourStart >= darkStart && hourEnd <= darkEnd;
-    });
+    const darkHours = hourlyData.filter((hour) => hour.dt >= darkStart && hour.dt < darkEnd);
 
     const hourlyScores: HourlyAstroScore[] = darkHours.map((hour) => {
         const moonAltitude = getMoonAltitude(hour.dt, latitude, longitude);
-
         const result = calculateHourlyScore(hour.clouds, moonIllumination, moonAltitude);
 
         return {
@@ -176,7 +161,6 @@ export const getAstroScore = (
     if (hourlyScores.length >= WINDOW_SIZE) {
         for (let i = 0; i <= hourlyScores.length - WINDOW_SIZE; i++) {
             const window = hourlyScores.slice(i, i + WINDOW_SIZE);
-
             const avgScore = window.reduce((sum, h) => sum + h.score, 0) / WINDOW_SIZE;
 
             if (avgScore > bestWindow.avgScore)
@@ -191,9 +175,6 @@ export const getAstroScore = (
             summary: getScoreSummary(single.cloudCoverage, moonIllumination, single.moonAltitude),
             breakdownTime: single.time,
             hourlyScores,
-            primeTimeStart: single.time,
-            primeTimeEnd: Math.min(single.time + 3600, darkEnd),
-            primeScore: single.score,
         };
     }
 

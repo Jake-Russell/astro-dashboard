@@ -224,12 +224,14 @@ export const NightScoreChart: FunctionComponent<NightScoreChartProps> = ({
                     }}
                     data-testid="night-score-chart-tooltip"
                 >
-                    <span className="font-semibold text-foreground">
+                    <p className="font-semibold text-foreground">
                         {getFormattedTime(activePoint.hour.time, latitude, longitude)}
                         {" - "}
                         {getFormattedTime(activePoint.hour.endTime, latitude, longitude)}
-                    </span>{" "}
-                    <span className="text-(--text-secondary)">— {activePoint.hour.score}/10</span>
+                    </p>
+                    <p className="text-center text-(--text-secondary)">
+                        {activePoint.hour.score}/10
+                    </p>
                 </div>
             )}
 

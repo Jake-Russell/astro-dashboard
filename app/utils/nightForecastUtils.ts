@@ -1,6 +1,6 @@
 import type { HourData, WeatherResponse } from "api/weather/types";
 
-const ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS = 90 * 60; // 90 minutes in seconds
+export const ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS = 90 * 60; // 90 minutes in seconds
 
 export type NightForecastRange = {
     forecastStart: number;

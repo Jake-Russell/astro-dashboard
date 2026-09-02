@@ -11,6 +11,7 @@ import {
     MOON_ALTITUDE_WEIGHT,
 } from "utils/weatherUtils";
 import type { AstroScoreCardProps } from "./types";
+import { NightScoreChart } from "molecules/NightScoreChart";
 
 export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     latitude,
@@ -122,6 +123,14 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                         </div>
 
                         <p className="text-sm text-(--text-secondary) text-center">{summary}</p>
+
+                        <NightScoreChart
+                            hourlyScores={hourlyScores}
+                            primeTimeStart={primeTimeStart}
+                            primeTimeEnd={primeTimeEnd}
+                            latitude={latitude}
+                            longitude={longitude}
+                        />
 
                         {breakdownTimeFormatted && (
                             <div className="p-4 rounded-lg bg-(--card-bg) border border-(--card-border)">

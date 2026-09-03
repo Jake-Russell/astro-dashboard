@@ -1,5 +1,13 @@
 "use client";
-import { type FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+    Fragment,
+    type FunctionComponent,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { getFormattedTime } from "utils/timeUtils";
 import type { NightScoreChartProps } from "./types";
 
@@ -135,134 +143,172 @@ export const NightScoreChart: FunctionComponent<NightScoreChartProps> = ({
                 onScroll={updateScrollState}
             >
                 <div className="relative" style={{ width: chart.chartWidth, minWidth: "100%" }}>
-                    <svg
-                        viewBox={`0 0 ${chart.chartWidth} ${CHART_HEIGHT}`}
-                        className="w-full h-auto"
-                        role="group"
-                        aria-label={`Stargazing score from ${chart.startLabel} to ${chart.endLabel}`}
-                        preserveAspectRatio="none"
-                    >
-                        <defs>
-                            <linearGradient id="nightScoreFill" x1="0" y1="0" x2="0" y2="1">
-                                <stop
-                                    offset="0%"
-                                    stopColor="var(--accent-primary)"
-                                    stopOpacity="0.35"
-                                />
-                                <stop
-                                    offset="100%"
-                                    stopColor="var(--accent-primary)"
-                                    stopOpacity="0"
-                                />
-                            </linearGradient>
-                        </defs>
+                    <div className="relative">
+                        <svg
+                            viewBox={`0 0 ${chart.chartWidth} ${CHART_HEIGHT}`}
+                            className="w-full h-auto"
+                            role="group"
+                            aria-label={`Stargazing score from ${chart.startLabel} to ${chart.endLabel}`}
+                            preserveAspectRatio="none"
+                        >
+                            <defs>
+                                <linearGradient id="nightScoreFill" x1="0" y1="0" x2="0" y2="1">
+                                    <stop
+                                        offset="0%"
+                                        stopColor="var(--accent-primary)"
+                                        stopOpacity="0.35"
+                                    />
+                                    <stop
+                                        offset="100%"
+                                        stopColor="var(--accent-primary)"
+                                        stopOpacity="0"
+                                    />
+                                </linearGradient>
+                            </defs>
 
-                        {/* Grid Lines */}
-                        {[0, 2.5, 5, 7.5, 10].map((gridScore) => {
-                            const y =
-                                PADDING_Y +
-                                chart.usableHeight -
-                                (gridScore / MAX_SCORE) * chart.usableHeight;
-                            return (
+                            {/* Grid Lines */}
+                            {[0, 2, 4, 6, 8, 10].map((gridScore) => {
+                                const y =
+                                    PADDING_Y +
+                                    chart.usableHeight -
+                                    (gridScore / MAX_SCORE) * chart.usableHeight;
+                                return (
+                                    <g key={gridScore}>
+                                        <line
+                                            x1={PADDING_X}
+                                            x2={chart.chartWidth - PADDING_X}
+                                            y1={y}
+                                            y2={y}
+                                            stroke="var(--card-border)"
+                                            strokeWidth={0.5}
+                                        />
+                                    </g>
+                                );
+                            })}
+
+                            {/* Prime Time Rectangle */}
+                            {chart.primeRect && (
+                                <rect
+                                    x={chart.primeRect.x}
+                                    y={PADDING_Y}
+                                    width={chart.primeRect.width}
+                                    height={chart.usableHeight}
+                                    fill="rgb(34 197 94 / 0.12)"
+                                />
+                            )}
+
+                            {/* Hour markers */}
+                            {[
+                                ...chart.points.map((point) => point.rangeX),
+                                chart.chartWidth - PADDING_X,
+                            ].map((x, index) => (
                                 <line
-                                    key={gridScore}
-                                    x1={PADDING_X}
-                                    x2={chart.chartWidth - PADDING_X}
-                                    y1={y}
-                                    y2={y}
+                                    key={`hour-line-${index}`}
+                                    x1={x}
+                                    x2={x}
+                                    y1={PADDING_Y}
+                                    y2={PADDING_Y + chart.usableHeight}
                                     stroke="var(--card-border)"
                                     strokeWidth={0.5}
                                 />
-                            );
-                        })}
+                            ))}
 
-                        {/* Prime Time Rectangle */}
-                        {chart.primeRect && (
-                            <rect
-                                x={chart.primeRect.x}
-                                y={PADDING_Y}
-                                width={chart.primeRect.width}
-                                height={chart.usableHeight}
-                                fill="rgb(34 197 94 / 0.12)"
-                            />
-                        )}
-
-                        {/* Area and Line Paths */}
-                        <path d={chart.areaPath} fill="url(#nightScoreFill)" />
-                        <path
-                            d={chart.linePath}
-                            fill="none"
-                            stroke="var(--accent-primary)"
-                            strokeWidth={1}
-                            className="night-score-chart-line"
-                            strokeLinejoin="round"
-                            strokeLinecap="round"
-                        />
-
-                        {/* Highlighted segment for the active hour's range, angled to match the line */}
-                        {activeHighlightPath && (
+                            {/* Area and Line Paths */}
+                            <path d={chart.areaPath} fill="url(#nightScoreFill)" />
                             <path
-                                d={activeHighlightPath}
+                                d={chart.linePath}
                                 fill="none"
                                 stroke="var(--accent-primary)"
-                                strokeWidth={2}
-                                className="night-score-chart-active-line"
+                                strokeWidth={1}
+                                className="night-score-chart-line"
                                 strokeLinejoin="round"
                                 strokeLinecap="round"
-                                pointerEvents="none"
                             />
-                        )}
 
-                        {/* Per-hour range hit areas — cover the full hour's time span, not just the point */}
-                        {chart.points.map((p) => (
-                            <rect
-                                key={`hit-${p.hour.time}`}
-                                x={p.rangeX}
-                                y={PADDING_Y}
-                                width={p.rangeWidth}
-                                height={chart.usableHeight}
-                                fill="transparent"
-                                className="cursor-pointer outline-none"
-                                tabIndex={0}
-                                role="button"
-                                aria-label={`${getFormattedTime(p.hour.time, latitude, longitude)} to ${getFormattedTime(p.hour.endTime, latitude, longitude)}, score ${p.hour.score} out of 10`}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setActiveIndex(p.index);
-                                }}
-                                onMouseEnter={() => setActiveIndex(p.index)}
-                                onMouseLeave={() => setActiveIndex(undefined)}
-                                onFocus={() => setActiveIndex(p.index)}
-                                onBlur={() => setActiveIndex(undefined)}
-                            />
-                        ))}
-
-                        {/* Per-hour midpoint dots — visual marker only, hover handled by the range rects above */}
-                        {chart.points.map((p) => {
-                            const isActive = activeIndex === p.index;
-                            return (
-                                <circle
-                                    key={p.hour.time}
-                                    cx={p.x}
-                                    cy={p.y}
-                                    r={isActive ? 3.5 : 1.5}
-                                    fill="var(--accent-primary)"
-                                    className={`night-score-chart-dot ${isActive ? "active" : ""}`}
-                                    opacity={isActive ? 1 : 0.4}
-                                    style={{ transition: "r 120ms ease, opacity 120ms ease" }}
+                            {/* Highlighted segment for the active hour's range, angled to match the line */}
+                            {activeHighlightPath && (
+                                <path
+                                    d={activeHighlightPath}
+                                    fill="none"
+                                    stroke="var(--accent-primary)"
+                                    strokeWidth={2}
+                                    className="night-score-chart-active-line"
+                                    strokeLinejoin="round"
+                                    strokeLinecap="round"
                                     pointerEvents="none"
                                 />
-                            );
-                        })}
-                    </svg>
+                            )}
 
+                            {/* Per-hour range hit areas — cover the full hour's time span, not just the point */}
+                            {chart.points.map((p) => (
+                                <rect
+                                    key={`hit-${p.hour.time}`}
+                                    x={p.rangeX}
+                                    y={PADDING_Y}
+                                    width={p.rangeWidth}
+                                    height={chart.usableHeight}
+                                    fill="transparent"
+                                    className="cursor-pointer outline-none"
+                                    tabIndex={0}
+                                    role="button"
+                                    aria-label={`${getFormattedTime(p.hour.time, latitude, longitude)} to ${getFormattedTime(p.hour.endTime, latitude, longitude)}, score ${p.hour.score} out of 10`}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setActiveIndex(p.index);
+                                    }}
+                                    onMouseEnter={() => setActiveIndex(p.index)}
+                                    onMouseLeave={() => setActiveIndex(undefined)}
+                                    onFocus={() => setActiveIndex(p.index)}
+                                    onBlur={() => setActiveIndex(undefined)}
+                                />
+                            ))}
+
+                            {/* Per-hour midpoint dots — visual marker only, hover handled by the range rects above */}
+                            {chart.points.map((p) => {
+                                const isActive = activeIndex === p.index;
+                                return (
+                                    <circle
+                                        key={p.hour.time}
+                                        cx={p.x}
+                                        cy={p.y}
+                                        r={isActive ? 3.5 : 1.5}
+                                        fill="var(--accent-primary)"
+                                        className={`night-score-chart-dot ${isActive ? "active" : ""}`}
+                                        opacity={isActive ? 1 : 0.4}
+                                        style={{ transition: "r 120ms ease, opacity 120ms ease" }}
+                                        pointerEvents="none"
+                                    />
+                                );
+                            })}
+                        </svg>
+
+                        <div className="pointer-events-none absolute inset-y-0 left-0 w-6 text-xs text-(--text-secondary)">
+                            {[0, 2, 4, 6, 8, 10].map((gridScore) => {
+                                const y =
+                                    PADDING_Y +
+                                    chart.usableHeight -
+                                    (gridScore / MAX_SCORE) * chart.usableHeight;
+                                return (
+                                    <span
+                                        key={`y-label-${gridScore}`}
+                                        className="absolute right-1 -translate-y-1/2"
+                                        style={{ top: `${(y / CHART_HEIGHT) * 100}%` }}
+                                    >
+                                        {gridScore}
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Tooltip */}
                     {activePoint && (
                         <div
                             className="absolute pointer-events-none px-2 py-1 rounded-md bg-(--card-bg) border border-(--card-border) shadow-sm text-xs whitespace-nowrap z-10"
                             style={{
                                 left: `${(activePoint.x / chart.chartWidth) * 100}%`,
                                 top: `${(activePoint.y / CHART_HEIGHT) * 100}%`,
-                                transform: "translate(-50%, calc(-100% - 24px))",
+                                transform: "translate(-50%, calc(-100% - 48px))",
                             }}
                             data-testid="night-score-chart-tooltip"
                         >
@@ -277,19 +323,44 @@ export const NightScoreChart: FunctionComponent<NightScoreChartProps> = ({
                         </div>
                     )}
 
-                    <div className="flex justify-between items-center mt-1 px-4 text-xs text-(--text-secondary)">
-                        <span>{chart.startLabel}</span>
-                        {chart.primeRect && (
-                            <span className="flex items-center gap-1">
+                    {/* Y-Axis Labels */}
+                    <div className="relative mt-1 h-8 px-4 text-xs text-(--text-secondary)">
+                        {chart.points.map((point, index) => (
+                            <Fragment key={`label-${point.hour.time}`}>
                                 <span
-                                    className="inline-block w-2 h-2 rounded-full bg-green-500/60"
-                                    aria-hidden="true"
-                                />
-                                Prime window
-                            </span>
-                        )}
-                        <span>{chart.endLabel}</span>
+                                    className="absolute origin-top-left whitespace-nowrap"
+                                    style={{
+                                        left: `${(point.rangeX / chart.chartWidth) * 100}%`,
+                                        transform: "translateX(-50%) rotate(0deg)",
+                                    }}
+                                >
+                                    {getFormattedTime(point.hour.time, latitude, longitude)}
+                                </span>
+                                {index === chart.points.length - 1 && (
+                                    <span
+                                        className="absolute origin-top-left whitespace-nowrap"
+                                        style={{
+                                            left: `${((point.rangeX + point.rangeWidth) / chart.chartWidth) * 100}%`,
+                                            transform: "translateX(-50%) rotate(0deg)",
+                                        }}
+                                    >
+                                        {getFormattedTime(point.hour.endTime, latitude, longitude)}
+                                    </span>
+                                )}
+                            </Fragment>
+                        ))}
                     </div>
+
+                    {/* Prime Window Rectangle */}
+                    {chart.primeRect && (
+                        <div className="flex h-4 items-center justify-center gap-1 text-xs text-(--text-secondary)">
+                            <span
+                                className="inline-block w-2 h-2 rounded-full bg-green-500/60"
+                                aria-hidden="true"
+                            />
+                            Prime window
+                        </div>
+                    )}
                 </div>
             </div>
 

@@ -184,9 +184,7 @@ export const WithNoScores: Story = {
 
 export const ScrollableOnMobile: Story = {
     ...Default,
-    globals: {
-        viewport: { value: "mobile1", isRotated: false },
-    },
+    globals: { viewport: { value: "mobile1", isRotated: false } },
 };
 
 export const WithTooltipActive: Story = {

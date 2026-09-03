@@ -3,6 +3,8 @@ import { type FunctionComponent, useCallback, useEffect, useMemo, useRef, useSta
 import { getFormattedTime } from "utils/timeUtils";
 import type { NightScoreChartProps } from "./types";
 
+import "./NightScoreChart.css";
+
 const BASE_CHART_WIDTH = 400; // floor width so short nights still fill the container
 const MIN_COLUMN_WIDTH = 60; // minimum width per hour, keeps hit-rects tap-friendly
 const CHART_HEIGHT = 150;
@@ -192,6 +194,7 @@ export const NightScoreChart: FunctionComponent<NightScoreChartProps> = ({
                             fill="none"
                             stroke="var(--accent-primary)"
                             strokeWidth={1}
+                            className="night-score-chart-line"
                             strokeLinejoin="round"
                             strokeLinecap="round"
                         />
@@ -203,6 +206,7 @@ export const NightScoreChart: FunctionComponent<NightScoreChartProps> = ({
                                 fill="none"
                                 stroke="var(--accent-primary)"
                                 strokeWidth={2}
+                                className="night-score-chart-active-line"
                                 strokeLinejoin="round"
                                 strokeLinecap="round"
                                 pointerEvents="none"
@@ -243,6 +247,7 @@ export const NightScoreChart: FunctionComponent<NightScoreChartProps> = ({
                                     cy={p.y}
                                     r={isActive ? 3.5 : 1.5}
                                     fill="var(--accent-primary)"
+                                    className={`night-score-chart-dot ${isActive ? "active" : ""}`}
                                     opacity={isActive ? 1 : 0.4}
                                     style={{ transition: "r 120ms ease, opacity 120ms ease" }}
                                     pointerEvents="none"

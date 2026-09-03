@@ -7,6 +7,7 @@ import {
     useMemo,
     useRef,
     useState,
+    useId,
 } from "react";
 import { getFormattedTime } from "utils/timeUtils";
 import type { NightScoreChartProps } from "./types";
@@ -28,6 +29,7 @@ export const NightScoreChart: FunctionComponent<NightScoreChartProps> = ({
     longitude,
 }) => {
     const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
+    const gradientId = useId();
     const scrollRef = useRef<HTMLDivElement>(null);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(false);
@@ -103,6 +105,7 @@ export const NightScoreChart: FunctionComponent<NightScoreChartProps> = ({
 
         const { points } = chart;
         const p = points[activeIndex];
+        if (!p) return undefined;
         const prev = points[activeIndex - 1];
         const next = points[activeIndex + 1];
 
@@ -152,7 +155,7 @@ export const NightScoreChart: FunctionComponent<NightScoreChartProps> = ({
                             preserveAspectRatio="none"
                         >
                             <defs>
-                                <linearGradient id="nightScoreFill" x1="0" y1="0" x2="0" y2="1">
+                                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                                     <stop
                                         offset="0%"
                                         stopColor="var(--accent-primary)"
@@ -214,7 +217,7 @@ export const NightScoreChart: FunctionComponent<NightScoreChartProps> = ({
                             ))}
 
                             {/* Area and Line Paths */}
-                            <path d={chart.areaPath} fill="url(#nightScoreFill)" />
+                            <path d={chart.areaPath} fill={`url(#${gradientId})`} />
                             <path
                                 d={chart.linePath}
                                 fill="none"

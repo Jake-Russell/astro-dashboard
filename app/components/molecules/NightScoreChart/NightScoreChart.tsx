@@ -6,7 +6,7 @@ import type { NightScoreChartProps } from "./types";
 const BASE_CHART_WIDTH = 400; // floor width so short nights still fill the container
 const MIN_COLUMN_WIDTH = 60; // minimum width per hour, keeps hit-rects tap-friendly
 const CHART_HEIGHT = 150;
-const PADDING_X = 16;
+const PADDING_X = 24;
 const PADDING_Y = 8;
 const MAX_SCORE = 10;
 

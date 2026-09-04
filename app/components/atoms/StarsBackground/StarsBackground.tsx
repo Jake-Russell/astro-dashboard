@@ -9,7 +9,6 @@ const generateStars = (count: number): Star[] =>
         x: Math.random() * 100,
         y: Math.random() * 100,
         size: Math.random() * 2 + 1,
-        delay: Math.random() * 3,
         opacity: Math.random() * 0.6 + 0.2,
     }));
 
@@ -17,8 +16,7 @@ export const StarsBackground = () => {
     const [stars, setStars] = useState<Star[]>([]);
 
     useEffect(() => {
-        const isSmallScreen = window.matchMedia("(max-width: 640px)").matches;
-        setStars(generateStars(isSmallScreen ? 24 : 48));
+        setStars(generateStars(120));
     }, []);
 
     return (
@@ -26,15 +24,13 @@ export const StarsBackground = () => {
             {stars.map((star, i) => (
                 <div
                     key={i}
-                    className="absolute rounded-full bg-white/80 twinkle"
+                    className="absolute rounded-full bg-white/80"
                     style={{
                         left: `${star.x}%`,
                         top: `${star.y}%`,
                         width: `${star.size}px`,
                         height: `${star.size}px`,
                         opacity: star.opacity,
-                        animationDelay: `${star.delay}s`,
-                        animationDuration: "3s",
                     }}
                 />
             ))}

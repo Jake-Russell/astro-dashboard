@@ -135,7 +135,7 @@ export const AstroDashboard = () => {
 
             {/* Stars */}
             <div className="light:none dark:block fixed inset-0 z-0 pointer-events-none">
-                {/* <StarsBackground /> */}
+                <StarsBackground />
             </div>
 
             <div className="relative overflow-hidden pt-12 pb-8 md:pt-20 md:pb-12">

@@ -60,7 +60,6 @@ export const MoonPhaseCircle: FunctionComponent<MoonPhaseCircleProps> = ({ phase
                     r={r}
                     fill={isWaning ? "var(--accent-primary)" : "var(--card-bg)"}
                     opacity="0.9"
-                    className="transition-colors duration-500"
                 />
 
                 {/* Illumination path */}
@@ -69,8 +68,6 @@ export const MoonPhaseCircle: FunctionComponent<MoonPhaseCircleProps> = ({ phase
                     fill={isWaning ? "var(--card-bg)" : "var(--accent-primary)"}
                     opacity="0.95"
                     filter="url(#moonGlow)"
-                    style={{ transition: "color 0.5s ease, fill 0.5s ease, opacity 0.5s ease" }}
-                    className="group-hover:opacity-100"
                 />
 
                 {/* Subtle rim with accent color */}
@@ -82,7 +79,6 @@ export const MoonPhaseCircle: FunctionComponent<MoonPhaseCircleProps> = ({ phase
                     stroke="var(--accent-secondary)"
                     strokeWidth="0.5"
                     opacity="0.3"
-                    className="transition-opacity duration-500"
                 />
             </svg>
         </div>

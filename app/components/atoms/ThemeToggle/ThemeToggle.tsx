@@ -8,7 +8,7 @@ export const ThemeToggle = () => {
     return (
         <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg bg-(--card-bg) border border-(--card-border) hover:border-(--accent-primary) transition-[border-color,box-shadow] duration-300 hover:shadow-md flex items-center justify-center w-10 h-10 cursor-pointer"
+            className="p-2 rounded-lg bg-(--card-bg) border border-(--card-border) hover:border-(--accent-primary) duration-2000 hover:shadow-md flex items-center justify-center w-10 h-10 cursor-pointer transition-[border-color, box-shadow]"
             aria-label={`Switch to ${nextTheme} mode`}
             title={`Switch to ${nextTheme} mode`}
         >

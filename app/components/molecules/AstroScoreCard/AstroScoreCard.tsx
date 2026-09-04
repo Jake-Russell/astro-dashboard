@@ -36,12 +36,12 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
     } = useMemo(
         () =>
             getAstroScore(
-        nightHours,
-        moonIllumination,
-        forecastStart,
-        forecastEnd,
-        latitude,
-        longitude,
+                nightHours,
+                moonIllumination,
+                forecastStart,
+                forecastEnd,
+                latitude,
+                longitude,
             ),
         [nightHours, moonIllumination, forecastStart, forecastEnd, latitude, longitude],
     );
@@ -164,7 +164,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                             className="h-2 w-full bg-(--card-border) rounded"
                                         >
                                             <div
-                                                className="h-2 bg-(--accent-primary) rounded transition-[width] duration-300"
+                                                className="h-2 bg-(--accent-primary) rounded"
                                                 style={{
                                                     width: `${
                                                         (currentBreakdown.cloud / CLOUD_WEIGHT) *
@@ -191,7 +191,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                             className="h-2 w-full bg-(--card-border) rounded"
                                         >
                                             <div
-                                                className="h-2 bg-(--accent-secondary) rounded transition-[width] duration-300"
+                                                className="h-2 bg-(--accent-secondary) rounded"
                                                 style={{
                                                     width: `${
                                                         (currentBreakdown.moon.total /
@@ -251,7 +251,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                         )}
 
                         <div className="space-y-3 border-t border-(--card-border) pt-4">
-                            <div className="p-4 rounded-lg bg-(--accent-primary)/5 border border-(--accent-primary)/20 hover:border-(--accent-primary)/40 transition-colors">
+                            <div className="p-4 rounded-lg bg-(--accent-primary)/5 border border-(--accent-primary)/20 hover:border-(--accent-primary)/40 transition-colors duration-200">
                                 <h3 className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
                                     Cloud Coverage
                                 </h3>
@@ -271,7 +271,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                 </div>
                             </div>
 
-                            <div className="p-4 rounded-lg bg-(--accent-secondary)/5 border border-(--accent-secondary)/20 hover:border-(--accent-secondary)/40 transition-colors">
+                            <div className="p-4 rounded-lg bg-(--accent-secondary)/5 border border-(--accent-secondary)/20 hover:border-(--accent-secondary)/40 transition-colors duration-200">
                                 <h3 className="text-xs font-bold text-(--text-secondary) uppercase tracking-widest mb-2">
                                     Moon Conditions
                                 </h3>

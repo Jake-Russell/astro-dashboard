@@ -12,14 +12,14 @@ export const Tile: FunctionComponent<PropsWithChildren<TileProps>> = ({
 
     return (
         <div
-            className={`relative overflow-hidden bg-(--card-bg) border border-(--card-border) rounded-2xl shadow-md transition-all duration-300 ease-out p-6 md:p-8 backdrop-blur-sm ${
+            className={`relative overflow-hidden bg-(--card-bg) border border-(--card-border) rounded-2xl shadow-md ease-out p-6 md:p-8 transition-shadow duration-200 ${
                 interactive ? "group hover:shadow-lg" : ""
             }`}
             data-testid={testId}
         >
             {/* Gradient accent line top */}
             <div
-                className={`absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-(--accent-primary) via-(--accent-secondary) to-(--accent-tertiary) opacity-0 transition-opacity duration-300 ${
+                className={`absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-(--accent-primary) via-(--accent-secondary) to-(--accent-tertiary) opacity-0 transition-opacity duration-200 ${
                     interactive ? "group-hover:opacity-100" : ""
                 }`}
             />
@@ -27,7 +27,7 @@ export const Tile: FunctionComponent<PropsWithChildren<TileProps>> = ({
             {title && (
                 <div className="mb-4">
                     <HeadingTag
-                        className={`text-xs font-bold uppercase tracking-widest text-(--text-secondary) transition-colors duration-300 ${
+                        className={`text-xs font-bold uppercase tracking-widest text-(--text-secondary) transition-colors duration-200 ${
                             interactive ? "group-hover:text-(--accent-primary)" : ""
                         }`}
                     >

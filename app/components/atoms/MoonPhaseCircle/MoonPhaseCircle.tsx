@@ -69,7 +69,7 @@ export const MoonPhaseCircle: FunctionComponent<MoonPhaseCircleProps> = ({ phase
                     fill={isWaning ? "var(--card-bg)" : "var(--accent-primary)"}
                     opacity="0.95"
                     filter="url(#moonGlow)"
-                    style={{ transition: "color 0.5s ease, fill 0.5s ease" }}
+                    style={{ transition: "color 0.5s ease, fill 0.5s ease, opacity 0.5s ease" }}
                     className="group-hover:opacity-100"
                 />
 

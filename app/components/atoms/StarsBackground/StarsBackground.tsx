@@ -17,11 +17,12 @@ export const StarsBackground = () => {
     const [stars, setStars] = useState<Star[]>([]);
 
     useEffect(() => {
-        setStars(generateStars(120));
+        const isSmallScreen = window.matchMedia("(max-width: 640px)").matches;
+        setStars(generateStars(isSmallScreen ? 24 : 48));
     }, []);
 
     return (
-        <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden">
+        <div className="stars-background fixed top-0 left-0 w-screen h-screen overflow-hidden">
             {stars.map((star, i) => (
                 <div
                     key={i}

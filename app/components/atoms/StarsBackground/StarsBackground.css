@@ -2,14 +2,22 @@
     0%,
     100% {
         opacity: 0.2;
-        transform: scale(1);
     }
     50% {
         opacity: 1;
-        transform: scale(1.4);
     }
 }
 
 .twinkle {
-    animation: twinkle 3s infinite ease-in-out;
+    animation: twinkle 4.5s infinite ease-in-out;
+}
+
+.stars-background {
+    contain: paint;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .twinkle {
+        animation: none;
+    }
 }

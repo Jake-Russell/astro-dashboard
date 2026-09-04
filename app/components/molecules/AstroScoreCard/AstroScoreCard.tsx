@@ -164,7 +164,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                             className="h-2 w-full bg-(--card-border) rounded"
                                         >
                                             <div
-                                                className="h-2 bg-(--accent-primary) rounded transition-all"
+                                                className="h-2 bg-(--accent-primary) rounded transition-[width] duration-300"
                                                 style={{
                                                     width: `${
                                                         (currentBreakdown.cloud / CLOUD_WEIGHT) *
@@ -191,7 +191,7 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
                                             className="h-2 w-full bg-(--card-border) rounded"
                                         >
                                             <div
-                                                className="h-2 bg-(--accent-secondary) rounded transition-all"
+                                                className="h-2 bg-(--accent-secondary) rounded transition-[width] duration-300"
                                                 style={{
                                                     width: `${
                                                         (currentBreakdown.moon.total /

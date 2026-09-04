@@ -12,7 +12,7 @@ export const Tile: FunctionComponent<PropsWithChildren<TileProps>> = ({
 
     return (
         <div
-            className={`relative overflow-hidden bg-(--card-bg) border border-(--card-border) rounded-2xl shadow-md transition-all duration-300 ease-out p-6 md:p-8 backdrop-blur-sm ${
+            className={`relative overflow-hidden bg-(--card-bg) border border-(--card-border) rounded-2xl shadow-md transition-shadow duration-300 ease-out p-6 md:p-8 ${
                 interactive ? "group hover:shadow-lg" : ""
             }`}
             data-testid={testId}

@@ -34,7 +34,7 @@ export const NotFoundContent = () => {
                         <Link
                             href="/"
                             data-testid="back-to-dashboard-button"
-                            className="mt-8 inline-block px-6 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-all duration-300"
+                            className="mt-8 inline-block px-6 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-shadow duration-300"
                         >
                             <span aria-hidden="true">🌙</span> Back to the Dashboard
                         </Link>

@@ -1,5 +1,5 @@
 "use client";
-import { type FunctionComponent, useEffect } from "react";
+import { type FunctionComponent, useEffect, useMemo } from "react";
 import { Tile } from "atoms";
 import { getMoonIllumination } from "utils/moonUtils";
 import { getFormattedTime, isCurrentlyPrime } from "utils/timeUtils";
@@ -33,13 +33,17 @@ export const AstroScoreCard: FunctionComponent<AstroScoreCardProps> = ({
         primeTimeEnd,
         primeScore,
         hourlyScores,
-    } = getAstroScore(
+    } = useMemo(
+        () =>
+            getAstroScore(
         nightHours,
         moonIllumination,
         forecastStart,
         forecastEnd,
         latitude,
         longitude,
+            ),
+        [nightHours, moonIllumination, forecastStart, forecastEnd, latitude, longitude],
     );
 
     const primeStartTime = primeTimeStart

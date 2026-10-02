@@ -73,13 +73,13 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
                                             scope="col"
                                             className="text-center border-b border-(--card-border) pb-3"
                                         >
-                                            Moon Alt.
+                                            Cloud %
                                         </th>
                                         <th
                                             scope="col"
-                                            className="text-right border-b border-(--card-border) pb-3"
+                                            className="text-center border-b border-(--card-border) pb-3"
                                         >
-                                            Cloud %
+                                            Moon Alt.
                                         </th>
                                     </tr>
                                 </thead>
@@ -111,6 +111,12 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
                                                 </td>
 
                                                 <td className="py-3 text-center">
+                                                    <span className="inline-block px-2 py-1 rounded-lg bg-(--accent-primary)/10 text-xs font-semibold text-(--accent-primary)">
+                                                        {clouds}%
+                                                    </span>
+                                                </td>
+
+                                                <td className="py-3 text-center">
                                                     <div className="flex items-center justify-center gap-2">
                                                         <span
                                                             aria-hidden="true"
@@ -129,12 +135,6 @@ export const NightWeatherForecastCard: FunctionComponent<NightWeatherForecastCar
                                                             {moonAlt.toFixed(2)}°
                                                         </span>
                                                     </div>
-                                                </td>
-
-                                                <td className="py-3 text-right">
-                                                    <span className="inline-block px-2 py-1 rounded-lg bg-(--accent-primary)/10 text-xs font-semibold text-(--accent-primary)">
-                                                        {clouds}%
-                                                    </span>
                                                 </td>
                                             </tr>
                                         );

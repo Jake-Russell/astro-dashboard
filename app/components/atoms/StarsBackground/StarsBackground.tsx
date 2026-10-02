@@ -9,7 +9,6 @@ const generateStars = (count: number): Star[] =>
         x: Math.random() * 100,
         y: Math.random() * 100,
         size: Math.random() * 2 + 1,
-        delay: Math.random() * 3,
         opacity: Math.random() * 0.6 + 0.2,
     }));
 
@@ -21,19 +20,17 @@ export const StarsBackground = () => {
     }, []);
 
     return (
-        <div className="fixed top-0 left-0 w-screen h-screen overflow-hidden">
+        <div className="stars-background fixed top-0 left-0 w-screen h-screen overflow-hidden">
             {stars.map((star, i) => (
                 <div
                     key={i}
-                    className="absolute rounded-full bg-white/80 twinkle"
+                    className="absolute rounded-full bg-white/80"
                     style={{
                         left: `${star.x}%`,
                         top: `${star.y}%`,
                         width: `${star.size}px`,
                         height: `${star.size}px`,
                         opacity: star.opacity,
-                        animationDelay: `${star.delay}s`,
-                        animationDuration: "3s",
                     }}
                 />
             ))}

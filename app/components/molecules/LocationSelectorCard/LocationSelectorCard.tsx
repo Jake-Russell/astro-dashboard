@@ -133,7 +133,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
                     onClick={handleUseLocation}
                     disabled={isLoading}
                     data-testid="use-location-button"
-                    className="w-full px-4 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-shadow duration-200"
                 >
                     <span aria-hidden="true">📍</span>{" "}
                     {isLoadingLocation ? "Finding your location..." : "Use My Location"}
@@ -162,14 +162,14 @@ export const LocationSelectorCard: FunctionComponent = () => {
                         onChange={(event) => setLocationValue(event.target.value)}
                         disabled={isLoading}
                         data-testid="location-input"
-                        className="flex-1 px-4 py-3 rounded-xl bg-background border border-(--card-border) text-foreground placeholder:(--text-secondary) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 px-4 py-3 rounded-xl bg-background border border-(--card-border) text-foreground placeholder:(--text-secondary) focus:outline-none focus:ring-2 focus:ring-(--accent-primary) focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                     <button
                         type="submit"
                         aria-label="Search"
                         disabled={!locationValue.trim() || isLoading}
                         data-testid="search-button"
-                        className="px-5 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-5 py-3 rounded-xl bg-linear-to-r from-(--accent-primary) to-(--accent-secondary) text-white font-semibold hover:shadow-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-shadow duration-200 "
                     >
                         <span aria-hidden="true">🔍</span>
                     </button>
@@ -219,7 +219,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
                                                     onClick={handleUseLocation}
                                                     disabled={isLoading}
                                                     data-testid="retry-location-button"
-                                                    className="rounded-lg bg-(--accent-tertiary) px-4 py-2 text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                                                    className="rounded-lg bg-(--accent-tertiary) px-4 py-2 text-sm font-semibold text-white hover:opacity-90 hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 transition[opacity, shadow] duration-200"
                                                 >
                                                     Try again
                                                 </button>
@@ -229,7 +229,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
                                                 type="button"
                                                 onClick={handleSearchInsteadClick}
                                                 data-testid="search-location-button"
-                                                className="rounded-lg border border-(--card-border) bg-background px-4 py-2 text-sm font-semibold text-foreground transition-all cursor-pointer hover:border-(--accent-primary) hover:text-(--accent-primary)"
+                                                className="rounded-lg border border-(--card-border) bg-background px-4 py-2 text-sm font-semibold text-foreground cursor-pointer hover:border-(--accent-primary) hover:text-(--accent-primary) transition[border, color] duration-200"
                                             >
                                                 Search instead
                                             </button>
@@ -243,7 +243,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
                                                 onClick={handleRetryWeather}
                                                 disabled={isLoading}
                                                 data-testid="retry-weather-button"
-                                                className="rounded-lg bg-(--accent-tertiary) px-4 py-2 text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                                                className="rounded-lg bg-(--accent-tertiary) px-4 py-2 text-sm font-semibold text-white hover:opacity-90 hover:shadow-md cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 transition[opacity, shadow] duration-200"
                                             >
                                                 Try again
                                             </button>
@@ -253,7 +253,7 @@ export const LocationSelectorCard: FunctionComponent = () => {
                                                 onClick={handleChangeLocation}
                                                 disabled={isLoading}
                                                 data-testid="change-location-button"
-                                                className="rounded-lg border border-(--card-border) bg-background px-4 py-2 text-sm font-semibold text-foreground transition-all cursor-pointer hover:border-(--accent-primary) hover:text-(--accent-primary) disabled:cursor-not-allowed disabled:opacity-50"
+                                                className="rounded-lg border border-(--card-border) bg-background px-4 py-2 text-sm font-semibold text-foreground cursor-pointer hover:border-(--accent-primary) hover:text-(--accent-primary) disabled:cursor-not-allowed disabled:opacity-50 transition[border, color] duration-200"
                                             >
                                                 Change location
                                             </button>

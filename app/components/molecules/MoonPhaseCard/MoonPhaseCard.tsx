@@ -13,10 +13,9 @@ export const MoonPhaseCard: FunctionComponent<MoonPhaseCardProps> = ({
     moonsetTomorrow,
     moonPhase,
 }) => {
-    const { moonrise, moonset } = getAdjustedMoonRiseAndSet(
-        moonriseToday,
-        moonsetToday,
-        moonsetTomorrow,
+    const { moonrise, moonset } = useMemo(
+        () => getAdjustedMoonRiseAndSet(moonriseToday, moonsetToday, moonsetTomorrow),
+        [moonriseToday, moonsetToday, moonsetTomorrow],
     );
 
     const isMoonUp = useMemo(() => {

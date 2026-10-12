@@ -1,0 +1,13 @@
+@media (max-width: 999px) {
+    .night-score-chart-active-line {
+        stroke-width: 2.5;
+    }
+
+    .night-score-chart-dot {
+        r: 2.5;
+
+        &.active {
+            r: 4;
+        }
+    }
+}

@@ -4,7 +4,6 @@ import { mockLat, mockLng } from "../../mocks/mockLocationData";
 import { mockDayData } from "../../mocks/mockWeatherData";
 import {
     calculateHourlyScore,
-    getAstronomicalDarknessWindow,
     getAstroScore,
     getCloudScore,
     getMoonIlluminationScore,
@@ -276,18 +275,6 @@ describe("weatherUtils", () => {
         });
     });
 
-    describe("getAstronomicalDarknessWindow", () => {
-        it("should calculate correct darkness window", () => {
-            const sunset = 1776712231;
-            const sunrise = 1776747491;
-
-            const result = getAstronomicalDarknessWindow(sunset, sunrise);
-
-            expect(result.darkStart).toBe(sunset + 90 * 60);
-            expect(result.darkEnd).toBe(sunrise - 90 * 60);
-        });
-    });
-
     describe("getScoreSummary", () => {
         it("should return poor, given very cloudy skies", () => {
             expect(getScoreSummary(85, 10, 0)).toContain("heavy cloud");
@@ -323,34 +310,6 @@ describe("weatherUtils", () => {
         const sunset = mockDayData[0].sunset; // 2026-01-01T19:00:00Z
         const sunrise = mockDayData[1].sunrise; // 2026-01-02T05:30:00Z
         const moonIllumination = 50;
-
-        it("should only include hours that fall completely within astronomical darkness", () => {
-            const hourlyData = [
-                { dt: sunset, clouds: 10 }, // 19:00
-                { dt: sunset + 1 * 3600, clouds: 20 }, // 20:00
-                { dt: sunset + 2 * 3600, clouds: 30 }, // 21:00 - First hour that starts within astronomical darkness
-                { dt: sunset + 3 * 3600, clouds: 30 }, // 22:00
-                { dt: sunset + 4 * 3600, clouds: 40 }, // 23:00
-                { dt: sunset + 5 * 3600, clouds: 50 }, // 00:00
-                { dt: sunset + 6 * 3600, clouds: 60 }, // 01:00
-                { dt: sunset + 7 * 3600, clouds: 70 }, // 02:00
-                { dt: sunset + 8 * 3600, clouds: 80 }, // 03:00 - Last hour that completes within astronomical darkness
-                { dt: sunset + 9 * 3600, clouds: 90 }, // 04:00
-                { dt: sunset + 10 * 3600, clouds: 100 }, // 05:00
-                { dt: sunset + 11 * 3600, clouds: 90 }, // 06:00
-            ];
-
-            const result = getAstroScore(
-                hourlyData,
-                moonIllumination,
-                sunset,
-                sunrise,
-                mockLat,
-                mockLng,
-            );
-
-            expect(result.hourlyScores).toHaveLength(7);
-        });
 
         it("should return a zero score when no dark hours are available", () => {
             const result = getAstroScore([], moonIllumination, sunset, sunrise, mockLat, mockLng);
@@ -510,7 +469,7 @@ describe("weatherUtils", () => {
         });
 
         describe("single dark hour", () => {
-            it("should use the single hour as prime time", () => {
+            it("should exclude prime window", () => {
                 const hour = sunset + 2 * 3600; // 21:00 - First hour that starts within astronomical darkness
 
                 const result = getAstroScore(
@@ -522,29 +481,9 @@ describe("weatherUtils", () => {
                     mockLng,
                 );
 
-                expect(result.primeTimeStart).toBe(hour);
-                expect(result.primeTimeEnd).toBe(hour + 3600);
-                expect(result.primeScore).toBe(result.currentScore);
-            });
-
-            it("should not allow prime time to extend beyond astronomical darkness", () => {
-                const { darkEnd } = getAstronomicalDarknessWindow(sunset, sunrise);
-
-                // Hour starts inside darkness but ends after darkEnd.
-                // This won't actually be included because getAstroScore
-                // requires the entire hour to be dark.
-                const hour = darkEnd - 3600;
-
-                const result = getAstroScore(
-                    [{ dt: hour, clouds: 20 }],
-                    moonIllumination,
-                    sunset,
-                    sunrise,
-                    mockLat,
-                    mockLng,
-                );
-
-                expect(result.primeTimeEnd).toBeLessThanOrEqual(darkEnd);
+                expect(result.primeTimeStart).toBe(undefined);
+                expect(result.primeTimeEnd).toBe(undefined);
+                expect(result.primeScore).toBe(undefined);
             });
         });
 

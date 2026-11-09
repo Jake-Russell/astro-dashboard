@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { WeatherResponse } from "api/weather/types";
 import { mockDayData, mockTimestamps, mockWeatherResponse } from "../../mocks/mockWeatherData";
-import { getNightForecastHours, getNightForecastWindow } from "../nightForecastUtils";
+import {
+    ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS,
+    getNightForecastHours,
+    getNightForecastWindow,
+} from "../nightForecastUtils";
 
 const getNextDayWeatherData = (currentTime: number): WeatherResponse => ({
     ...mockWeatherResponse,
@@ -22,7 +26,7 @@ describe("getNightForecastWindow", () => {
 
         expect(result).toEqual({
             forecastStart: mockTimestamps.jan2Midnight,
-            forecastEnd: mockDayData[1].sunrise,
+            forecastEnd: mockDayData[1].sunrise - ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS,
             isActiveNight: true,
         });
     });
@@ -30,8 +34,8 @@ describe("getNightForecastWindow", () => {
     it("should use the upcoming night, given the current time is sunrise", () => {
         const result = getNightForecastWindow(getNextDayWeatherData(mockDayData[1].sunrise));
         expect(result).toEqual({
-            forecastStart: mockDayData[1].sunset,
-            forecastEnd: mockDayData[2].sunrise,
+            forecastStart: mockDayData[1].sunset + ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS,
+            forecastEnd: mockDayData[2].sunrise - ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS,
             isActiveNight: false,
         });
     });
@@ -40,8 +44,8 @@ describe("getNightForecastWindow", () => {
         const daytime = mockDayData[1].sunrise + 6 * 3600;
 
         expect(getNightForecastWindow(getNextDayWeatherData(daytime))).toEqual({
-            forecastStart: mockDayData[1].sunset,
-            forecastEnd: mockDayData[2].sunrise,
+            forecastStart: mockDayData[1].sunset + ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS,
+            forecastEnd: mockDayData[2].sunrise - ASTRONOMICAL_TWILIGHT_OFFSET_SECONDS,
             isActiveNight: false,
         });
     });

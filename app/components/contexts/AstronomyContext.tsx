@@ -1,5 +1,13 @@
 "use client";
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+    type ReactNode,
+} from "react";
 import type { WeatherResponse } from "api/weather/types";
 import { getWeatherData } from "../../utils/getWeatherData";
 import type { GeoPosition } from "services/geolocationService";
@@ -59,22 +67,25 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
         fetchWeather(latitude, longitude);
     }, [latitude, longitude]);
 
-    const setLocation = (lat: number, lng: number) => {
-        const locationIsSame = lat === latitude && lng === longitude;
-        if (locationIsSame) {
-            setLoadingState("idle");
-            return;
-        }
+    const setLocation = useCallback(
+        (lat: number, lng: number) => {
+            const locationIsSame = lat === latitude && lng === longitude;
+            if (locationIsSame) {
+                setLoadingState("idle");
+                return;
+            }
 
-        setLatitude(lat);
-        setLongitude(lng);
-    };
+            setLatitude(lat);
+            setLongitude(lng);
+        },
+        [latitude, longitude],
+    );
 
-    const retryWeather = () => {
+    const retryWeather = useCallback(() => {
         if (latitude === 0 && longitude === 0) return;
 
         fetchWeather(latitude, longitude);
-    };
+    }, [latitude, longitude]);
 
     const resetWeatherData = () => {
         setLatitude(0);
@@ -84,22 +95,29 @@ export const AstronomyProvider = ({ children }: { children: ReactNode }) => {
         setLoadingState("idle");
     };
 
-    return (
-        <AstronomyContext.Provider
-            value={{
-                latitude,
-                longitude,
-                setLocation,
-                weatherData,
-                weatherDataError,
-                setWeatherDataError,
-                loadingState,
-                setLoadingState,
-                retryWeather,
-                resetWeatherData,
-            }}
-        >
-            {children}
-        </AstronomyContext.Provider>
+    const value = useMemo(
+        () => ({
+            latitude,
+            longitude,
+            setLocation,
+            weatherData,
+            weatherDataError,
+            setWeatherDataError,
+            loadingState,
+            setLoadingState,
+            retryWeather,
+            resetWeatherData,
+        }),
+        [
+            latitude,
+            longitude,
+            setLocation,
+            weatherData,
+            weatherDataError,
+            loadingState,
+            retryWeather,
+        ],
     );
+
+    return <AstronomyContext.Provider value={value}>{children}</AstronomyContext.Provider>;
 };
